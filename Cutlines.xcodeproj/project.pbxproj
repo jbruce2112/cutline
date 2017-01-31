@@ -8,12 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E331E4028FE00A275AD /* AppDelegate.swift */; };
-		52A03E361E4028FE00A275AD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E351E4028FE00A275AD /* ViewController.swift */; };
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
 		52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3A1E4028FE00A275AD /* Assets.xcassets */; };
 		52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */; };
 		52A03E491E4028FE00A275AD /* CutlinesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E481E4028FE00A275AD /* CutlinesTests.swift */; };
 		52A03E541E4028FE00A275AD /* CutlinesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E531E4028FE00A275AD /* CutlinesUITests.swift */; };
+		52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E611E402F6000A275AD /* CutlinesViewController.swift */; };
+		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
+		52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +38,6 @@
 /* Begin PBXFileReference section */
 		52A03E301E4028FE00A275AD /* Cutlines.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cutlines.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A03E331E4028FE00A275AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		52A03E351E4028FE00A275AD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		52A03E381E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		52A03E3A1E4028FE00A275AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52A03E3D1E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -47,6 +48,9 @@
 		52A03E4F1E4028FE00A275AD /* CutlinesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A03E531E4028FE00A275AD /* CutlinesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlinesUITests.swift; sourceTree = "<group>"; };
 		52A03E551E4028FE00A275AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52A03E611E402F6000A275AD /* CutlinesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlinesViewController.swift; sourceTree = "<group>"; };
+		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlineInfoViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,8 +102,10 @@
 			isa = PBXGroup;
 			children = (
 				52A03E331E4028FE00A275AD /* AppDelegate.swift */,
-				52A03E351E4028FE00A275AD /* ViewController.swift */,
 				52A03E371E4028FE00A275AD /* Main.storyboard */,
+				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
+				52A03E631E40330500A275AD /* SearchViewController.swift */,
+				52A03E611E402F6000A275AD /* CutlinesViewController.swift */,
 				52A03E3A1E4028FE00A275AD /* Assets.xcassets */,
 				52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */,
 				52A03E3F1E4028FE00A275AD /* Info.plist */,
@@ -262,7 +268,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52A03E361E4028FE00A275AD /* ViewController.swift in Sources */,
+				52A03E641E40330500A275AD /* SearchViewController.swift in Sources */,
+				52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */,
+				52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */,
 				52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
