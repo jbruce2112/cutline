@@ -12,7 +12,7 @@
         <!--Create View Controller-->
         <scene sceneID="Upp-w1-Xrl">
             <objects>
-                <viewController storyboardIdentifier="CreateViewControllerScene" id="Nll-pi-Ltc" customClass="CreateViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Nll-pi-Ltc" customClass="CreateViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CHu-YJ-71N"/>
                         <viewControllerLayoutGuide type="bottom" id="lru-us-DFR"/>
@@ -35,13 +35,19 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="U51-nL-j8F">
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="E8r-DM-5cB"/>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="caption" destination="zYP-FQ-k5u" id="wht-GV-wtr"/>
+                        <outlet property="captionView" destination="zYP-FQ-k5u" id="83s-KW-euf"/>
+                        <outlet property="imageView" destination="u8p-If-Bvc" id="awc-9a-juL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="onV-1p-99T" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2014" y="-574"/>
+            <point key="canvasLocation" x="3759" y="-376"/>
         </scene>
         <!--Cutlines-->
         <scene sceneID="tne-QT-ifu">
@@ -85,7 +91,7 @@
                                             <constraint firstAttribute="bottom" secondItem="wg2-pb-si9" secondAttribute="bottom" id="PMi-Of-RMY"/>
                                         </constraints>
                                         <connections>
-                                            <segue destination="s7p-6D-dKC" kind="show" id="yJo-Y8-NKJ"/>
+                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="yJo-Y8-NKJ"/>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
@@ -103,7 +109,7 @@
                         <barButtonItem key="leftBarButtonItem" title="Settings" id="zsU-u1-7Vs"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="n6U-EF-UW6">
                             <connections>
-                                <action selector="addPhoto:" destination="BYZ-38-t0r" id="pKk-zX-XVj"/>
+                                <segue destination="n0U-nO-0iX" kind="show" identifier="showCutlineCreate" id="DSX-zx-NRw"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -128,7 +134,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nEm-mA-BYH">
-                                <rect key="frame" x="0.0" y="64" width="375" height="554"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="559"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -139,10 +145,12 @@
                             <constraint firstItem="nEm-mA-BYH" firstAttribute="top" secondItem="hMP-hz-cLS" secondAttribute="bottom" id="ov6-Ba-51Q"/>
                         </constraints>
                     </view>
+                    <toolbarItems/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ac-d9-IoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2908" y="139"/>
+            <point key="canvasLocation" x="2908" y="393"/>
         </scene>
         <!--Search-->
         <scene sceneID="dZU-8I-r5M">
@@ -255,6 +263,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c2Z-xo-JQK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1111" y="1020"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Pqo-jD-A0p">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="n0U-nO-0iX" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="GIB-Gt-z5b">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="Nll-pi-Ltc" kind="relationship" relationship="rootViewController" id="ePR-4w-0NF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="4O9-I5-sXF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2908" y="-376"/>
         </scene>
     </scenes>
 </document>

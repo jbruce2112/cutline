@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class CutlinesViewController: UIViewController, UICollectionViewDelegate {
 	
 	@IBOutlet var collectionView: UICollectionView!
 	
@@ -41,36 +41,6 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 			
 			let imageView = cell.viewWithTag(0) as! UIImageView
 			imageView.image = image
-		}
-	}
-	
-	@IBAction func addPhoto(_ sender: UIBarButtonItem) {
-		
-		let imagePicker = UIImagePickerController()
-		
-		imagePicker.sourceType = .photoLibrary
-		imagePicker.delegate = self
-		
-		present(imagePicker, animated: true)
-	}
-	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-		
-		// get picked image from the info dictionary
-		newImage = info[UIImagePickerControllerOriginalImage] as? UIImage
-		
-		// dismiss the image picker
-		dismiss(animated: true)  {
-		
-			let createViewController =
-				self.storyboard?.instantiateViewController(withIdentifier: "CreateViewControllerScene") as! CreateViewController
-			
-			createViewController.imageView?.image = self.newImage
-			
-			// TODO: is there a better way?
-			let tabBarController = self.view.window!.rootViewController as! UITabBarController
-			let navigationController = tabBarController.selectedViewController as! UINavigationController
-			navigationController.pushViewController(createViewController, animated: true)
 		}
 	}
 }
