@@ -10,6 +10,6 @@ import UIKit
 
 class CreateViewController: UIViewController {
 	
-	@IBOutlet var image: UIImage?
-	@IBOutlet var caption: UITextView?
+	@IBOutlet var imageView: UIImageView!
+	@IBOutlet var captionView: UITextView!
 }

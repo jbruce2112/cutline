@@ -63,11 +63,14 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 		dismiss(animated: true)  {
 		
 			let createViewController =
-				self.storyboard?.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
+				self.storyboard?.instantiateViewController(withIdentifier: "CreateViewControllerScene") as! CreateViewController
 			
-			createViewController.image = self.newImage
+			createViewController.imageView?.image = self.newImage
 			
-			self.present(createViewController, animated: true)
+			// TODO: is there a better way?
+			let tabBarController = self.view.window!.rootViewController as! UITabBarController
+			let navigationController = tabBarController.selectedViewController as! UINavigationController
+			navigationController.pushViewController(createViewController, animated: true)
 		}
 	}
 }

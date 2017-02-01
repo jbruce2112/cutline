@@ -12,7 +12,7 @@
         <!--Create View Controller-->
         <scene sceneID="Upp-w1-Xrl">
             <objects>
-                <viewController storyboardIdentifier="CreateViewController" id="Nll-pi-Ltc" customClass="CreateViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CreateViewControllerScene" id="Nll-pi-Ltc" customClass="CreateViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="CHu-YJ-71N"/>
                         <viewControllerLayoutGuide type="bottom" id="lru-us-DFR"/>
@@ -35,6 +35,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="caption" destination="zYP-FQ-k5u" id="wht-GV-wtr"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="onV-1p-99T" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
