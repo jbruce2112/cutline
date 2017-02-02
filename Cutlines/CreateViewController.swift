@@ -8,36 +8,24 @@
 
 import UIKit
 
-class CreateViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class CreateViewController: UIViewController {
 	
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var captionView: UITextView!
 	
-	private var displayedImagePicker = false
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
+	@IBAction func save() {
 		
-		//TODO: jank fest?
-		if !displayedImagePicker {
-			
-			let imagePicker = UIImagePickerController()
-			
-			imagePicker.sourceType = .photoLibrary
-			imagePicker.delegate = self
-			
-			present(imagePicker, animated: true)
-			
-			displayedImagePicker = true
-		}
 	}
 	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+	@IBAction func cancel() {
 		
-		// get picked image from the info dictionary
-		imageView.image = info[UIImagePickerControllerOriginalImage] as? UIImage
-		
-		// dismiss the image picker
-		dismiss(animated: true, completion: nil)
+		dismiss(animated: true)
+	}
+}
+
+extension CreateViewController: UIBarPositioningDelegate {
+	
+	func position(for bar: UIBarPositioning) -> UIBarPosition {
+		return .topAttached
 	}
 }

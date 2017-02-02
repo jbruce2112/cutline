@@ -8,14 +8,12 @@
 
 import UIKit
 
-class CutlinesViewController: UIViewController, UICollectionViewDelegate {
+class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
 	@IBOutlet var collectionView: UICollectionView!
 	
 	let photoDataSource = PhotoDataSource()
 	let imageStore = ImageStore()
-	
-	var newImage: UIImage?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -41,6 +39,34 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate {
 			
 			let imageView = cell.viewWithTag(0) as! UIImageView
 			imageView.image = image
+		}
+	}
+	
+	@IBAction func addCutline() {
+		
+		let imagePicker = UIImagePickerController()
+		
+		imagePicker.sourceType = .photoLibrary
+		imagePicker.delegate = self
+		
+		present(imagePicker, animated: true)
+	}
+	
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+		
+		// get picked image from the info dictionary
+		let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+		
+		// dismiss the image picker
+		dismiss(animated: true) {
+			
+			let createViewController =
+				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
+			
+			createViewController.loadView()
+			createViewController.imageView.image = image
+			
+			self.show(createViewController, sender: self)
 		}
 	}
 }
