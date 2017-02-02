@@ -62,4 +62,8 @@ class PhotoDataSource: NSObject, UICollectionViewDataSource {
 			}
 		}
 	}
+	
+	func addPhoto(id: String, caption: String, dateTaken: Date) {
+		
+	}
 }

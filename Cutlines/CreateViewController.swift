@@ -7,25 +7,39 @@
 //
 
 import UIKit
+import Photos
 
 class CreateViewController: UIViewController {
 	
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var captionView: UITextView!
 	
+	var photoDataSource: PhotoDataSource!
+	var imageStore: ImageStore!
+	var imageURL: URL!
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		navigationItem.rightBarButtonItem =
+			UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(save))
+		
+		navigationItem.title = "Create Caption"
+	}
+	
 	@IBAction func save() {
 		
-	}
-	
-	@IBAction func cancel() {
+		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL!], options: nil)
 		
-		dismiss(animated: true)
-	}
-}
-
-extension CreateViewController: UIBarPositioningDelegate {
-	
-	func position(for bar: UIBarPositioning) -> UIBarPosition {
-		return .topAttached
+		if results.count == 1, let asset = results.firstObject {
+			
+			let id = NSUUID().uuidString
+			photoDataSource.addPhoto(id: id, caption: captionView.text, dateTaken: asset.creationDate!)
+			//imageStore.setImage(imageView.image!, forKey: id)
+		} else {
+			print("Error fetching asset URL \(imageURL.absoluteString)")
+		}
+		
+		navigationController!.popViewController(animated: true)
 	}
 }

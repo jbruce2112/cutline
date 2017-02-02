@@ -56,6 +56,7 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 		
 		// get picked image from the info dictionary
 		let image = info[UIImagePickerControllerOriginalImage] as? UIImage
+		let url = info[UIImagePickerControllerReferenceURL] as? URL
 		
 		// dismiss the image picker
 		dismiss(animated: true) {
@@ -64,6 +65,8 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
 			
 			createViewController.loadView()
+			createViewController.photoDataSource = self.photoDataSource
+			createViewController.imageURL = url
 			createViewController.imageView.image = image
 			
 			self.show(createViewController, sender: self)
