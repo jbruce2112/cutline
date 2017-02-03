@@ -34,8 +34,18 @@ class CreateViewController: UIViewController {
 		if results.count == 1, let asset = results.firstObject {
 			
 			let id = NSUUID().uuidString
-			photoDataSource.addPhoto(id: id, caption: captionView.text, dateTaken: asset.creationDate!)
-			//imageStore.setImage(imageView.image!, forKey: id)
+			imageStore.setImage(imageView.image!, forKey: id)
+			
+			photoDataSource.addPhoto(id: id, caption: captionView.text, dateTaken: asset.creationDate!) {
+				(result) in
+				
+				switch result {
+				case .success:
+					var _ = 0
+				case let .failure(error):
+					print("Cutline save failed with error: \(error)")
+				}
+			}
 		} else {
 			print("Error fetching asset URL \(imageURL.absoluteString)")
 		}

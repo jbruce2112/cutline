@@ -12,13 +12,24 @@ class ImageStore {
 	
 	private let cache = NSCache<NSString, UIImage>()
 	
+	private let imageDirURL: URL = {
+		
+		var docsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+		return docsDir.appendingPathComponent("images")
+	}()
+	
+	init() {
+		
+		try! FileManager.default.createDirectory(at: imageDirURL, withIntermediateDirectories: true, attributes: nil)
+	}
+	
 	func setImage(_ image: UIImage, forKey key: String) {
 		
 		cache.setObject(image, forKey: key as NSString)
 		
 		let url = imageURL(forKey: key)
 		
-		if let data = UIImageJPEGRepresentation(image, 0.5) {
+		if let data = UIImageJPEGRepresentation(image, 1) {
 			let _ = try? data.write(to: url, options: [.atomic])
 		}
 	}
@@ -51,8 +62,6 @@ class ImageStore {
 	}
 	
 	private func imageURL(forKey key: String) -> URL {
-		
-		let documentDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-		return documentDir.appendingPathComponent("images").appendingPathComponent(key)
+		return imageDirURL.appendingPathComponent(key)
 	}
 }

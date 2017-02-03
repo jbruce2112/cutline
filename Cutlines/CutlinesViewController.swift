@@ -20,12 +20,20 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 		
 		collectionView.delegate = self
 		collectionView.dataSource = photoDataSource
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
 		
-		photoDataSource.update {
+		photoDataSource.refresh {
 			(result) in
 			
-			if result == .success {
+			switch result {
+				
+			case .success:
 				self.collectionView.reloadData()
+			case let .failure(error):
+				print("Error refreshing data source \(error)")
 			}
 		}
 	}
@@ -34,11 +42,10 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 		
 		let photo = photoDataSource.photo(atIndex: indexPath.row)
 		
-		if let image = imageStore.image(forKey: photo.photoID!),
-			let cell = collectionView.cellForItem(at: indexPath) {
-			
-			let imageView = cell.viewWithTag(0) as! UIImageView
-			imageView.image = image
+		if let image = imageStore.image(forKey: photo.photoID!) {
+				
+				let imageView = cell.viewWithTag(100) as! UIImageView
+				imageView.image = image
 		}
 	}
 	
@@ -66,6 +73,7 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 			
 			createViewController.loadView()
 			createViewController.photoDataSource = self.photoDataSource
+			createViewController.imageStore = self.imageStore
 			createViewController.imageURL = url
 			createViewController.imageView.image = image
 			

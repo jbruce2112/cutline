@@ -11,7 +11,7 @@ import CoreData
 
 enum UpdateResult {
 	case success
-	case failure
+	case failure(Error)
 }
 
 class PhotoDataSource: NSObject, UICollectionViewDataSource {
@@ -44,7 +44,7 @@ class PhotoDataSource: NSObject, UICollectionViewDataSource {
 		return photos[index]
 	}
 	
-	func update(completion: @escaping (UpdateResult) -> Void) {
+	func refresh(completion: @escaping (UpdateResult) -> Void) {
 		
 		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
 		
@@ -58,12 +58,33 @@ class PhotoDataSource: NSObject, UICollectionViewDataSource {
 				try self.photos = viewContext.fetch(fetchRequest)
 				completion(.success)
 			} catch {
-				completion(.failure)
+				completion(.failure(error))
 			}
 		}
 	}
 	
-	func addPhoto(id: String, caption: String, dateTaken: Date) {
+	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
 		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			let entityDescription = NSEntityDescription.entity(forEntityName: "Photo", in: viewContext)
+			let photo = NSManagedObject.init(entity: entityDescription!, insertInto: viewContext) as! Photo
+			photo.photoID = id
+			photo.caption = caption
+			photo.dateTaken = dateTaken as NSDate
+			photo.dateAdded = NSDate()
+			photo.lastUpdated = NSDate()
+			
+			viewContext.insert(photo)
+			
+			do {
+				try viewContext.save()
+				completion(.success)
+			}
+			catch {
+				completion(.failure(error))
+			}
+		}
 	}
 }
