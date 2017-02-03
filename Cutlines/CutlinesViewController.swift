@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+class CutlinesViewController: UIViewController {
 	
 	@IBOutlet var collectionView: UICollectionView!
 	
@@ -38,17 +38,6 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 		}
 	}
 	
-	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-		
-		let photo = photoDataSource.photo(atIndex: indexPath.row)
-		
-		if let image = imageStore.image(forKey: photo.photoID!) {
-				
-				let imageView = cell.viewWithTag(100) as! UIImageView
-				imageView.image = image
-		}
-	}
-	
 	@IBAction func addCutline() {
 		
 		let imagePicker = UIImagePickerController()
@@ -58,6 +47,44 @@ class CutlinesViewController: UIViewController, UICollectionViewDelegate, UINavi
 		
 		present(imagePicker, animated: true)
 	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		
+		switch segue.identifier! {
+			
+		case "showCutlineInfo":
+			
+			if let selectedIndexPath =
+				collectionView.indexPathsForSelectedItems?.first {
+				
+				let photo = photoDataSource.photo(atIndex: selectedIndexPath.row)
+				let cutlineInfoController = segue.destination as! CutlineInfoViewController
+				
+				cutlineInfoController.photo = photo
+				cutlineInfoController.photoDataSource = photoDataSource
+				cutlineInfoController.imageStore = imageStore
+			}
+		default:
+			preconditionFailure("Unexpected segue identifier")
+		}
+	}
+}
+
+extension CutlinesViewController: UICollectionViewDelegate {
+
+	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		
+		let photo = photoDataSource.photo(atIndex: indexPath.row)
+		
+		if let image = imageStore.image(forKey: photo.photoID!) {
+			
+			let imageView = cell.viewWithTag(100) as! UIImageView
+			imageView.image = image
+		}
+	}
+}
+
+extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 		

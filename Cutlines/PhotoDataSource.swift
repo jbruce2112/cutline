@@ -14,9 +14,9 @@ enum UpdateResult {
 	case failure(Error)
 }
 
-class PhotoDataSource: NSObject, UICollectionViewDataSource {
+class PhotoDataSource: NSObject {
 	
-	private var photos = [Photo]()
+	fileprivate var photos = [Photo]()
 	
 	private let persistantContainer: NSPersistentContainer = {
 		
@@ -28,16 +28,6 @@ class PhotoDataSource: NSObject, UICollectionViewDataSource {
 		}
 		return container
 	}()
-	
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		
-		return photos.count
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		
-		return collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
-	}
 	
 	func photo(atIndex index: Int) -> Photo {
 		
@@ -86,5 +76,18 @@ class PhotoDataSource: NSObject, UICollectionViewDataSource {
 				completion(.failure(error))
 			}
 		}
+	}
+}
+
+extension PhotoDataSource: UICollectionViewDataSource {
+	
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		
+		return photos.count
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		
+		return collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
 	}
 }
