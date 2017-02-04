@@ -40,6 +40,9 @@ class CutlineInfoViewController: UIViewController {
 		container.layer.shadowColor = UIColor.gray.cgColor
 		container.layer.shadowOpacity = 0.6
 		//container.layer.shadowOffset = CGSize(width: 0, height: 2)
+		
+		navigationItem.rightBarButtonItem =
+			UIBarButtonItem(title: "Flip", style: .plain, target: self, action: #selector(flipPhoto))
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
