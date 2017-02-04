@@ -77,6 +77,20 @@ class PhotoDataSource: NSObject {
 			}
 		}
 	}
+	
+	func save() {
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			do {
+				try viewContext.save()
+			}
+			catch {
+				print("Error saving context \(error)")
+			}
+		}
+	}
 }
 
 extension PhotoDataSource: UICollectionViewDataSource {

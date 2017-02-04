@@ -98,7 +98,9 @@ extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerC
 			let createViewController =
 				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
 			
+			// TODO: bad
 			createViewController.loadView()
+			
 			createViewController.photoDataSource = self.photoDataSource
 			createViewController.imageStore = self.imageStore
 			createViewController.imageURL = url
