@@ -15,10 +15,12 @@ class CutlineInfoViewController: UIViewController {
 	var imageStore: ImageStore!
 	
 	@IBOutlet var imageView: UIImageView!
+	@IBOutlet var textView: UITextView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		imageView.image = imageStore.image(forKey: photo.photoID!)
+		textView.text = photo.caption
 	}
 }
