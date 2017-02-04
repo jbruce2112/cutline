@@ -12,8 +12,8 @@ class CutlinesViewController: UIViewController {
 	
 	@IBOutlet var collectionView: UICollectionView!
 	
-	let photoDataSource = PhotoDataSource()
-	let imageStore = ImageStore()
+	var photoDataSource: PhotoDataSource!
+	var imageStore: ImageStore!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -57,7 +57,7 @@ class CutlinesViewController: UIViewController {
 			if let selectedIndexPath =
 				collectionView.indexPathsForSelectedItems?.first {
 				
-				let photo = photoDataSource.photo(atIndex: selectedIndexPath.row)
+				let photo = photoDataSource.photos[selectedIndexPath.row]
 				let cutlineInfoController = segue.destination as! CutlineInfoViewController
 				
 				cutlineInfoController.photo = photo
@@ -74,7 +74,7 @@ extension CutlinesViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		
-		let photo = photoDataSource.photo(atIndex: indexPath.row)
+		let photo = photoDataSource.photos[indexPath.row]
 		
 		if let image = imageStore.image(forKey: photo.photoID!) {
 			

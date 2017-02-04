@@ -16,7 +16,7 @@ enum UpdateResult {
 
 class PhotoDataSource: NSObject {
 	
-	fileprivate var photos = [Photo]()
+	var photos = [Photo]()
 	
 	private let persistantContainer: NSPersistentContainer = {
 		
@@ -28,11 +28,6 @@ class PhotoDataSource: NSObject {
 		}
 		return container
 	}()
-	
-	func photo(atIndex index: Int) -> Photo {
-		
-		return photos[index]
-	}
 	
 	func refresh(completion: @escaping (UpdateResult) -> Void) {
 		

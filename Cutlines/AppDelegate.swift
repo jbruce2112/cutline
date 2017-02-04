@@ -12,9 +12,24 @@ import UIKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
-
+	
+	let photoDataSource = PhotoDataSource()
+	let imageStore = ImageStore()
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+		
+		let tabBarController = window!.rootViewController as! UITabBarController
+		let navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
+		
+		let cutlinesController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
+		let searchController = navigationControllers[1].viewControllers.first! as! SearchViewController
+		
+		cutlinesController.photoDataSource = photoDataSource
+		searchController.photoDataSource = photoDataSource
+		
+		cutlinesController.imageStore = imageStore
+		searchController.imageStore = imageStore
+		
 		// Override point for customization after application launch.
 		return true
 	}

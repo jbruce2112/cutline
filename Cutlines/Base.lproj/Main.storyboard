@@ -164,62 +164,50 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ac-d9-IoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2908" y="392.65367316341832"/>
+            <point key="canvasLocation" x="3268" y="650"/>
         </scene>
         <!--Search-->
-        <scene sceneID="dZU-8I-r5M">
+        <scene sceneID="6wE-mx-lGY">
             <objects>
-                <viewController id="oh8-iJ-G5c" customClass="SearchViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="ltA-FT-E5a"/>
-                        <viewControllerLayoutGuide type="bottom" id="9lJ-49-s4D"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="R8t-hP-UzE">
+                <tableViewController id="qpS-Ic-S9C" customClass="SearchViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="qsq-yG-rAL">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <searchBar contentMode="redraw" placeholder="Search your cutlines" translatesAutoresizingMaskIntoConstraints="NO" id="g5y-3i-z79">
-                                <rect key="frame" x="0.0" y="64" width="414" height="44"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="oh8-iJ-G5c" id="Dez-l5-oxc"/>
-                                </connections>
-                            </searchBar>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="g5y-3i-z79" firstAttribute="leading" secondItem="R8t-hP-UzE" secondAttribute="leading" id="Fu7-PM-4Ta"/>
-                            <constraint firstItem="g5y-3i-z79" firstAttribute="top" secondItem="ltA-FT-E5a" secondAttribute="bottom" id="OOn-pW-Vb1"/>
-                            <constraint firstAttribute="trailing" secondItem="g5y-3i-z79" secondAttribute="trailing" id="djq-0s-EkF"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" title="Search" id="iSp-DH-s91">
-                        <barButtonItem key="leftBarButtonItem" title="Settings" id="I6S-lt-HBZ"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UITableViewCell" textLabel="TXr-uU-W5F" style="IBUITableViewCellStyleDefault" id="CPU-b0-3bk">
+                                <rect key="frame" x="0.0" y="28" width="414" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CPU-b0-3bk" id="ezq-Gj-B5c">
+                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TXr-uU-W5F">
+                                            <rect key="frame" x="15" y="0.0" width="384" height="43.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="gke-A3-Q5b"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="qpS-Ic-S9C" id="NuX-Sm-oj0"/>
+                            <outlet property="delegate" destination="qpS-Ic-S9C" id="yHt-2q-amD"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Search" id="M6W-EX-qFq">
+                        <barButtonItem key="leftBarButtonItem" title="Settings" id="kRo-i6-dPn"/>
                     </navigationItem>
-                    <connections>
-                        <outlet property="searchDisplayController" destination="BvX-yX-knf" id="DCj-mY-0ga"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="JA3-pG-1gQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchDisplayController id="JmA-jw-EgF">
-                    <connections>
-                        <outlet property="delegate" destination="oh8-iJ-G5c" id="JoL-3D-Hbi"/>
-                        <outlet property="searchContentsController" destination="oh8-iJ-G5c" id="dye-Rx-igh"/>
-                        <outlet property="searchResultsDataSource" destination="oh8-iJ-G5c" id="aRN-3W-N8q"/>
-                        <outlet property="searchResultsDelegate" destination="oh8-iJ-G5c" id="gHz-D1-wNt"/>
-                    </connections>
-                </searchDisplayController>
-                <searchDisplayController id="BvX-yX-knf">
-                    <connections>
-                        <outlet property="delegate" destination="oh8-iJ-G5c" id="wSQ-qX-OhU"/>
-                        <outlet property="searchBar" destination="g5y-3i-z79" id="WFT-YF-H3Z"/>
-                        <outlet property="searchContentsController" destination="oh8-iJ-G5c" id="lCE-ay-Ool"/>
-                        <outlet property="searchResultsDataSource" destination="oh8-iJ-G5c" id="JF9-mM-PZ8"/>
-                        <outlet property="searchResultsDelegate" destination="oh8-iJ-G5c" id="Nnj-cd-tZo"/>
-                    </connections>
-                </searchDisplayController>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ebt-Re-9gh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2015" y="1020"/>
+            <point key="canvasLocation" x="2013" y="1020"/>
         </scene>
         <!--My Cutlines-->
         <scene sceneID="dEv-ia-jp2">
@@ -271,7 +259,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="oh8-iJ-G5c" kind="relationship" relationship="rootViewController" id="fZr-7L-ab4"/>
+                        <segue destination="qpS-Ic-S9C" kind="relationship" relationship="rootViewController" id="HMy-9m-6oY"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="c2Z-xo-JQK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -279,4 +267,7 @@
             <point key="canvasLocation" x="1111" y="1020"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="gke-A3-Q5b"/>
+    </inferredMetricsTieBreakers>
 </document>
