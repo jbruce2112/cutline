@@ -15,7 +15,7 @@ class CutlineInfoViewController: UIViewController {
 	var imageStore: ImageStore!
 	
 	var imageView = UIImageView()
-	var textView = UITextView()
+	var captionView = CaptionView()
 	
 	@IBOutlet var container: UIView!
 	
@@ -24,15 +24,22 @@ class CutlineInfoViewController: UIViewController {
 		
 		imageView.frame = CGRect(x: 0, y:0, width: container.frame.width,
 		                         height: container.frame.height)
-		textView.frame = imageView.frame
+		captionView.frame = imageView.frame
 		
 		container.addSubview(imageView)
 		
 		imageView.image = imageStore.image(forKey: photo.photoID!)
-		textView.text = photo.caption
+		imageView.contentMode = .scaleAspectFit
 		
-		container.layer.borderWidth = 1.5
+		captionView.text = photo.caption
+		
+		container.layer.borderWidth = 2.0
 		container.layer.borderColor = UIColor.gray.cgColor
+		
+		container.layer.shadowRadius = 5
+		container.layer.shadowColor = UIColor.gray.cgColor
+		container.layer.shadowOpacity = 0.6
+		//container.layer.shadowOffset = CGSize(width: 0, height: 2)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -46,7 +53,7 @@ class CutlineInfoViewController: UIViewController {
 		
 		// Update the Photo object with our changes
 		// and kick off a save before we leave the view
-		photo.caption = textView.text
+		photo.caption = captionView.text
 		photoDataSource.save()
 	}
 	
@@ -57,9 +64,9 @@ class CutlineInfoViewController: UIViewController {
 		var views: (frontView: UIView, backView: UIView)
 		
 		if imageView.superview != nil {
-			views = (frontView: imageView, backView: textView)
+			views = (frontView: imageView, backView: captionView)
 		} else {
-			views = (frontView: textView, backView: imageView)
+			views = (frontView: captionView, backView: imageView)
 		}
 		
 		UIView.transition(from: views.frontView, to: views.backView,

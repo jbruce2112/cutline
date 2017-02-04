@@ -12,11 +12,13 @@ import Photos
 class CreateViewController: UIViewController {
 	
 	@IBOutlet var imageView: UIImageView!
-	@IBOutlet var captionView: UITextView!
+	@IBOutlet var captionView: CaptionView!
 	
 	var photoDataSource: PhotoDataSource!
 	var imageStore: ImageStore!
 	var imageURL: URL!
+	
+	fileprivate let placeholderText = "Your notes here"
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
@@ -24,7 +26,7 @@ class CreateViewController: UIViewController {
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(save))
 		
-		navigationItem.title = "Create Caption"
+		navigationItem.title = "Create"
 		
 		captionView.layer.borderWidth = 1
 		captionView.layer.borderColor = UIColor.black.cgColor

@@ -57,7 +57,7 @@ class SearchViewController: UITableViewController {
 		tableView.dataSource = self
 	}
 	
-	fileprivate func readyForSearch() -> Bool {
+	private func readyForSearch() -> Bool {
 		
 		guard searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
 			return false
@@ -65,7 +65,6 @@ class SearchViewController: UITableViewController {
 		
 		return true
 	}
-	
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		
@@ -111,7 +110,6 @@ class SearchViewController: UITableViewController {
 			preconditionFailure("Unexpected segue identifier")
 		}
 	}
-	
 }
 
 extension SearchViewController: UISearchResultsUpdating {
