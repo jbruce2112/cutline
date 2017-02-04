@@ -25,6 +25,9 @@ class CreateViewController: UIViewController {
 			UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(save))
 		
 		navigationItem.title = "Create Caption"
+		
+		captionView.layer.borderWidth = 1
+		captionView.layer.borderColor = UIColor.black.cgColor
 	}
 	
 	@IBAction func save() {
