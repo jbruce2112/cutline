@@ -12,7 +12,8 @@ class CutlineInfoViewController: UIViewController {
 	
 	var photo: Photo!
 	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!
+	var imageStore: ImageStore!	
+	var animatedFlip: Bool!
 	
 	var imageView = UIImageView()
 	var captionView = CaptionView()
@@ -26,7 +27,13 @@ class CutlineInfoViewController: UIViewController {
 		                         height: container.frame.height)
 		captionView.frame = imageView.frame
 		
-		container.addSubview(imageView)
+		// TODO: workaround for 'type bool is broken' - fixed in swift 3.1?
+		// https://www.reddit.com/r/swift/comments/58fvef/most_ambitious_error_message_yet_type_bool_is/
+		if animatedFlip == true {
+			container.addSubview(imageView)
+		} else {
+			container.addSubview(captionView)
+		}
 		
 		imageView.image = imageStore.image(forKey: photo.photoID!)
 		imageView.contentMode = .scaleAspectFit
@@ -48,7 +55,9 @@ class CutlineInfoViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		flipPhoto()
+		if animatedFlip == true {
+			flipPhoto()
+		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {

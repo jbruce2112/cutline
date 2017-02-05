@@ -91,10 +91,10 @@
 		523751FD1E418C4C00060607 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
-				52A03E631E40330500A275AD /* SearchViewController.swift */,
 				52A03E611E402F6000A275AD /* CutlinesViewController.swift */,
+				52A03E631E40330500A275AD /* SearchViewController.swift */,
 				523751FE1E41928700060607 /* CreateViewController.swift */,
+				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";

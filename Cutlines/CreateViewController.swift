@@ -34,6 +34,7 @@ class CreateViewController: UIViewController {
 	
 	@IBAction func save() {
 		
+		// TODO: use non-deprecated api
 		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL!], options: nil)
 		
 		if results.count == 1, let asset = results.firstObject {

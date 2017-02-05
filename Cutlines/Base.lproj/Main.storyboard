@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -98,13 +99,17 @@
                                             <constraint firstItem="wg2-pb-si9" firstAttribute="top" secondItem="QVi-Vo-KDH" secondAttribute="top" id="cFp-4d-gsA"/>
                                         </constraints>
                                         <connections>
-                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="yJo-Y8-NKJ"/>
+                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="yJo-Y8-NKJ">
+                                                <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoNoFlip" id="LuF-ef-IN3"/>
+                                                <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfoNoFlip" id="O0z-zi-U9X"/>
+                                            </segue>
                                         </connections>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="qWQ-Pi-yr7" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="30L-uh-axW"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="qWQ-Pi-yr7" secondAttribute="bottom" id="EJG-JD-zqF"/>
