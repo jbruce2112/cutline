@@ -92,20 +92,28 @@ class SearchViewController: UITableViewController {
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		
-		switch segue.identifier! {
+		let showCutlineInfo = { (animated: Bool) -> Void in
 			
-		case "showCutlineInfo":
-			
-			if let selectedIndexPath =
-				tableView.indexPathsForSelectedRows?.first {
+			if let cell = sender as? UITableViewCell,
+				let selectedIndexPath =
+				self.tableView.indexPath(for: cell) {
 				
-				let photo = photoDataSource.photos[selectedIndexPath.row]
+				let photo = self.photoDataSource.photos[selectedIndexPath.row]
 				let cutlineInfoController = segue.destination as! CutlineInfoViewController
 				
 				cutlineInfoController.photo = photo
-				cutlineInfoController.photoDataSource = photoDataSource
-				cutlineInfoController.imageStore = imageStore
+				cutlineInfoController.photoDataSource = self.photoDataSource
+				cutlineInfoController.imageStore = self.imageStore
+				cutlineInfoController.animatedFlip = animated
 			}
+		}
+		
+		switch segue.identifier! {
+			
+		case "showCutlineInfo":
+			showCutlineInfo(true)
+		case "showCutlineInfoNoFlip":
+			showCutlineInfo(false)
 		default:
 			preconditionFailure("Unexpected segue identifier")
 		}

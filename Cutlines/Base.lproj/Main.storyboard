@@ -180,15 +180,15 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="UITableViewCell" textLabel="TXr-uU-W5F" style="IBUITableViewCellStyleDefault" id="CPU-b0-3bk">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="UITableViewCell" textLabel="TXr-uU-W5F" style="IBUITableViewCellStyleDefault" id="CPU-b0-3bk">
                                 <rect key="frame" x="0.0" y="28" width="414" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CPU-b0-3bk" id="ezq-Gj-B5c">
-                                    <rect key="frame" x="0.0" y="0.0" width="414" height="43.666666666666664"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="381" height="43.666666666666664"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TXr-uU-W5F">
-                                            <rect key="frame" x="15" y="0.0" width="384" height="43.666666666666664"/>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TXr-uU-W5F">
+                                            <rect key="frame" x="15" y="0.0" width="364" height="43.666666666666664"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                             <nil key="textColor"/>
@@ -197,7 +197,10 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="gke-A3-Q5b"/>
+                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="gke-A3-Q5b">
+                                        <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoNoFlip" id="aAk-ws-ut7"/>
+                                        <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfoNoFlip" id="UkV-oQ-97S"/>
+                                    </segue>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -273,6 +276,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="yJo-Y8-NKJ"/>
+        <segue reference="gke-A3-Q5b"/>
     </inferredMetricsTieBreakers>
 </document>
