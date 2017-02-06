@@ -13,7 +13,7 @@ class CutlineInfoViewController: UIViewController {
 	var photo: Photo!
 	var photoDataSource: PhotoDataSource!
 	var imageStore: ImageStore!	
-	var animatedFlip = true
+	var animatedFlip = false
 	
 	var imageView = UIImageView()
 	var captionView = CaptionView()

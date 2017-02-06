@@ -12,6 +12,7 @@
 		523751FC1E417C4900060607 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FB1E417C4900060607 /* ImageStore.swift */; };
 		523751FF1E41928700060607 /* CreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FE1E41928700060607 /* CreateViewController.swift */; };
 		523752051E467C0200060607 /* CaptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523752041E467C0200060607 /* CaptionView.swift */; };
+		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E331E4028FE00A275AD /* AppDelegate.swift */; };
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
 		52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3A1E4028FE00A275AD /* Assets.xcassets */; };
@@ -46,6 +47,7 @@
 		523751FB1E417C4900060607 /* ImageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
 		523751FE1E41928700060607 /* CreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateViewController.swift; sourceTree = "<group>"; };
 		523752041E467C0200060607 /* CaptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CaptionView.swift; sourceTree = "<group>"; };
+		525F4CF81E48294C004615FD /* SearchResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		52A03E301E4028FE00A275AD /* Cutlines.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cutlines.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A03E331E4028FE00A275AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		52A03E381E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -93,6 +95,7 @@
 			children = (
 				52A03E611E402F6000A275AD /* CutlinesViewController.swift */,
 				52A03E631E40330500A275AD /* SearchViewController.swift */,
+				525F4CF81E48294C004615FD /* SearchResultsViewController.swift */,
 				523751FE1E41928700060607 /* CreateViewController.swift */,
 				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
 			);
@@ -316,6 +319,7 @@
 				523751F81E41744F00060607 /* Cutlines.xcdatamodeld in Sources */,
 				523751FC1E417C4900060607 /* ImageStore.swift in Sources */,
 				52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */,
+				525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

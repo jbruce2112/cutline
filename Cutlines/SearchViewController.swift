@@ -8,52 +8,29 @@
 
 import UIKit
 
-
-fileprivate struct SearchResult {
-	
-	let photo: Photo!
-	let searchTerm: String!
-	
-	let displayString: String!
-	
-	init(photo: Photo, searchTerm: String) {
-		
-		self.photo = photo
-		self.searchTerm = searchTerm
-		
-		let captionNoNewline = photo.caption!.replacingOccurrences(of: "\n", with: " ")
-		let captionLowercased = captionNoNewline.lowercased()
-		
-		let matchStartIndex = captionLowercased.range(of: searchTerm)!.lowerBound
-		
-		var displayStart = captionLowercased.startIndex
-		
-		let leadingPaddingChars = 20
-		if captionLowercased.distance(from: captionLowercased.startIndex, to: matchStartIndex) > leadingPaddingChars {
-			displayStart = captionLowercased.index(matchStartIndex, offsetBy: -1 * leadingPaddingChars / 2)
-		}
-		
-		displayString = captionNoNewline.substring(from: displayStart)
-	}
-}
-
 class SearchViewController: UITableViewController {
 	
-	let searchController = UISearchController(searchResultsController: nil)
+	var searchController: UISearchController!
+	var searchResultsController: SearchResultsViewController!
 	
 	var photoDataSource: PhotoDataSource!
 	var imageStore: ImageStore!
 	
-	fileprivate var results = [SearchResult]()
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		searchResultsController = SearchResultsViewController(imageStore: imageStore, dataSource: photoDataSource)
+		searchResultsController.tableView.dataSource = self
+		searchResultsController.tableView.delegate = self
+		searchResultsController.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+		
+		searchController = UISearchController(searchResultsController: searchResultsController)
 		searchController.searchResultsUpdater = self
 		searchController.dimsBackgroundDuringPresentation = false
-		definesPresentationContext = true
-		tableView.tableHeaderView = searchController.searchBar
 		
+		definesPresentationContext = true
+		
+		tableView.tableHeaderView = searchController.searchBar
 		tableView.dataSource = self
 	}
 	
@@ -69,7 +46,7 @@ class SearchViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		
 		if readyForSearch() {
-			return results.count
+			return searchResultsController.results.count
 		} else {
 			return 0
 		}
@@ -83,37 +60,35 @@ class SearchViewController: UITableViewController {
 			return cell
 		}
 		
-		let result = results[indexPath.row]
+		let result = searchResultsController.results[indexPath.row]
 		
 		cell.textLabel!.text = result.displayString
 		
 		return cell
 	}
 	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
+		performSegue(withIdentifier: "showCutlineInfo", sender: searchResultsController.tableView.cellForRow(at: indexPath))
+	}
+	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		
-		let showCutlineInfo = { (animated: Bool) -> Void in
+		switch segue.identifier! {
 			
+		case "showCutlineInfo":
 			if let cell = sender as? UITableViewCell,
 				let selectedIndexPath =
-				self.tableView.indexPath(for: cell) {
+				self.searchResultsController.tableView.indexPath(for: cell) {
 				
-				let photo = self.photoDataSource.photos[selectedIndexPath.row]
+				let photo = self.searchResultsController.results[selectedIndexPath.row].photo
 				let cutlineInfoController = segue.destination as! CutlineInfoViewController
 				
 				cutlineInfoController.photo = photo
 				cutlineInfoController.photoDataSource = self.photoDataSource
 				cutlineInfoController.imageStore = self.imageStore
-				cutlineInfoController.animatedFlip = animated
+				cutlineInfoController.animatedFlip = true
 			}
-		}
-		
-		switch segue.identifier! {
-			
-		case "showCutlineInfo":
-			showCutlineInfo(true)
-		case "showCutlineInfoNoFlip":
-			showCutlineInfo(false)
 		default:
 			preconditionFailure("Unexpected segue identifier")
 		}
@@ -131,8 +106,8 @@ extension SearchViewController: UISearchResultsUpdating {
 			return photo.caption!.lowercased().contains(searchTerm)
 		}
 		
-		results = photos.map { return SearchResult(photo: $0, searchTerm: searchTerm) }
+		searchResultsController.results = photos.map { return SearchResult(photo: $0, searchTerm: searchTerm) }
 		
-		tableView.reloadData()
+		searchResultsController.tableView.reloadData()
 	}
 }
