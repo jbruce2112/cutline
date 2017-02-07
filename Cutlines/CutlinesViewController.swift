@@ -78,6 +78,21 @@ class CutlinesViewController: UIViewController {
 	}
 }
 
+extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
+	
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+		
+		let cellSpacing = Double((collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
+		
+		// Round the computed width down to the nearest 10th
+		let viewWidth = Double(collectionView.bounds.width)
+		let cellsPerRow = viewWidth > 700 ? 5.0 : 4.0
+		let cellWidth = (floor(viewWidth / cellsPerRow) / 10) * 10 - cellSpacing
+		
+		return CGSize(width: cellWidth, height: cellWidth)
+	}
+}
+
 extension CutlinesViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

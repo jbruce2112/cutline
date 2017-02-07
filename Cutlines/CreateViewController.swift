@@ -28,6 +28,7 @@ class CreateViewController: UIViewController {
 		
 		navigationItem.title = "Create"
 		
+		// TODO: Make this view grow/shrink depending on if the keyboard is present
 		captionView.layer.borderWidth = 1
 		captionView.layer.borderColor = UIColor.black.cgColor
 	}

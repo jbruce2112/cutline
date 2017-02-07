@@ -62,7 +62,10 @@ class SearchViewController: UITableViewController {
 		
 		let result = searchResultsController.results[indexPath.row]
 		
+		// TODO: Make our own cell type to make this look better
 		cell.textLabel!.text = result.displayString
+		cell.imageView?.contentMode = .scaleAspectFill
+		cell.imageView?.image = imageStore.image(forKey: result.photo.photoID!)
 		
 		return cell
 	}

@@ -12,20 +12,17 @@ class CutlineInfoViewController: UIViewController {
 	
 	var photo: Photo!
 	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!	
+	var imageStore: ImageStore!
+	
 	var animatedFlip = false
 	
-	var imageView = UIImageView()
-	var captionView = CaptionView()
+	let imageView = UIImageView()
+	let captionView = CaptionView()
 	
 	@IBOutlet var container: UIView!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		
-		imageView.frame = CGRect(x: 0, y:0, width: container.frame.width,
-		                         height: container.frame.height)
-		captionView.frame = imageView.frame
 		
 		if animatedFlip {
 			container.addSubview(imageView)
@@ -44,10 +41,18 @@ class CutlineInfoViewController: UIViewController {
 		container.layer.shadowRadius = 5
 		container.layer.shadowColor = UIColor.gray.cgColor
 		container.layer.shadowOpacity = 0.6
-		//container.layer.shadowOffset = CGSize(width: 0, height: 2)
 		
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(title: "Flip", style: .plain, target: self, action: #selector(flipPhoto))
+	}
+	
+	override func viewDidLayoutSubviews() {
+		super.viewDidLayoutSubviews()
+		
+		// Set container's subview frames to its bounds here
+		// to give autolayout a chance to finish sizing the container
+		imageView.frame = container.bounds
+		captionView.frame = container.bounds
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -62,9 +67,11 @@ class CutlineInfoViewController: UIViewController {
 		super.viewWillDisappear(animated)
 		
 		// Update the Photo object with our changes
-		// and kick off a save before we leave the view
-		photo.caption = captionView.text
-		photoDataSource.save()
+		// and kick off a save before we leave the view		
+		if captionView.text != captionView.placeholderText {
+			photo.caption = captionView.text
+			photoDataSource.save()
+		}
 	}
 	
 	func flipPhoto() {

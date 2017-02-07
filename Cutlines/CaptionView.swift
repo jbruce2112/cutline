@@ -51,6 +51,8 @@ class CaptionView: UITextView {
 
 extension CaptionView: UITextViewDelegate {
 	
+	// TODO: There should be a better way of doing this
+	// that doensn't need to mess with the text property
 	func textViewDidBeginEditing(_ textView: UITextView) {
 		
 		if textView.text == placeholderText {
