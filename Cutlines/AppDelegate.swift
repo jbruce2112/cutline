@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -55,7 +56,82 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
-
-
+	
+	private func checkAppGroupForPhotos() {
+		
+		guard let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")?.appendingPathComponent("Shared") else {
+			return
+		}
+		
+		var files = [String]()
+		do {
+			
+			try files = FileManager.default.contentsOfDirectory(atPath: appGroupDir.absoluteString)
+		} catch {
+			print("Unable to read contents of \(appGroupDir) - error: \(error)")
+		}
+		
+		let encoding = String.Encoding(rawValue: String.Encoding.utf8.rawValue)
+		
+		for file in files {
+			
+			var fileContents: String
+			
+			do {
+				
+				try fileContents = String(contentsOfFile: file, encoding: encoding)
+			} catch {
+				print("Couldn't read file at \(file), error: \(error) continuing")
+				continue
+			}
+			
+			guard
+				let indexOfNewline = fileContents.characters.index(of: "\n"),
+				let fileURL = URL(string: fileContents.substring(to: indexOfNewline)) else {
+				continue
+			}
+			
+			let indexAfterNewline = fileContents.characters.index(after: indexOfNewline)
+			
+			let caption = fileContents.substring(from: indexAfterNewline)
+			
+			// TODO: use non-deprecated api
+			let results = PHAsset.fetchAssets(withALAssetURLs: [fileURL], options: nil)
+			
+			if results.count == 1, let asset = results.firstObject {
+				
+				let id = NSUUID().uuidString
+				
+				let options = PHImageRequestOptions()
+				options.isNetworkAccessAllowed = true
+				options.version = .current
+				
+				PHImageManager.default().requestImageData(for: asset, options: options) {
+					(data, dataUTI, orientation, info) -> Void in
+					
+						guard let data = data, let image = UIImage(data: data) else { return }
+					
+						self.imageStore.setImage(image, forKey: id)
+					
+						self.photoDataSource.addPhoto(id: id, caption: caption, dateTaken: asset.creationDate!) {
+							(result) in
+						
+							switch result {
+							case .success:
+								do {
+									try FileManager.default.removeItem(atPath: file)
+								} catch {
+									print("Unable to remove file \(file) from app group dir: \(error)")
+								}
+							case let .failure(error):
+								print("Cutline save failed with error: \(error)")
+							}
+						}
+				}
+			} else {
+				print("Error fetching asset URL \(fileURL)")
+			}
+		}
+	}
 }
 
