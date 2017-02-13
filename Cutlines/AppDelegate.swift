@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
+		checkAppGroupForPhotos()
+		
 		let tabBarController = window!.rootViewController as! UITabBarController
 		let navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
 		
@@ -59,78 +61,88 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	private func checkAppGroupForPhotos() {
 		
-		guard let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")?.appendingPathComponent("Shared") else {
+		guard let appGroupURL = AppGroupURL else {
 			return
 		}
 		
-		var files = [String]()
+		let subPaths: [String]
 		do {
-			
-			try files = FileManager.default.contentsOfDirectory(atPath: appGroupDir.absoluteString)
+			try subPaths = FileManager.default.contentsOfDirectory(atPath: appGroupURL.path)
 		} catch {
-			print("Unable to read contents of \(appGroupDir) - error: \(error)")
+			print("Unable to read contents of \(AppGroupURL) - error: \(error)")
+			return
 		}
 		
 		let encoding = String.Encoding(rawValue: String.Encoding.utf8.rawValue)
 		
-		for file in files {
+		for subpath in subPaths {
 			
-			var fileContents: String
+			let fullSubPathURL = appGroupURL.appendingPathComponent(subpath)
 			
+			if !fullSubPathURL.hasDirectoryPath {
+				continue
+			}
+			
+			//let urlPath = fullSubPathURL.appendingPathComponent(SharedPhotoURLSuffix).path
+			let imagePath = fullSubPathURL.appendingPathComponent(SharedPhotoImageSuffix).path
+			let captionPath = fullSubPathURL.appendingPathComponent(SharedPhotoCaptionSuffix).path
+			
+			/*
+			let urlString: String
 			do {
-				
-				try fileContents = String(contentsOfFile: file, encoding: encoding)
+				try urlString = String(contentsOfFile: urlPath, encoding: encoding)
 			} catch {
-				print("Couldn't read file at \(file), error: \(error) continuing")
+				print("Couldn't read file at \(urlPath), error: \(error)")
+				continue
+			}
+			*/
+			
+			let caption: String
+			do {
+				try caption = String(contentsOfFile: captionPath, encoding: encoding)
+			} catch {
+				print("Couldn't read file at \(captionPath), error: \(error)")
 				continue
 			}
 			
 			guard
-				let indexOfNewline = fileContents.characters.index(of: "\n"),
-				let fileURL = URL(string: fileContents.substring(to: indexOfNewline)) else {
-				continue
+				let imageURL = URL(string: imagePath),
+				let image = UIImage(contentsOfFile: imageURL.absoluteString) else {
+				return
 			}
 			
-			let indexAfterNewline = fileContents.characters.index(after: indexOfNewline)
+			/*
+			guard let assetURL = URL(string: urlString) else {
+				return
+			}
+			*/
 			
-			let caption = fileContents.substring(from: indexAfterNewline)
+			// TODO: figure out how to get a PHAsset from the URL the extension api gives us.
+			// It does NOT work with the ALAssetURL fetch api.
+			//let results = PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil)
 			
-			// TODO: use non-deprecated api
-			let results = PHAsset.fetchAssets(withALAssetURLs: [fileURL], options: nil)
+			//if results.count == 1, let asset = results.firstObject {
 			
-			if results.count == 1, let asset = results.firstObject {
+				let id = UUID().uuidString
 				
-				let id = NSUUID().uuidString
-				
-				let options = PHImageRequestOptions()
-				options.isNetworkAccessAllowed = true
-				options.version = .current
-				
-				PHImageManager.default().requestImageData(for: asset, options: options) {
-					(data, dataUTI, orientation, info) -> Void in
+				self.imageStore.setImage(image, forKey: id)
+			
+				let dateTaken = Date()
+				self.photoDataSource.addPhoto(id: id, caption: caption, dateTaken: dateTaken) {
+					(result) in
 					
-						guard let data = data, let image = UIImage(data: data) else { return }
-					
-						self.imageStore.setImage(image, forKey: id)
-					
-						self.photoDataSource.addPhoto(id: id, caption: caption, dateTaken: asset.creationDate!) {
-							(result) in
-						
-							switch result {
-							case .success:
-								do {
-									try FileManager.default.removeItem(atPath: file)
-								} catch {
-									print("Unable to remove file \(file) from app group dir: \(error)")
-								}
-							case let .failure(error):
-								print("Cutline save failed with error: \(error)")
-							}
+					switch result {
+					case .success:
+						do {
+							try FileManager.default.removeItem(atPath: fullSubPathURL.path)
+						} catch {
+							print("Unable to remove photo dir path \(fullSubPathURL.path) from app group dir: \(error)")
 						}
+					case let .failure(error):
+						print("Cutline save failed with error: \(error)")
+					}
 				}
-			} else {
-				print("Error fetching asset URL \(fileURL)")
-			}
+			//}
 		}
 	}
 }

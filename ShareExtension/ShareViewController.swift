@@ -9,6 +9,7 @@
 import UIKit
 import Social
 import MobileCoreServices
+import Photos
 
 class ShareViewController: SLComposeServiceViewController {
 	
@@ -39,39 +40,77 @@ class ShareViewController: SLComposeServiceViewController {
 
     override func didSelectPost() {
         // This is called after the user selects Post. Do the upload of contentText and/or NSExtensionContext attachments.
-    
-        // Inform the host that we're done, so it un-blocks its UI. Note: Alternatively you could call super's -didSelectPost, which will similarly complete the extension context.
 		
-		self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-		
-		guard let imageURLString = imageURL?.absoluteString else {
+		guard let imageURL = imageURL as? URL else {
 			return
 		}
 		
-		guard let appGroupDir = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")?.appendingPathComponent("Shared") else {
-			return
-		}
-		
-		do {
-			try FileManager.default.createDirectory(at: appGroupDir, withIntermediateDirectories: true, attributes: nil)
+		let imageData: Data
+		do
+		{
+			try imageData = Data(contentsOf: imageURL)
 		} catch {
-			print("Error creating app group dir \(appGroupDir.absoluteString) error: \(error)")
+			print("Error loading image from imageURL \(imageURL.path) error: \(error)")
+			return
 		}
 		
-		let contents = imageURLString + "\n" + contentText
-		let contentsData = (contents as NSString).data(using: String.Encoding.utf8.rawValue)
-		let filePath = appGroupDir.appendingPathComponent(UUID().uuidString).absoluteString
+		// TODO: Figure out how to get the PHAsset for this URL
+	//	let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
 		
-		let result = FileManager.default.createFile(atPath: filePath, contents: contentsData, attributes: nil)
+	//	if results.count == 1, let asset = results.firstObject {
+			
+			let options = PHImageRequestOptions()
+			options.isNetworkAccessAllowed = true
+			options.version = .current
+			
+			let encoding = String.Encoding.utf8
+			
+	//		PHImageManager.default().requestImageData(for: asset, options: options) {
+	//			(data, dataUTI, orientation, info) -> Void in
+				
+				guard
+					//let imageData = data,
+					let appGroupURL = AppGroupURL else {
+					return
+				}
+				
+				// Create a parent folder to hold each file (caption, image data, and assetURL) for the photo
+				let sharedPhotoURL = appGroupURL.appendingPathComponent(UUID().uuidString)
 		
-		if result
-		{
-			print("File successfully written to \(filePath)")
-		}
-		else
-		{
-			print("File was unable to be written to \(filePath)")
-		}
+				do {
+					try FileManager.default.createDirectory(at: sharedPhotoURL,
+												withIntermediateDirectories: true, attributes: nil)
+				} catch {
+					print("Error creating parent dir for shared photo in app group error: \(error)")
+				}
+				
+				let newImageURL = sharedPhotoURL.appendingPathComponent(SharedPhotoImageSuffix)
+				do {
+					try imageData.write(to: newImageURL)
+				} catch {
+					print("File was unable to be written to \(newImageURL.absoluteString) error: \(error)")
+				}
+				
+				let captionURL = sharedPhotoURL.appendingPathComponent(SharedPhotoCaptionSuffix)
+				do {
+					try self.contentText.write(to: captionURL, atomically: true, encoding: encoding)
+				} catch {
+					print("Caption was unable to be written to \(captionURL.absoluteString) error: \(error)")
+				}
+				
+				// Also save the URL so we can load the PHAsset later on
+				let url = sharedPhotoURL.appendingPathComponent(SharedPhotoURLSuffix)
+				do {
+					try imageURL.absoluteString.write(to: url, atomically: true, encoding: encoding)
+				} catch {
+					print("Caption was unable to be written to \(url.absoluteString) error: \(error)")
+				}
+		
+				// TODO: Also figure out a nice way to call this even if we error out
+				// Inform the host that we're done, so it un-blocks its UI.
+				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+		//	}
+		//}
     }
 
     override func configurationItems() -> [Any]! {
