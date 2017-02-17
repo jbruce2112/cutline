@@ -48,10 +48,11 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
-	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
+	func addPhoto(id: String, caption: String, dateTaken: Date) -> UpdateResult {
 		
 		let viewContext = persistantContainer.viewContext
-		viewContext.perform {
+		var result: UpdateResult!
+		viewContext.performAndWait {
 			
 			let entityDescription = NSEntityDescription.entity(forEntityName: "Photo", in: viewContext)
 			let photo = NSManagedObject.init(entity: entityDescription!, insertInto: viewContext) as! Photo
@@ -65,11 +66,23 @@ class PhotoDataSource: NSObject {
 			
 			do {
 				try viewContext.save()
-				completion(.success)
+				result = .success
 			}
 			catch {
-				completion(.failure(error))
+				result = .failure(error)
 			}
+		}
+		
+		return result
+	}
+	
+	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			let result = self.addPhoto(id: id, caption: caption, dateTaken: dateTaken)
+			completion(result)
 		}
 	}
 	

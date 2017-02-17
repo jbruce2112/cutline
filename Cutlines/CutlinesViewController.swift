@@ -25,17 +25,7 @@ class CutlinesViewController: UIViewController {
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		photoDataSource.refresh {
-			(result) in
-			
-			switch result {
-				
-			case .success:
-				self.collectionView.reloadData()
-			case let .failure(error):
-				print("Error refreshing data source \(error)")
-			}
-		}
+		refresh()
 	}
 	
 	@IBAction func addCutline() {
@@ -74,6 +64,21 @@ class CutlinesViewController: UIViewController {
 			showCutlineInfo(false)
 		default:
 			preconditionFailure("Unexpected segue identifier")
+		}
+	}
+	
+	func refresh() {
+		
+		photoDataSource.refresh {
+			(result) in
+			
+			switch result {
+				
+			case .success:
+				self.collectionView.reloadData()
+			case let .failure(error):
+				print("Error refreshing data source \(error)")
+			}
 		}
 	}
 }

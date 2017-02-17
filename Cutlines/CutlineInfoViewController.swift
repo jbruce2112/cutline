@@ -70,6 +70,7 @@ class CutlineInfoViewController: UIViewController {
 		// and kick off a save before we leave the view		
 		if captionView.text != captionView.placeholderText {
 			photo.caption = captionView.text
+			photo.lastUpdated = NSDate()
 			photoDataSource.save()
 		}
 	}

@@ -38,10 +38,16 @@ class CreateViewController: UIViewController {
 		// TODO: use non-deprecated api
 		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL!], options: nil)
 		
-		if results.count == 1, let asset = results.firstObject {
-			
+		guard
+			let image = imageView.image,
+			let asset = results.firstObject else  {
+				print("Error fetching asset URL \(imageURL.absoluteString)")
+				navigationController!.popViewController(animated: true)
+				return
+			}
+		
 			let id = NSUUID().uuidString
-			imageStore.setImage(imageView.image!, forKey: id)
+			imageStore.setImage(image, forKey: id)
 			
 			photoDataSource.addPhoto(id: id, caption: captionView.text, dateTaken: asset.creationDate!) {
 				(result) in
@@ -54,9 +60,6 @@ class CreateViewController: UIViewController {
 					print("Cutline save failed with error: \(error)")
 				}
 			}
-		} else {
-			print("Error fetching asset URL \(imageURL.absoluteString)")
-		}
 		
 		navigationController!.popViewController(animated: true)
 	}

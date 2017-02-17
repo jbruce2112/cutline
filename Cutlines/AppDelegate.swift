@@ -16,24 +16,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	let photoDataSource = PhotoDataSource()
 	let imageStore = ImageStore()
+	
+	var cutlinesViewController: CutlinesViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-		
-		checkAppGroupForPhotos()
 		
 		let tabBarController = window!.rootViewController as! UITabBarController
 		let navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
 		
-		let cutlinesController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
-		let searchController = navigationControllers[1].viewControllers.first! as! SearchViewController
+		cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
+		let searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
 		
-		cutlinesController.photoDataSource = photoDataSource
-		searchController.photoDataSource = photoDataSource
+		cutlinesViewController.photoDataSource = photoDataSource
+		searchViewController.photoDataSource = photoDataSource
 		
-		cutlinesController.imageStore = imageStore
-		searchController.imageStore = imageStore
+		cutlinesViewController.imageStore = imageStore
+		searchViewController.imageStore = imageStore
 		
-		// Override point for customization after application launch.
 		return true
 	}
 
@@ -53,97 +52,94 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+		
+		
+		// Kick off a check for any photos that were added through
+		// a share extension on a background thread.
+		// Refresh the main collection view if any were found.
+		DispatchQueue.global(qos: .background).async {
+			
+			let photosAdded = self.checkAppGroupForPhotos()
+			
+			if photosAdded == 0 {
+				return
+			}
+			
+			DispatchQueue.main.async {
+				self.cutlinesViewController.refresh()
+			}
+		}
 	}
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 	
-	private func checkAppGroupForPhotos() {
+	private func checkAppGroupForPhotos() -> Int {
+		
+		var photosAdded = 0
 		
 		guard let appGroupURL = AppGroupURL else {
-			return
+			return 0
 		}
 		
 		let subPaths: [String]
 		do {
 			try subPaths = FileManager.default.contentsOfDirectory(atPath: appGroupURL.path)
 		} catch {
-			print("Unable to read contents of \(AppGroupURL) - error: \(error)")
-			return
+			print("Unable to read contents of \(appGroupURL) - error: \(error)")
+			return 0
 		}
 		
 		let encoding = String.Encoding(rawValue: String.Encoding.utf8.rawValue)
 		
-		for subpath in subPaths {
+		for subPath in subPaths {
 			
-			let fullSubPathURL = appGroupURL.appendingPathComponent(subpath)
+			let fullSubPathURL = appGroupURL.appendingPathComponent(subPath)
 			
 			if !fullSubPathURL.hasDirectoryPath {
 				continue
 			}
 			
-			//let urlPath = fullSubPathURL.appendingPathComponent(SharedPhotoURLSuffix).path
 			let imagePath = fullSubPathURL.appendingPathComponent(SharedPhotoImageSuffix).path
 			let captionPath = fullSubPathURL.appendingPathComponent(SharedPhotoCaptionSuffix).path
-			
-			/*
-			let urlString: String
-			do {
-				try urlString = String(contentsOfFile: urlPath, encoding: encoding)
-			} catch {
-				print("Couldn't read file at \(urlPath), error: \(error)")
-				continue
-			}
-			*/
 			
 			let caption: String
 			do {
 				try caption = String(contentsOfFile: captionPath, encoding: encoding)
 			} catch {
-				print("Couldn't read file at \(captionPath), error: \(error)")
+				print("Couldn't read caption file at \(captionPath), error: \(error)")
 				continue
 			}
 			
 			guard
 				let imageURL = URL(string: imagePath),
 				let image = UIImage(contentsOfFile: imageURL.absoluteString) else {
-				return
+				continue
 			}
 			
-			/*
-			guard let assetURL = URL(string: urlString) else {
-				return
-			}
-			*/
+			let id = UUID().uuidString
 			
-			// TODO: figure out how to get a PHAsset from the URL the extension api gives us.
-			// It does NOT work with the ALAssetURL fetch api.
-			//let results = PHAsset.fetchAssets(withALAssetURLs: [assetURL], options: nil)
+			self.imageStore.setImage(image, forKey: id)
 			
-			//if results.count == 1, let asset = results.firstObject {
+			// Just set dateTaken to now(), since we dont' have the PHAsset in this context
+			let dateTaken = Date()
+			let result = self.photoDataSource.addPhoto(id: id, caption: caption, dateTaken: dateTaken)
 			
-				let id = UUID().uuidString
-				
-				self.imageStore.setImage(image, forKey: id)
-			
-				let dateTaken = Date()
-				self.photoDataSource.addPhoto(id: id, caption: caption, dateTaken: dateTaken) {
-					(result) in
-					
-					switch result {
-					case .success:
-						do {
-							try FileManager.default.removeItem(atPath: fullSubPathURL.path)
-						} catch {
-							print("Unable to remove photo dir path \(fullSubPathURL.path) from app group dir: \(error)")
-						}
-					case let .failure(error):
-						print("Cutline save failed with error: \(error)")
-					}
+			switch result {
+			case .success:
+				do {
+					photosAdded += 1
+					try FileManager.default.removeItem(atPath: fullSubPathURL.path)
+				} catch {
+					print("Unable to remove photo dir path \(fullSubPathURL) from app group dir: \(error)")
 				}
-			//}
+			case let .failure(error):
+				print("Cutline save failed with error: \(error)")
+			}
 		}
+		
+		return photosAdded
 	}
 }
 

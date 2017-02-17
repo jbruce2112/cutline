@@ -14,6 +14,5 @@ let AppGroupURL = {
 		forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")?.appendingPathComponent("SharedPhotos")
 }()
 
-let SharedPhotoURLSuffix = "url"
 let SharedPhotoImageSuffix = "image"
 let SharedPhotoCaptionSuffix = "caption"
