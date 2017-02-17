@@ -43,7 +43,7 @@ class CutlineInfoViewController: UIViewController {
 		container.layer.shadowOpacity = 0.6
 		
 		navigationItem.rightBarButtonItem =
-			UIBarButtonItem(title: "Flip", style: .plain, target: self, action: #selector(flipPhoto))
+			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipPhoto))
 	}
 	
 	override func viewDidLayoutSubviews() {

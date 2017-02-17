@@ -62,6 +62,8 @@ class CutlinesViewController: UIViewController {
 			showCutlineInfo(true)
 		case "showCutlineInfoNoFlip":
 			showCutlineInfo(false)
+		case "showSettings":
+			break
 		default:
 			preconditionFailure("Unexpected segue identifier")
 		}

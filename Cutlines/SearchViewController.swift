@@ -80,18 +80,21 @@ class SearchViewController: UITableViewController {
 		switch segue.identifier! {
 			
 		case "showCutlineInfo":
-			if let cell = sender as? UITableViewCell,
-				let selectedIndexPath =
-				self.searchResultsController.tableView.indexPath(for: cell) {
-				
-				let photo = self.searchResultsController.results[selectedIndexPath.row].photo
-				let cutlineInfoController = segue.destination as! CutlineInfoViewController
-				
-				cutlineInfoController.photo = photo
-				cutlineInfoController.photoDataSource = self.photoDataSource
-				cutlineInfoController.imageStore = self.imageStore
-				cutlineInfoController.animatedFlip = true
+			guard
+				let cell = sender as? UITableViewCell,
+				let selectedIndexPath =	self.searchResultsController.tableView.indexPath(for: cell) else {
+					return
 			}
+			
+			let photo = self.searchResultsController.results[selectedIndexPath.row].photo
+			let cutlineInfoController = segue.destination as! CutlineInfoViewController
+			
+			cutlineInfoController.photo = photo
+			cutlineInfoController.photoDataSource = self.photoDataSource
+			cutlineInfoController.imageStore = self.imageStore
+			cutlineInfoController.animatedFlip = true
+		case "showSettings":
+			break
 		default:
 			preconditionFailure("Unexpected segue identifier")
 		}
