@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,31 +24,58 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JBq-2I-Wqt">
-                                <rect key="frame" x="21" y="197" width="338" height="55"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <attributedString key="attributedText">
-                                    <fragment content="Attribution">
-                                        <attributes>
-                                            <font key="NSFont" metaFont="system" size="17"/>
-                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                        </attributes>
-                                    </fragment>
-                                </attributedString>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Version" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Db6-Vf-h9H">
-                                <rect key="frame" x="21" y="134" width="185" height="55"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Z9X-1I-Ce5">
+                                <rect key="frame" x="16" y="194" width="343" height="31"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sync Using Cellular" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CeK-rb-tb1">
+                                        <rect key="frame" x="0.0" y="0.0" width="294" height="31"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6bb-le-OsQ">
+                                        <rect key="frame" x="294" y="0.0" width="51" height="31"/>
+                                    </switch>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Db6-Vf-h9H">
+                                <rect key="frame" x="16" y="325" width="343" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Nzg-Us-knt">
+                                <rect key="frame" x="16" y="366" width="343" height="36.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <attributedString key="attributedText">
+                                    <fragment content="Attribution">
+                                        <attributes>
+                                            <font key="NSFont" size="17" name=".SFNSText"/>
+                                            <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                        </attributes>
+                                    </fragment>
+                                </attributedString>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="Z9X-1I-Ce5" secondAttribute="trailing" id="1xq-jb-Xvo"/>
+                            <constraint firstItem="Z9X-1I-Ce5" firstAttribute="top" secondItem="4Qv-Bp-DhW" secondAttribute="bottom" constant="130" id="1zN-LS-60p"/>
+                            <constraint firstItem="Db6-Vf-h9H" firstAttribute="leading" secondItem="Z9X-1I-Ce5" secondAttribute="leading" id="53z-Lf-iFu"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Db6-Vf-h9H" secondAttribute="trailing" id="Q8z-NU-pCn"/>
+                            <constraint firstItem="Z9X-1I-Ce5" firstAttribute="leading" secondItem="7Ls-iY-KA4" secondAttribute="leadingMargin" id="RFK-pe-O4z"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Nzg-Us-knt" secondAttribute="trailing" id="SfX-Xw-HSh"/>
+                            <constraint firstItem="Db6-Vf-h9H" firstAttribute="leading" secondItem="7Ls-iY-KA4" secondAttribute="leadingMargin" id="VJa-Xn-Mbl"/>
+                            <constraint firstItem="Nzg-Us-knt" firstAttribute="top" secondItem="Db6-Vf-h9H" secondAttribute="bottom" constant="20" id="ctf-q5-Etj"/>
+                            <constraint firstItem="Db6-Vf-h9H" firstAttribute="top" secondItem="Z9X-1I-Ce5" secondAttribute="bottom" constant="100" id="iVc-sN-fYS"/>
+                            <constraint firstItem="Z9X-1I-Ce5" firstAttribute="leading" secondItem="7Ls-iY-KA4" secondAttribute="leadingMargin" id="mcc-HC-vd4"/>
+                            <constraint firstItem="Nzg-Us-knt" firstAttribute="leading" secondItem="7Ls-iY-KA4" secondAttribute="leadingMargin" id="nSZ-jr-2Nt"/>
+                        </constraints>
                     </view>
                     <connections>
-                        <outlet property="attributionLabel" destination="JBq-2I-Wqt" id="FS0-9b-s7w"/>
+                        <outlet property="attributionTextView" destination="Nzg-Us-knt" id="AVs-QR-Q3M"/>
                         <outlet property="versionLabel" destination="Db6-Vf-h9H" id="ix7-Qf-BAx"/>
                     </connections>
                 </viewController>
@@ -162,7 +190,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Cutlines" id="Udr-xR-A5O">
-                        <barButtonItem key="leftBarButtonItem" title="Settings" id="zsU-u1-7Vs">
+                        <barButtonItem key="leftBarButtonItem" image="settingsFilled" id="zsU-u1-7Vs">
                             <connections>
                                 <segue destination="2xJ-2E-UWg" kind="show" identifier="showSettings" id="Xmy-W1-0MC"/>
                             </connections>
@@ -258,7 +286,7 @@
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Search" id="M6W-EX-qFq">
-                        <barButtonItem key="leftBarButtonItem" title="Settings" id="kRo-i6-dPn">
+                        <barButtonItem key="leftBarButtonItem" image="settingsFilled" id="kRo-i6-dPn">
                             <connections>
                                 <segue destination="2xJ-2E-UWg" kind="show" identifier="showSettings" id="ifW-XI-6Mb"/>
                             </connections>
@@ -329,9 +357,10 @@
     </scenes>
     <resources>
         <image name="photoStack" width="30" height="30"/>
+        <image name="settingsFilled" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="gke-A3-Q5b"/>
         <segue reference="ifW-XI-6Mb"/>
+        <segue reference="yJo-Y8-NKJ"/>
     </inferredMetricsTieBreakers>
 </document>

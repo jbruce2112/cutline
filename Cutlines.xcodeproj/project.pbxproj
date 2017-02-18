@@ -27,6 +27,7 @@
 		52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E611E402F6000A275AD /* CutlinesViewController.swift */; };
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
 		52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */; };
+		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		52A03E611E402F6000A275AD /* CutlinesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlinesViewController.swift; sourceTree = "<group>"; };
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlineInfoViewController.swift; sourceTree = "<group>"; };
+		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 				525F4CF81E48294C004615FD /* SearchResultsViewController.swift */,
 				523751FE1E41928700060607 /* CreateViewController.swift */,
 				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
+				52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -428,6 +431,7 @@
 				523751FC1E417C4900060607 /* ImageStore.swift in Sources */,
 				52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */,
 				525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */,
+				52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
