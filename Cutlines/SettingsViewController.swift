@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UITableViewController {
 	
 	@IBOutlet var versionLabel: UILabel!
 	@IBOutlet var attributionTextView: UITextView!
