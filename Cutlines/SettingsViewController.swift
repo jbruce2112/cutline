@@ -58,6 +58,7 @@ class SettingsViewController: UITableViewController {
 		
 		versionLabel.textColor = theme.textColor
 		attributionTextView.textColor = theme.textColor
+		attributionTextView.backgroundColor = theme.backgroundColor
 		
 		syncLabel.textColor = theme.textColor
 		darkModeLabel.textColor = theme.textColor
@@ -65,16 +66,10 @@ class SettingsViewController: UITableViewController {
 		for cell in tableView.visibleCells {
 			cell.backgroundColor = theme.backgroundColor
 		}
-//		
-//		for i in 0...tableView.numberOfSections {
-//			let section = tableView.headerView(forSection: i)
-//			section?.backgroundColor = theme.backgroundColor
-//			section?.textLabel?.textColor = theme.textColor
-//			
-//			let footer = tableView.footerView(forSection: i)
-//			footer?.backgroundColor = theme.backgroundColor
-//			footer?.textLabel?.textColor = theme.textColor
-//		}
+		
+		// force the section headers to refresh
+		tableView.reloadSections(IndexSet(integer: 0), with: .none)
+		tableView.reloadSections(IndexSet(integer: 1), with: .none)
 	}
 	
 	@IBAction func toggleDarkMode(sender: UISwitch) {

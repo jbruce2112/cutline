@@ -40,6 +40,13 @@ class SearchViewController: UITableViewController {
 		setTheme()
 	}
 	
+	override func setTheme(_ theme: Theme) {
+		super.setTheme(theme)
+		
+		let barStyle: UIBarStyle = theme.backgroundColor == UIColor.black ? .black : .default
+		searchController.searchBar.barStyle = barStyle
+	}
+	
 	private func readyForSearch() -> Bool {
 		
 		guard searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
