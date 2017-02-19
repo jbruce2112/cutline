@@ -83,6 +83,13 @@ class CutlinesViewController: UIViewController {
 			}
 		}
 	}
+	
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		super.viewWillTransition(to: size, with: coordinator)
+		
+		// invalidate the current layout so we can reset the cell sizes for the new screen aspect
+		collectionView.collectionViewLayout.invalidateLayout()
+	}
 }
 
 extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
@@ -91,11 +98,16 @@ extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
 		
 		let cellSpacing = Double((collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
 		
-		// Round the computed width down to the nearest 10th
 		let viewWidth = Double(collectionView.bounds.width)
-		let cellsPerRow = viewWidth > 700 ? 5.0 : 4.0
-		let cellWidth = (floor(viewWidth / cellsPerRow) / 10) * 10 - cellSpacing
 		
+		// Around 150 pts per cell. This grows with resolution pretty well.
+		// iPhone 7 & 7 Plus Portrait - 4 cells, Landscape - 6 cells
+		// iPad 9.7 Portrait - 7 cells, Landscape - 8
+		// iPad 12.9 Portrait - 8 cells , Landscape - 10 cells, etc.
+		let cellsPerRow = ceil(viewWidth / 153) + 1
+		
+		// Round the computed width down to the nearest 10th
+		let cellWidth = (floor(viewWidth / cellsPerRow) / 10) * 10 - cellSpacing
 		return CGSize(width: cellWidth, height: cellWidth)
 	}
 }
