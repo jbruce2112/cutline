@@ -23,9 +23,16 @@ class CutlinesViewController: UIViewController {
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
+		super.viewWillAppear(animated)
 		
+		setTheme()
 		refresh()
+	}
+	
+	override func setTheme(_ theme: Theme) {
+		super.setTheme(theme)
+		
+		collectionView.backgroundColor = theme.backgroundColor
 	}
 	
 	@IBAction func addCutline() {

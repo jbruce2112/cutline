@@ -55,6 +55,12 @@ class CutlineInfoViewController: UIViewController {
 		captionView.frame = container.bounds
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		setTheme()
+	}
+	
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		

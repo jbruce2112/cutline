@@ -38,7 +38,7 @@
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dtI-VI-jBT">
+                                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="dtI-VI-jBT">
                                                             <rect key="frame" x="310" y="0.0" width="51" height="27"/>
                                                         </switch>
                                                     </subviews>
@@ -52,12 +52,46 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="sli-Iq-xA5">
+                                        <rect key="frame" x="0.0" y="100" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="sli-Iq-xA5" id="7ra-68-mC5">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zyn-gg-EG7">
+                                                    <rect key="frame" x="8" y="8" width="359" height="27"/>
+                                                    <subviews>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Dark Mode" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E4Y-QL-BVZ">
+                                                            <rect key="frame" x="0.0" y="0.0" width="310" height="27"/>
+                                                            <color key="tintColor" red="0.0" green="0.47843137254901957" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="UI7-ZY-cQj">
+                                                            <rect key="frame" x="310" y="0.0" width="51" height="27"/>
+                                                            <connections>
+                                                                <action selector="toggleDarkModeWithSender:" destination="qd2-XQ-X6w" eventType="valueChanged" id="wDp-UM-XWL"/>
+                                                            </connections>
+                                                        </switch>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="zyn-gg-EG7" secondAttribute="bottom" id="3XG-2Z-G8D"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="zyn-gg-EG7" secondAttribute="trailing" id="7nH-Cq-eOh"/>
+                                                <constraint firstItem="zyn-gg-EG7" firstAttribute="top" secondItem="7ra-68-mC5" secondAttribute="topMargin" id="SVb-cb-TP9"/>
+                                                <constraint firstItem="zyn-gg-EG7" firstAttribute="leading" secondItem="7ra-68-mC5" secondAttribute="leadingMargin" id="xA6-4f-Z8e"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
-                                        <rect key="frame" x="0.0" y="157" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -79,7 +113,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
-                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -118,6 +152,8 @@
                     </tableView>
                     <connections>
                         <outlet property="attributionTextView" destination="ocl-3H-RIK" id="fv1-2a-H7d"/>
+                        <outlet property="darkModeLabel" destination="E4Y-QL-BVZ" id="rNH-Z6-3Xx"/>
+                        <outlet property="syncLabel" destination="IH7-iT-bU1" id="xhT-4t-RE7"/>
                         <outlet property="versionLabel" destination="wdH-KF-iJv" id="iqo-KO-qCe"/>
                     </connections>
                 </tableViewController>
@@ -406,7 +442,7 @@
         <image name="settingsFilled" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="76m-BG-po3"/>
-        <segue reference="gke-A3-Q5b"/>
+        <segue reference="yJo-Y8-NKJ"/>
+        <segue reference="zGq-Es-g0b"/>
     </inferredMetricsTieBreakers>
 </document>

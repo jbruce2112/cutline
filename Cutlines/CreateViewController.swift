@@ -42,7 +42,10 @@ class CreateViewController: UIViewController {
 		leadingConstraint!.constant = view.bounds.width * (1/10)
 		let trailingConstraint = view.constraints.first { $0.identifier == "captionViewTrailingConstraint" }
 		trailingConstraint!.constant = view.bounds.width * (1/10)
+		
+		setTheme()
 	}
+	
 	@IBAction func save() {
 		
 		// TODO: use non-deprecated api

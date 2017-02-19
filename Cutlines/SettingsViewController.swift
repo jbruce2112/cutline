@@ -13,6 +13,9 @@ class SettingsViewController: UITableViewController {
 	@IBOutlet var versionLabel: UILabel!
 	@IBOutlet var attributionTextView: UITextView!
 	
+	@IBOutlet var syncLabel: UILabel!
+	@IBOutlet var darkModeLabel: UILabel!
+	
 	let version: String = {
 		
 		guard
@@ -42,5 +45,41 @@ class SettingsViewController: UITableViewController {
 		
 		// Align the leading edge with the versionLabel
 		attributionTextView.textContainer.lineFragmentPadding = 0
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		setTheme()
+	}
+	
+	override func setTheme(_ theme: Theme) {
+		super.setTheme(theme)
+		
+		versionLabel.textColor = theme.textColor
+		attributionTextView.textColor = theme.textColor
+		
+		syncLabel.textColor = theme.textColor
+		darkModeLabel.textColor = theme.textColor
+		
+		for cell in tableView.visibleCells {
+			cell.backgroundColor = theme.backgroundColor
+		}
+//		
+//		for i in 0...tableView.numberOfSections {
+//			let section = tableView.headerView(forSection: i)
+//			section?.backgroundColor = theme.backgroundColor
+//			section?.textLabel?.textColor = theme.textColor
+//			
+//			let footer = tableView.footerView(forSection: i)
+//			footer?.backgroundColor = theme.backgroundColor
+//			footer?.textLabel?.textColor = theme.textColor
+//		}
+	}
+	
+	@IBAction func toggleDarkMode(sender: UISwitch) {
+		
+		(UIApplication.shared.delegate as! AppDelegate).toggleDarkMode(sender.isOn)
+		setTheme()
 	}
 }

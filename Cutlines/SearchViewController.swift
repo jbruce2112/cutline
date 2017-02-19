@@ -34,6 +34,12 @@ class SearchViewController: UITableViewController {
 		tableView.dataSource = self
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		setTheme()
+	}
+	
 	private func readyForSearch() -> Bool {
 		
 		guard searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {

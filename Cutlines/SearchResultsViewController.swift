@@ -62,6 +62,11 @@ class SearchResultsViewController: UITableViewController, UIViewControllerPrevie
 		registerForPreviewing(with: self, sourceView: tableView)
 	}
 	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+		
+		setTheme()
+	}	
 	
 	// MARK: - 3D Touch Support
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
