@@ -28,11 +28,21 @@ class CreateViewController: UIViewController {
 		
 		navigationItem.title = "Create"
 		
-		// TODO: Make this view grow/shrink depending on if the keyboard is present
 		captionView.layer.borderWidth = 1
 		captionView.layer.borderColor = UIColor.black.cgColor
+		
+		// Let the captionView fill 80% of the available height of its parent
+		let topConstraint = view.constraints.first { $0.identifier == "captionViewTopConstraint" }
+		topConstraint!.constant = view.bounds.height * (1/10)
+		let bottomConstraint = view.constraints.first { $0.identifier == "captionViewBottomConstraint" }
+		bottomConstraint!.constant = view.bounds.height * (1/10)
+		
+		// And fill 80% of its parent's width
+		let leadingConstraint = view.constraints.first { $0.identifier == "captionViewLeadingConstraint" }
+		leadingConstraint!.constant = view.bounds.width * (1/10)
+		let trailingConstraint = view.constraints.first { $0.identifier == "captionViewTrailingConstraint" }
+		trailingConstraint!.constant = view.bounds.width * (1/10)
 	}
-	
 	@IBAction func save() {
 		
 		// TODO: use non-deprecated api
@@ -54,8 +64,7 @@ class CreateViewController: UIViewController {
 				
 				switch result {
 				case .success:
-					// TODO: bad
-					var _ = 0
+					break
 				case let .failure(error):
 					print("Cutline save failed with error: \(error)")
 				}

@@ -99,11 +99,8 @@
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" alpha="0.80000000000000004" contentMode="scaleToFill" verticalHuggingPriority="251" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="zYP-FQ-k5u" customClass="CaptionView" customModule="Cutlines" customModuleProvider="target">
-                                <rect key="frame" x="20" y="120" width="335" height="200"/>
+                                <rect key="frame" x="20" y="25" width="335" height="637"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="gvB-uh-uFS"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
@@ -111,12 +108,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="u8p-If-Bvc" secondAttribute="trailing" id="0cT-Ag-ZBz"/>
-                            <constraint firstItem="zYP-FQ-k5u" firstAttribute="top" secondItem="6ZQ-qt-Ixt" secondAttribute="bottom" constant="100" id="4eO-uz-eSx"/>
+                            <constraint firstItem="zYP-FQ-k5u" firstAttribute="top" secondItem="6ZQ-qt-Ixt" secondAttribute="bottom" constant="5" identifier="captionViewTopConstraint" id="4eO-uz-eSx"/>
                             <constraint firstItem="zYP-FQ-k5u" firstAttribute="centerX" secondItem="mBp-RE-82Q" secondAttribute="centerX" id="8O6-bG-Z5R"/>
                             <constraint firstItem="u8p-If-Bvc" firstAttribute="top" secondItem="6ZQ-qt-Ixt" secondAttribute="bottom" id="DAZ-ok-v5w"/>
-                            <constraint firstItem="zYP-FQ-k5u" firstAttribute="leading" secondItem="mBp-RE-82Q" secondAttribute="leading" constant="20" id="VeC-xe-LLb"/>
+                            <constraint firstItem="zYP-FQ-k5u" firstAttribute="leading" secondItem="mBp-RE-82Q" secondAttribute="leading" constant="20" identifier="captionViewLeadingConstraint" id="VeC-xe-LLb"/>
                             <constraint firstItem="u8p-If-Bvc" firstAttribute="leading" secondItem="mBp-RE-82Q" secondAttribute="leading" id="WP9-7x-K5L"/>
-                            <constraint firstAttribute="trailing" secondItem="zYP-FQ-k5u" secondAttribute="trailing" constant="20" id="plW-Lz-PFc"/>
+                            <constraint firstItem="PCp-6C-W7R" firstAttribute="top" secondItem="zYP-FQ-k5u" secondAttribute="bottom" constant="5" identifier="captionViewBottomConstraint" id="pf8-fc-vpZ"/>
+                            <constraint firstAttribute="trailing" secondItem="zYP-FQ-k5u" secondAttribute="trailing" constant="20" identifier="captionViewTrailingConstraint" id="plW-Lz-PFc"/>
                             <constraint firstItem="PCp-6C-W7R" firstAttribute="top" secondItem="u8p-If-Bvc" secondAttribute="bottom" id="qS4-Om-zmV"/>
                         </constraints>
                     </view>
