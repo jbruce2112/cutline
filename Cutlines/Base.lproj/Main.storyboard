@@ -40,6 +40,9 @@
                                                         </label>
                                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="dtI-VI-jBT">
                                                             <rect key="frame" x="310" y="0.0" width="51" height="27"/>
+                                                            <connections>
+                                                                <action selector="toggleCellSyncWithSender:" destination="qd2-XQ-X6w" eventType="valueChanged" id="HZs-dP-1wF"/>
+                                                            </connections>
                                                         </switch>
                                                     </subviews>
                                                 </stackView>
@@ -152,8 +155,10 @@
                     </tableView>
                     <connections>
                         <outlet property="attributionTextView" destination="ocl-3H-RIK" id="fv1-2a-H7d"/>
+                        <outlet property="cellSyncLabel" destination="IH7-iT-bU1" id="WCQ-Xb-MqO"/>
+                        <outlet property="cellSyncSwitch" destination="dtI-VI-jBT" id="7OK-4t-VaD"/>
                         <outlet property="darkModeLabel" destination="E4Y-QL-BVZ" id="rNH-Z6-3Xx"/>
-                        <outlet property="syncLabel" destination="IH7-iT-bU1" id="xhT-4t-RE7"/>
+                        <outlet property="darkModeSwitch" destination="UI7-ZY-cQj" id="9rs-Kt-nMZ"/>
                         <outlet property="versionLabel" destination="wdH-KF-iJv" id="iqo-KO-qCe"/>
                     </connections>
                 </tableViewController>

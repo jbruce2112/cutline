@@ -13,8 +13,17 @@ class SettingsViewController: UITableViewController {
 	@IBOutlet var versionLabel: UILabel!
 	@IBOutlet var attributionTextView: UITextView!
 	
-	@IBOutlet var syncLabel: UILabel!
+	@IBOutlet var cellSyncLabel: UILabel!
 	@IBOutlet var darkModeLabel: UILabel!
+	
+	@IBOutlet var cellSyncSwitch: UISwitch!
+	@IBOutlet var darkModeSwitch: UISwitch!
+	
+	let defaults: UserDefaults = {
+		
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		return appDelegate.defaults
+	}()
 	
 	let version: String = {
 		
@@ -45,6 +54,10 @@ class SettingsViewController: UITableViewController {
 		
 		// Align the leading edge with the versionLabel
 		attributionTextView.textContainer.lineFragmentPadding = 0
+		
+		// load preferences
+		cellSyncSwitch.isOn = defaults.bool(forKey: Key.cellSync.rawValue)
+		darkModeSwitch.isOn = defaults.bool(forKey: Key.darkMode.rawValue)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -60,7 +73,7 @@ class SettingsViewController: UITableViewController {
 		attributionTextView.textColor = theme.textColor
 		attributionTextView.backgroundColor = theme.backgroundColor
 		
-		syncLabel.textColor = theme.textColor
+		cellSyncLabel.textColor = theme.textColor
 		darkModeLabel.textColor = theme.textColor
 		
 		for cell in tableView.visibleCells {
@@ -72,9 +85,23 @@ class SettingsViewController: UITableViewController {
 		tableView.reloadSections(IndexSet(integer: 1), with: .none)
 	}
 	
-	@IBAction func toggleDarkMode(sender: UISwitch) {
+	// MARK: UI Actions
+	@IBAction private func toggleCellSync(sender: UISwitch) {
 		
-		(UIApplication.shared.delegate as! AppDelegate).toggleDarkMode(sender.isOn)
+		defaults.set(sender.isOn, forKey: Key.cellSync.rawValue)
+	}
+	
+	@IBAction private func toggleDarkMode(sender: UISwitch) {
+		
+		// Set the theme for the whole app
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		appDelegate.setDarkMode(sender.isOn)
+		
+		// Force our view to refresh since it's in the foreground
 		setTheme()
+	}
+	
+	private func setDarkMode(_ enabled: Bool) {
+		
 	}
 }

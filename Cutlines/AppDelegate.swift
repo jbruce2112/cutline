@@ -17,11 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	let photoDataSource = PhotoDataSource()
 	let imageStore = ImageStore()
 	
+	let defaults = UserDefaults.standard
+	
 	var tabBarController: UITabBarController!
 	var navigationControllers: [UINavigationController]!
 	var cutlinesViewController: CutlinesViewController!
-	
-	fileprivate var darkModeEnabled = false
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
@@ -36,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		cutlinesViewController.imageStore = imageStore
 		searchViewController.imageStore = imageStore
+		
+		// Set initial theme
+		setDarkMode(defaults.bool(forKey: Key.darkMode.rawValue))
 		
 		return true
 	}
@@ -79,15 +82,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 	
-	func toggleDarkMode(_ enable: Bool) {
+	func setDarkMode(_ enable: Bool) {
 		
+		// We're settings these properties in the AppDelegate since it already knows
+		// about the navigation and tab controllers, and we don't currently have any
+		// custom classes to implement their own viewWillAppear()/setTheme() behavior
 		tabBarController.tabBar.barStyle = enable ? .black : .default
 		
 		for controller in navigationControllers {
 			controller.navigationBar.barStyle = enable ? .black : .default
 		}
 		
-		darkModeEnabled = enable
+		defaults.set(enable, forKey: Key.darkMode.rawValue)
 	}
 	
 	private func checkAppGroupForPhotos() -> Int {
@@ -155,52 +161,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		return photosAdded
-	}
-}
-
-@objc
-class Theme: NSObject {
-	
-	var backgroundColor: UIColor!
-	var textColor: UIColor!
-}
-
-extension UIViewController {
-	
-	@objc
-	func setTheme() {
-		setTheme(view.theme())
-	}
-	
-	@objc
-	func setTheme(_ theme: Theme) {
-		view.setTheme(theme)
-	}
-}
-
-extension UIView {
-	
-	@objc
-	func setTheme() {
-		setTheme(theme())
-	}
-	
-	@objc
-	func setTheme(_ theme: Theme) {
-		backgroundColor = theme.backgroundColor
-	}
-	
-	func theme() -> Theme {
-		
-		let theme = Theme()
-		if (UIApplication.shared.delegate as! AppDelegate).darkModeEnabled {
-			theme.backgroundColor = .black
-			theme.textColor = UIColor(colorLiteralRed: 0, green: 122.0/255, blue: 255, alpha: 1)
-		} else {
-			theme.backgroundColor = .white
-			theme.textColor = .black
-		}
-		
-		return theme
 	}
 }
