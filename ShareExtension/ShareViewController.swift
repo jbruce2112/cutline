@@ -14,6 +14,7 @@ import Photos
 class ShareViewController: SLComposeServiceViewController {
 	
 	var imageURL: URL!
+	var image: UIImage!
 	
 	override func viewDidLoad() {
 		
@@ -40,12 +41,17 @@ class ShareViewController: SLComposeServiceViewController {
 			itemProvider.loadItem(forTypeIdentifier: imageUTI, options: nil) {
 				(item, _) -> Void in
 				
-				guard let url = item as? URL else { return }
-				self.imageURL = url
+				if let image = item as? UIImage {
+					
+					self.image = image
+				} else if let url = item as? URL {
+					
+					self.imageURL = url
+				}
 			}
 		}
 		
-		return imageURL != nil
+		return imageURL != nil || image != nil
     }
 
     override func didSelectPost() {
@@ -61,17 +67,25 @@ class ShareViewController: SLComposeServiceViewController {
 			return
 		}
 		
-		// Note: NSItemProvider only hands out images, not PHAssets, (since it may be from any image source).
-		// The URL from the image is not an ALAsset URL either, nor is it possible to reliably derive one from it.
-		// So, we just save the image contents to disk along with the caption and load them up when the app
-		// starts again.
 		let imageData: Data
-		do
-		{
-			try imageData = Data(contentsOf: imageURL)
-		} catch {
-			print("Error loading image from imageURL \(imageURL.path) error: \(error)")
-			return
+		
+		// If the provider gave us a UIImage, try to convert it to a Data
+		if image != nil, let data = UIImageJPEGRepresentation(image, 1.0) {
+			
+			imageData = data
+		} else {
+			
+			// Otherwise, read the contents of the URL we were given
+			do
+			{
+				// Note: The URL from the image is not an ALAsset URL, nor is it possible to
+				// reliably derive one from it, since the NSItemProvider may be from any image source.
+				// So, we just save the image contents to disk along with the caption and load them up when the app starts again.
+				try imageData = Data(contentsOf: imageURL)
+			} catch {
+				print("Error loading image from imageURL \(imageURL.path) error: \(error)")
+				return
+			}
 		}
 		
 		let encoding = String.Encoding.utf8
