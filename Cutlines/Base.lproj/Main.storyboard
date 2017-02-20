@@ -94,7 +94,7 @@
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
-                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="200" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -116,7 +116,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
-                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="244" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -252,9 +252,9 @@
                                             <constraint firstItem="wg2-pb-si9" firstAttribute="top" secondItem="QVi-Vo-KDH" secondAttribute="top" id="cFp-4d-gsA"/>
                                         </constraints>
                                         <connections>
-                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="yJo-Y8-NKJ">
-                                                <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoNoFlip" id="LuF-ef-IN3"/>
-                                                <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfoNoFlip" id="O0z-zi-U9X"/>
+                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoAnimated" id="yJo-Y8-NKJ">
+                                                <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="LuF-ef-IN3"/>
+                                                <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfo" id="O0z-zi-U9X"/>
                                             </segue>
                                         </connections>
                                     </collectionViewCell>
@@ -347,11 +347,11 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CPU-b0-3bk" id="ezq-Gj-B5c">
-                                    <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="342" height="43.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TXr-uU-W5F">
-                                            <rect key="frame" x="15" y="0.0" width="325" height="43"/>
+                                            <rect key="frame" x="15" y="0.0" width="325" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                             <nil key="textColor"/>
@@ -360,9 +360,9 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="gke-A3-Q5b">
-                                        <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoNoFlip" id="aAk-ws-ut7"/>
-                                        <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfoNoFlip" id="UkV-oQ-97S"/>
+                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoAnimated" id="gke-A3-Q5b">
+                                        <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="aAk-ws-ut7"/>
+                                        <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfo" id="UkV-oQ-97S"/>
                                     </segue>
                                 </connections>
                             </tableViewCell>
@@ -447,7 +447,7 @@
         <image name="settingsFilled" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="yJo-Y8-NKJ"/>
-        <segue reference="zGq-Es-g0b"/>
+        <segue reference="76m-BG-po3"/>
+        <segue reference="gke-A3-Q5b"/>
     </inferredMetricsTieBreakers>
 </document>

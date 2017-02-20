@@ -24,11 +24,10 @@
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
 		52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3A1E4028FE00A275AD /* Assets.xcassets */; };
 		52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */; };
-		52A03E491E4028FE00A275AD /* CutlinesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E481E4028FE00A275AD /* CutlinesTests.swift */; };
-		52A03E541E4028FE00A275AD /* CutlinesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E531E4028FE00A275AD /* CutlinesUITests.swift */; };
 		52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E611E402F6000A275AD /* CutlinesViewController.swift */; };
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
 		52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */; };
+		52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AC6D101E5A74B800C63013 /* SearchResultCell.swift */; };
 		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -93,14 +92,11 @@
 		52A03E3D1E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		52A03E3F1E4028FE00A275AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52A03E441E4028FE00A275AD /* CutlinesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		52A03E481E4028FE00A275AD /* CutlinesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlinesTests.swift; sourceTree = "<group>"; };
-		52A03E4A1E4028FE00A275AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52A03E4F1E4028FE00A275AD /* CutlinesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		52A03E531E4028FE00A275AD /* CutlinesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlinesUITests.swift; sourceTree = "<group>"; };
-		52A03E551E4028FE00A275AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52A03E611E402F6000A275AD /* CutlinesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlinesViewController.swift; sourceTree = "<group>"; };
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlineInfoViewController.swift; sourceTree = "<group>"; };
+		52AC6D101E5A74B800C63013 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -153,6 +149,7 @@
 			isa = PBXGroup;
 			children = (
 				523752041E467C0200060607 /* CaptionView.swift */,
+				52AC6D101E5A74B800C63013 /* SearchResultCell.swift */,
 				523D26841E5A0512000507DA /* Theme.swift */,
 			);
 			name = View;
@@ -184,8 +181,6 @@
 			children = (
 				5244DE891E51323E00C9C9ED /* Common.swift */,
 				52A03E321E4028FE00A275AD /* Cutlines */,
-				52A03E471E4028FE00A275AD /* CutlinesTests */,
-				52A03E521E4028FE00A275AD /* CutlinesUITests */,
 				525F4CFF1E4AAA34004615FD /* ShareExtension */,
 				52A03E311E4028FE00A275AD /* Products */,
 			);
@@ -219,24 +214,6 @@
 			path = Cutlines;
 			sourceTree = "<group>";
 		};
-		52A03E471E4028FE00A275AD /* CutlinesTests */ = {
-			isa = PBXGroup;
-			children = (
-				52A03E481E4028FE00A275AD /* CutlinesTests.swift */,
-				52A03E4A1E4028FE00A275AD /* Info.plist */,
-			);
-			path = CutlinesTests;
-			sourceTree = "<group>";
-		};
-		52A03E521E4028FE00A275AD /* CutlinesUITests */ = {
-			isa = PBXGroup;
-			children = (
-				52A03E531E4028FE00A275AD /* CutlinesUITests.swift */,
-				52A03E551E4028FE00A275AD /* Info.plist */,
-			);
-			path = CutlinesUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -265,6 +242,7 @@
 				52A03E2D1E4028FE00A275AD /* Frameworks */,
 				52A03E2E1E4028FE00A275AD /* Resources */,
 				525F4D0C1E4AAA34004615FD /* Embed App Extensions */,
+				52AC6D121E5A88A800C63013 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -412,6 +390,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		52AC6D121E5A88A800C63013 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		525F4CFA1E4AAA34004615FD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -430,6 +424,7 @@
 				52A03E641E40330500A275AD /* SearchViewController.swift in Sources */,
 				523D26831E59FBF9000507DA /* Key.swift in Sources */,
 				52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */,
+				52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */,
 				52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */,
 				5244DE8A1E51323E00C9C9ED /* Common.swift in Sources */,
 				523751FA1E4178A100060607 /* PhotoDataSource.swift in Sources */,
@@ -447,7 +442,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52A03E491E4028FE00A275AD /* CutlinesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -455,7 +449,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52A03E541E4028FE00A275AD /* CutlinesUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

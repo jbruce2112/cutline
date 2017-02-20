@@ -6,10 +6,10 @@
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 
-import UIKit
-import Social
 import MobileCoreServices
 import Photos
+import Social
+import UIKit
 
 class ShareViewController: SLComposeServiceViewController {
 	
@@ -17,9 +17,9 @@ class ShareViewController: SLComposeServiceViewController {
 	var image: UIImage!
 	
 	override func viewDidLoad() {
+		super.viewDidLoad()
 		
-		placeholder = "Enter your photo caption"
-		
+		placeholder = captionPlaceholder
 	}
 
     override func isContentValid() -> Bool {
@@ -38,8 +38,7 @@ class ShareViewController: SLComposeServiceViewController {
 		let imageUTI = String(kUTTypeImage)
 		if itemProvider.hasItemConformingToTypeIdentifier(imageUTI) {
 			
-			itemProvider.loadItem(forTypeIdentifier: imageUTI, options: nil) {
-				(item, _) -> Void in
+			itemProvider.loadItem(forTypeIdentifier: imageUTI, options: nil) { (item, _) in
 				
 				if let image = item as? UIImage {
 					
@@ -62,11 +61,6 @@ class ShareViewController: SLComposeServiceViewController {
 			self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
 		}
 		
-		guard
-			let appGroupURL = AppGroupURL else {
-			return
-		}
-		
 		let imageData: Data
 		
 		// If the provider gave us a UIImage, try to convert it to a Data
@@ -76,8 +70,7 @@ class ShareViewController: SLComposeServiceViewController {
 		} else {
 			
 			// Otherwise, read the contents of the URL we were given
-			do
-			{
+			do {
 				// Note: The URL from the image is not an ALAsset URL, nor is it possible to
 				// reliably derive one from it, since the NSItemProvider may be from any image source.
 				// So, we just save the image contents to disk along with the caption and load them up when the app starts again.
@@ -100,14 +93,14 @@ class ShareViewController: SLComposeServiceViewController {
 			print("Error creating parent dir for shared photo in app group error: \(error)")
 		}
 		
-		let newImageURL = sharedPhotoURL.appendingPathComponent(SharedPhotoImageSuffix)
+		let newImageURL = sharedPhotoURL.appendingPathComponent(sharedPhotoImageSuffix)
 		do {
 			try imageData.write(to: newImageURL)
 		} catch {
 			print("File was unable to be written to \(newImageURL.absoluteString) error: \(error)")
 		}
 		
-		let captionURL = sharedPhotoURL.appendingPathComponent(SharedPhotoCaptionSuffix)
+		let captionURL = sharedPhotoURL.appendingPathComponent(sharedPhotoCaptionSuffix)
 		do {
 			try self.contentText.write(to: captionURL, atomically: true, encoding: encoding)
 		} catch {

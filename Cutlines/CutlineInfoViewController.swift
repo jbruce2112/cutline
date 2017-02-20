@@ -14,17 +14,19 @@ class CutlineInfoViewController: UIViewController {
 	var photoDataSource: PhotoDataSource!
 	var imageStore: ImageStore!
 	
-	var animatedFlip = false
+	var animated = false
 	
 	let imageView = UIImageView()
 	let captionView = CaptionView()
 	
-	@IBOutlet var container: UIView!
+	@IBOutlet private var container: UIView!
+	
+	private var initialCaption: String!
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		if animatedFlip {
+		if animated {
 			container.addSubview(imageView)
 		} else {
 			container.addSubview(captionView)
@@ -34,6 +36,7 @@ class CutlineInfoViewController: UIViewController {
 		imageView.contentMode = .scaleAspectFit
 		
 		captionView.text = photo.caption
+		initialCaption = captionView.getCaption()
 		
 		container.layer.borderWidth = 2.0
 		container.layer.borderColor = UIColor.gray.cgColor
@@ -64,7 +67,7 @@ class CutlineInfoViewController: UIViewController {
 	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		
-		if animatedFlip {
+		if self.animated {
 			flipPhoto()
 		}
 	}
@@ -73,9 +76,11 @@ class CutlineInfoViewController: UIViewController {
 		super.viewWillDisappear(animated)
 		
 		// Update the Photo object with our changes
-		// and kick off a save before we leave the view		
-		if captionView.text != captionView.placeholderText {
-			photo.caption = captionView.text
+		// and kick off a save before we leave the view
+		let caption = captionView.getCaption()
+		if caption != initialCaption {
+			
+			photo.caption = caption
 			photo.lastUpdated = NSDate()
 			photoDataSource.save()
 		}

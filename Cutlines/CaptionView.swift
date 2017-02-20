@@ -13,15 +13,13 @@ class CaptionView: UITextView {
 	override var text: String! {
 		
 		didSet {
-			if text == placeholderText {
+			if text == captionPlaceholder {
 				textColor = .lightGray
 			} else {
 				textColor = .black
 			}
 		}
 	}
-	
-	let placeholderText = "Your notes here"
 	
 	override init(frame: CGRect, textContainer: NSTextContainer?) {
 		super.init(frame: frame, textContainer: textContainer)
@@ -33,7 +31,7 @@ class CaptionView: UITextView {
 		super.init(coder: coder)
 	}
 	
-	//TODO: why do we have to do this too?
+	// Called on object after its loaded from archive (storyboard or nib)
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		
@@ -42,7 +40,7 @@ class CaptionView: UITextView {
 	
 	private func setup() {
 		
-		text = placeholderText
+		text = captionPlaceholder
 		font = UIFont.preferredFont(forTextStyle: .body)
 		textContainerInset = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 8)
 		
@@ -64,8 +62,8 @@ class CaptionView: UITextView {
 		let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
 		let keyboardSize = keyboardFrame.cgRectValue.size
 		
-		// TODO: this doesn't look quite right on the SE
-		let contentInsets = UIEdgeInsetsMake(0.0, 0.0, keyboardSize.height, 0.0)
+		// TODO: this doesn't look quite right on the SE (textContainerInset?)
+		let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
 		contentInset = contentInsets
 		scrollIndicatorInsets = contentInsets
 	}
@@ -77,25 +75,34 @@ class CaptionView: UITextView {
 		contentInset = contentInsets
 		scrollIndicatorInsets = contentInsets
 	}
+	
+	func getCaption() -> String {
+		
+		if text == captionPlaceholder {
+			return ""
+		} else {
+			return text
+		}
+	}
 }
 
+// MARK: UITextViewDelegate
 extension CaptionView: UITextViewDelegate {
 	
 	// TODO: There should be a better way of doing this
 	// that doensn't need to mess with the text property
+	// getCaption() can be removed once this is cleaned up
 	func textViewDidBeginEditing(_ textView: UITextView) {
 		
-		if textView.text == placeholderText {
+		if textView.text == captionPlaceholder {
 			textView.text = ""
 		}
-		
-		textView.becomeFirstResponder()
 	}
 	
 	func textViewDidEndEditing(_ textView: UITextView) {
 		
 		if textView.text.isEmpty {
-			textView.text = placeholderText
+			textView.text = captionPlaceholder
 		}
 		
 		textView.resignFirstResponder()

@@ -20,7 +20,8 @@ class ImageStore {
 	
 	init() {
 		
-		try! FileManager.default.createDirectory(at: imageDirURL, withIntermediateDirectories: true, attributes: nil)
+		try! FileManager.default.createDirectory(at: imageDirURL,
+		                                         withIntermediateDirectories: true, attributes: nil)
 	}
 	
 	func setImage(_ image: UIImage, forKey key: String) {

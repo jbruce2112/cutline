@@ -10,6 +10,7 @@ import UIKit
 import CoreData
 
 enum UpdateResult {
+	
 	case success
 	case failure(Error)
 }
@@ -21,7 +22,8 @@ class PhotoDataSource: NSObject {
 	private let persistantContainer: NSPersistentContainer = {
 		
 		let container = NSPersistentContainer(name: "Cutlines")
-		container.loadPersistentStores { (description, error) in
+		container.loadPersistentStores { (_, error) in
+			
 			if let error = error {
 				print("Error setting up Core Data \(error)")
 			}
@@ -54,8 +56,10 @@ class PhotoDataSource: NSObject {
 		var result: UpdateResult!
 		viewContext.performAndWait {
 			
+			assert(caption != captionPlaceholder)
+			
 			let entityDescription = NSEntityDescription.entity(forEntityName: "Photo", in: viewContext)
-			let photo = NSManagedObject.init(entity: entityDescription!, insertInto: viewContext) as! Photo
+			let photo = NSManagedObject(entity: entityDescription!, insertInto: viewContext) as! Photo
 			photo.photoID = id
 			photo.caption = caption
 			photo.dateTaken = dateTaken as NSDate
@@ -67,8 +71,7 @@ class PhotoDataSource: NSObject {
 			do {
 				try viewContext.save()
 				result = .success
-			}
-			catch {
+			} catch {
 				result = .failure(error)
 			}
 		}
@@ -81,6 +84,7 @@ class PhotoDataSource: NSObject {
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
 			
+			// Call the synchronous version
 			let result = self.addPhoto(id: id, caption: caption, dateTaken: dateTaken)
 			completion(result)
 		}
@@ -93,8 +97,7 @@ class PhotoDataSource: NSObject {
 			
 			do {
 				try viewContext.save()
-			}
-			catch {
+			} catch {
 				print("Error saving context \(error)")
 			}
 		}

@@ -8,11 +8,13 @@
 
 import Foundation
 
-let AppGroupURL = {
+let appGroupURL = {
 	
 	return FileManager.default.containerURL(
-		forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")?.appendingPathComponent("SharedPhotos")
+		forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")!.appendingPathComponent("SharedPhotos")
 }()
 
-let SharedPhotoImageSuffix = "image"
-let SharedPhotoCaptionSuffix = "caption"
+let sharedPhotoImageSuffix = "image"
+let sharedPhotoCaptionSuffix = "caption"
+
+let captionPlaceholder = "Enter your caption"

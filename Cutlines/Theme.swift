@@ -49,7 +49,7 @@ extension UIView {
 		if appDelegate.defaults.bool(forKey: Key.darkMode.rawValue) {
 			
 			theme.backgroundColor = .black
-			theme.textColor = UIColor(colorLiteralRed: 0, green: 122.0/255, blue: 255, alpha: 1)
+			theme.textColor = UIColor(colorLiteralRed: 0, green: 122.0 / 255, blue: 255, alpha: 1)
 			theme.accentColor = .white
 		} else {
 			

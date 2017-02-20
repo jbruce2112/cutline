@@ -10,14 +10,14 @@ import UIKit
 
 class SettingsViewController: UITableViewController {
 	
-	@IBOutlet var versionLabel: UILabel!
-	@IBOutlet var attributionTextView: UITextView!
+	@IBOutlet private var versionLabel: UILabel!
+	@IBOutlet private var attributionTextView: UITextView!
 	
-	@IBOutlet var cellSyncLabel: UILabel!
-	@IBOutlet var darkModeLabel: UILabel!
+	@IBOutlet private var cellSyncLabel: UILabel!
+	@IBOutlet private var darkModeLabel: UILabel!
 	
-	@IBOutlet var cellSyncSwitch: UISwitch!
-	@IBOutlet var darkModeSwitch: UISwitch!
+	@IBOutlet private var cellSyncSwitch: UISwitch!
+	@IBOutlet private var darkModeSwitch: UISwitch!
 	
 	let defaults: UserDefaults = {
 		
@@ -49,7 +49,7 @@ class SettingsViewController: UITableViewController {
 		// Create an AttributedString with the Icons8 URL with the standard system font
 		let attribution = NSMutableAttributedString(string: text as String)
 		attribution.addAttribute(NSLinkAttributeName, value: "https://icons8.com", range: linkTitleRange)
-		attribution.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: NSMakeRange(0, text.length))
+		attribution.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: NSRange(location: 0, length: text.length))
 		attributionTextView.attributedText = attribution
 		
 		// Align the leading edge with the versionLabel

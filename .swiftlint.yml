@@ -1,0 +1,23 @@
+disabled_rules:
+        - trailing_whitespace
+        - todo
+        - force_cast
+        - force_try
+        - vertical_whitespace
+opt_in_rules:
+        - empty_count
+        - explicit_init
+        - closure_spacing
+        - overridden_super_call
+        - redundant_nil_coalescing
+        - nimble_operator
+        - attributes
+        - operator_usage_whitespace
+        - closure_end_indentation
+        - first_where
+        - object_literal
+        - number_separator
+        - prohibited_super_call
+line_length: 150
+variable_name:
+        min_length: 2

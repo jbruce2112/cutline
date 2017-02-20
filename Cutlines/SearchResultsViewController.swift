@@ -36,14 +36,12 @@ struct SearchResult {
 	}
 }
 
-class SearchResultsViewController: UITableViewController, UIViewControllerPreviewingDelegate {
+class SearchResultsViewController: UITableViewController {
 	
 	var imageStore: ImageStore!
 	var photoDataSource: PhotoDataSource!
 	
 	var results = [SearchResult]()
-	
-	
 	
 	init(imageStore: ImageStore, dataSource: PhotoDataSource) {
 		super.init(style: .plain)
@@ -67,13 +65,14 @@ class SearchResultsViewController: UITableViewController, UIViewControllerPrevie
 		
 		setTheme()
 	}
+}
+
+// MARK: - 3D Touch Support
+extension SearchResultsViewController: UIViewControllerPreviewingDelegate {
 	
-	// MARK: - 3D Touch Support
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
 		
-		// TODO: This is horribly jank, but our storyboard and navController properties are always nil otherwise (?)
-		let navController = (tableView.delegate as! UIViewController).navigationController
-		navController?.pushViewController(viewControllerToCommit, animated: true)
+		presentingViewController?.navigationController?.pushViewController(viewControllerToCommit, animated: true)
 	}
 	
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
@@ -82,9 +81,8 @@ class SearchResultsViewController: UITableViewController, UIViewControllerPrevie
 			return nil
 		}
 		
-		// TODO: This is horribly jank, but our storyboard and navController properties are always nil otherwise (?)
-		let navController = (tableView.delegate as! UIViewController).navigationController
-		let infoController = navController?.storyboard?.instantiateViewController(withIdentifier: "CutlineInfoViewController") as! CutlineInfoViewController
+		let infoController = presentingViewController?.storyboard?.instantiateViewController(
+																	withIdentifier: "CutlineInfoViewController") as! CutlineInfoViewController
 		
 		infoController.photo = results[selectedIndexPath.row].photo
 		infoController.imageStore = imageStore

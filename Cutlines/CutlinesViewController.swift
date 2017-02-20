@@ -10,7 +10,7 @@ import UIKit
 
 class CutlinesViewController: UIViewController {
 	
-	@IBOutlet var collectionView: UICollectionView!
+	@IBOutlet private var collectionView: UICollectionView!
 	
 	var photoDataSource: PhotoDataSource!
 	var imageStore: ImageStore!
@@ -35,40 +35,32 @@ class CutlinesViewController: UIViewController {
 		collectionView.backgroundColor = theme.backgroundColor
 	}
 	
-	@IBAction func addCutline() {
-		
-		let imagePicker = UIImagePickerController()
-		
-		imagePicker.sourceType = .photoLibrary
-		imagePicker.delegate = self
-		
-		present(imagePicker, animated: true)
-	}
-	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		
-		let showCutlineInfo = { (animated: Bool) -> Void in
+		let prepareInfoController = {
+			[unowned self] (animated: Bool) in
 			
-			if let cell = sender as? UICollectionViewCell,
-			   let selectedIndexPath =
-				self.collectionView.indexPath(for: cell) {
-				
-				let photo = self.photoDataSource.photos[selectedIndexPath.row]
-				let cutlineInfoController = segue.destination as! CutlineInfoViewController
-				
-				cutlineInfoController.photo = photo
-				cutlineInfoController.photoDataSource = self.photoDataSource
-				cutlineInfoController.imageStore = self.imageStore
-				cutlineInfoController.animatedFlip = animated
+			guard
+				let cell = sender as? UICollectionViewCell,
+				let selectedIndex = self.collectionView.indexPath(for: cell) else {
+					return
 			}
+			
+			let photo = self.photoDataSource.photos[selectedIndex.row]
+			let cutlineInfoController = segue.destination as! CutlineInfoViewController
+			
+			cutlineInfoController.photo = photo
+			cutlineInfoController.photoDataSource = self.photoDataSource
+			cutlineInfoController.imageStore = self.imageStore
+			cutlineInfoController.animated = animated
 		}
-		
+	
 		switch segue.identifier! {
 			
+		case "showCutlineInfoAnimated":
+			prepareInfoController(true)
 		case "showCutlineInfo":
-			showCutlineInfo(true)
-		case "showCutlineInfoNoFlip":
-			showCutlineInfo(false)
+			prepareInfoController(false)
 		case "showSettings":
 			break
 		default:
@@ -78,8 +70,7 @@ class CutlinesViewController: UIViewController {
 	
 	func refresh() {
 		
-		photoDataSource.refresh {
-			(result) in
+		photoDataSource.refresh { (result) in
 			
 			switch result {
 				
@@ -91,6 +82,16 @@ class CutlinesViewController: UIViewController {
 		}
 	}
 	
+	@IBAction func addCutline() {
+		
+		let imagePicker = UIImagePickerController()
+		
+		imagePicker.sourceType = .photoLibrary
+		imagePicker.delegate = self
+		
+		present(imagePicker, animated: true)
+	}
+	
 	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
 		super.viewWillTransition(to: size, with: coordinator)
 		
@@ -99,9 +100,11 @@ class CutlinesViewController: UIViewController {
 	}
 }
 
+// MARK: UICollectionViewDelegateFlowLayout
 extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
 	
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+	func collectionView(_ collectionView: UICollectionView,
+	                    layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 		
 		let cellSpacing = Double((collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing)
 		
@@ -119,6 +122,7 @@ extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
 	}
 }
 
+// MARK: UICollectionViewDelegate
 extension CutlinesViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -133,6 +137,7 @@ extension CutlinesViewController: UICollectionViewDelegate {
 	}
 }
 
+// MARK: ImagePickerControllerDelegate
 extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {

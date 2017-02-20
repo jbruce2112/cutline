@@ -22,7 +22,7 @@ class SearchViewController: UITableViewController {
 		searchResultsController = SearchResultsViewController(imageStore: imageStore, dataSource: photoDataSource)
 		searchResultsController.tableView.dataSource = self
 		searchResultsController.tableView.delegate = self
-		searchResultsController.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+		searchResultsController.tableView.register(SearchResultCell.self, forCellReuseIdentifier: "SearchResultCell")
 		
 		searchController = UISearchController(searchResultsController: searchResultsController)
 		searchController.searchResultsUpdater = self
@@ -49,7 +49,8 @@ class SearchViewController: UITableViewController {
 	
 	private func readyForSearch() -> Bool {
 		
-		guard searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
+		guard
+			searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
 			return false
 		}
 		
@@ -58,16 +59,12 @@ class SearchViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		
-		if readyForSearch() {
-			return searchResultsController.results.count
-		} else {
-			return 0
-		}
+		return readyForSearch() ? searchResultsController.results.count : 0
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath)
 		
 		if !readyForSearch() {
 			return cell
@@ -75,37 +72,39 @@ class SearchViewController: UITableViewController {
 		
 		let result = searchResultsController.results[indexPath.row]
 		
-		// TODO: Make our own cell type to make this look better
 		cell.textLabel!.text = result.displayString
-		cell.imageView?.contentMode = .scaleAspectFill
 		cell.imageView?.image = imageStore.image(forKey: result.photo.photoID!)
+		
+		cell.setTheme()
 		
 		return cell
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
-		performSegue(withIdentifier: "showCutlineInfo", sender: searchResultsController.tableView.cellForRow(at: indexPath))
+		performSegue(withIdentifier: "showCutlineInfoAnimated", sender: searchResultsController.tableView.cellForRow(at: indexPath))
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		
 		switch segue.identifier! {
 			
-		case "showCutlineInfo":
+		case "showCutlineInfoAnimated":
+			
 			guard
 				let cell = sender as? UITableViewCell,
-				let selectedIndexPath =	self.searchResultsController.tableView.indexPath(for: cell) else {
+				let selectedIndex =	self.searchResultsController.tableView.indexPath(for: cell) else {
 					return
 			}
 			
-			let photo = self.searchResultsController.results[selectedIndexPath.row].photo
+			let photo = self.searchResultsController.results[selectedIndex.row].photo
 			let cutlineInfoController = segue.destination as! CutlineInfoViewController
 			
 			cutlineInfoController.photo = photo
 			cutlineInfoController.photoDataSource = self.photoDataSource
 			cutlineInfoController.imageStore = self.imageStore
-			cutlineInfoController.animatedFlip = true
+			cutlineInfoController.animated = true
+			
 		case "showSettings":
 			break
 		default:
@@ -120,11 +119,10 @@ extension SearchViewController: UISearchResultsUpdating {
 		
 		let searchTerm = searchController.searchBar.text!.lowercased()
 		
-		let photos = photoDataSource.photos.filter { photo in
-			
-			return photo.caption!.lowercased().contains(searchTerm)
-		}
+		// Get all photos containing the searchTerm
+		let photos = photoDataSource.photos.filter { $0.caption!.lowercased().contains(searchTerm) }
 		
+		// Create search results out of all of them
 		searchResultsController.results = photos.map { return SearchResult(photo: $0, searchTerm: searchTerm) }
 		
 		searchResultsController.tableView.reloadData()
