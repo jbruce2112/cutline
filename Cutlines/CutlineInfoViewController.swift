@@ -16,8 +16,8 @@ class CutlineInfoViewController: UIViewController {
 	
 	var animated = false
 	
-	let imageView = UIImageView()
-	let captionView = CaptionView()
+	private let imageView = UIImageView()
+	private let captionView = CaptionView()
 	
 	@IBOutlet private var container: UIView!
 	
@@ -46,7 +46,35 @@ class CutlineInfoViewController: UIViewController {
 		container.layer.shadowOpacity = 0.6
 		
 		navigationItem.rightBarButtonItem =
-			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipPhoto))
+			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipContainer))
+	}
+	
+	override func viewWillLayoutSubviews() {
+		super.viewWillLayoutSubviews()
+		
+		guard
+			let tabController = tabBarController,
+			let navController = navigationController else {
+				return
+		}
+		
+		// We can nearly accomplish all the autolayout work in the storyboard,
+		// but the container's height constraints need to take the various toolbars into account.
+		// The constraints in the storyboard only set the relationship between the view and the container,
+		// and the view also extends under the toolbars. This can be disabled, but it looks better if the view
+		// extends underneath and then the container just constrains itself within the status bars.
+		let tabBarHeight = tabController.tabBar.isHidden ? 0 : tabController.tabBar.frame.height
+		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
+		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
+		
+		let barHeights = statusBarHeight + navBarHeight + tabBarHeight
+		
+		let heightConstraintLTE = view.constraints.first { $0.identifier == "containerHeightConstraintLTE" }
+		let heightConstraint = view.constraints.first { $0.identifier == "containerHeightConstraint" }
+		
+		// The initial height constraint constant is 20 to allow for some padding
+		heightConstraint?.constant = barHeights + 20
+		heightConstraintLTE?.constant = barHeights + 20
 	}
 	
 	override func viewDidLayoutSubviews() {
@@ -68,7 +96,7 @@ class CutlineInfoViewController: UIViewController {
 		super.viewDidAppear(animated)
 		
 		if self.animated {
-			flipPhoto()
+			flipContainer()
 		}
 	}
 	
@@ -86,7 +114,7 @@ class CutlineInfoViewController: UIViewController {
 		}
 	}
 	
-	func flipPhoto() {
+	func flipContainer() {
 		
 		// Set up the views as a tuple in case we want to
 		// flip this view again later on
