@@ -48,36 +48,20 @@ class CaptionView: UITextView {
 		
 		// Register observers for on-screen keyboard display events
 		let notificationCenter = NotificationCenter.default
-		notificationCenter.addObserver(self, selector: #selector(keyboardDidShow),
+		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
 		                               name: NSNotification.Name.UIKeyboardDidShow, object: nil)
 		notificationCenter.addObserver(self, selector: #selector(keyboardWillHide),
 		                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-		notificationCenter.addObserver(self, selector: #selector(keyboardWillChangeFrame),
+		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
 		                               name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
 	}
 	
 	// MARK: keyboard display handlers
-	func keyboardDidShow(_ notification: NSNotification) {
-		
-		let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
-		resizeForKeyboard(rect: keyboardFrame.cgRectValue)
-	}
 	
-	func keyboardWillHide(_ notification: NSNotification) {
+	func resizeInsetsForKeyboard(_ notification: NSNotification) {
 		
-		// Reset the our insets
-		let contentInsets = UIEdgeInsets.zero
-		contentInset = contentInsets
-		scrollIndicatorInsets = contentInsets
-	}
-	
-	func keyboardWillChangeFrame(_ notification: NSNotification) {
-		
-		let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
-		resizeForKeyboard(rect: keyboardFrame.cgRectValue)
-	}
-	
-	private func resizeForKeyboard(rect keyboard: CGRect) {
+		let kbValue = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+		let keyboard = kbValue.cgRectValue
 		
 		// Calculate how much the keyboard is overlapping with
 		// this view & move up the our scroll and content insets
@@ -91,6 +75,14 @@ class CaptionView: UITextView {
 		}
 		
 		let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: overlap, right: 0.0)
+		contentInset = contentInsets
+		scrollIndicatorInsets = contentInsets
+	}
+	
+	func keyboardWillHide(_ notification: NSNotification) {
+		
+		// Reset the our insets
+		let contentInsets = UIEdgeInsets.zero
 		contentInset = contentInsets
 		scrollIndicatorInsets = contentInsets
 	}
