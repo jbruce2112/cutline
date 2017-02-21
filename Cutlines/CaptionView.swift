@@ -52,26 +52,45 @@ class CaptionView: UITextView {
 		                               name: NSNotification.Name.UIKeyboardDidShow, object: nil)
 		notificationCenter.addObserver(self, selector: #selector(keyboardWillHide),
 		                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+		notificationCenter.addObserver(self, selector: #selector(keyboardWillChangeFrame),
+		                               name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
 	}
 	
 	// MARK: keyboard display handlers
 	func keyboardDidShow(_ notification: NSNotification) {
 		
-		// Move up the our scroll and content insets
-		// so the cursor doesn't run underneath the on-screen keyboard
 		let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
-		let keyboardSize = keyboardFrame.cgRectValue.size
-		
-		// TODO: this doesn't look quite right on the SE (textContainerInset?)
-		let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
-		contentInset = contentInsets
-		scrollIndicatorInsets = contentInsets
+		resizeForKeyboard(rect: keyboardFrame.cgRectValue)
 	}
 	
 	func keyboardWillHide(_ notification: NSNotification) {
 		
 		// Reset the our insets
 		let contentInsets = UIEdgeInsets.zero
+		contentInset = contentInsets
+		scrollIndicatorInsets = contentInsets
+	}
+	
+	func keyboardWillChangeFrame(_ notification: NSNotification) {
+		
+		let keyboardFrame = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+		resizeForKeyboard(rect: keyboardFrame.cgRectValue)
+	}
+	
+	private func resizeForKeyboard(rect keyboard: CGRect) {
+		
+		// Calculate how much the keyboard is overlapping with
+		// this view & move up the our scroll and content insets
+		// so the cursor doesn't run underneath the on-screen keyboard
+		let winCoords = convert(bounds, to: nil)
+		let bottomY = winCoords.origin.y + winCoords.size.height
+		
+		let overlap = bottomY - keyboard.origin.y
+		if overlap < 0 {
+			return
+		}
+		
+		let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: overlap, right: 0.0)
 		contentInset = contentInsets
 		scrollIndicatorInsets = contentInsets
 	}
