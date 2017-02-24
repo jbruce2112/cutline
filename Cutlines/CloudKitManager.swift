@@ -41,16 +41,47 @@ class CloudKitManager {
 	private let lastUpdatedKey = "lastUpdated"
 	private let photoIDKey = "photoID"
 	
+	private var subscribedForChanges = false
+	
+	let subscriptionID = "private-changes"
+	
+	private var changeToken: CKServerChangeToken?
+	private var changedZoneIDs = [CKRecordZoneID]()
+	
 	init() {
 		
 		container = CKContainer.default()
 		privateDB = container.privateCloudDatabase
+		
+		registerForSubscription()
 	}
 	
 	func save(photo: Photo, imageURL: URL, completion: @escaping (CloudResult) -> Void) {
 		
 		let recordID = CKRecordID(recordName: photo.photoID!)
 		let record = CKRecord(recordType: photoType, recordID: recordID)
+		return save(photo: photo, imageURL: imageURL, toRecord: record, completion: completion)
+	}
+	
+	func update(photo: Photo, imageURL: URL, completion: @escaping (CloudResult) -> Void) {
+		
+		let recordID = CKRecordID(recordName: photo.photoID!)
+		privateDB.fetch(withRecordID: recordID) { (record, error) in
+		
+			if let error = error {
+				completion(.failure(error))
+			} else {
+				
+				guard let record = record else {
+					return
+				}
+				
+				self.save(photo: photo, imageURL: imageURL, toRecord: record, completion: completion)
+			}
+		}
+	}
+	
+	private func save(photo: Photo, imageURL: URL, toRecord record: CKRecord, completion: @escaping (CloudResult) -> Void) {
 		
 		record[captionKey] = photo.caption as NSString?
 		record[dateAddedKey] = photo.dateAdded
@@ -69,6 +100,98 @@ class CloudKitManager {
 				completion(.success)
 			}
 		}
+	}
+	
+	func registerForSubscription() {
+		
+		if subscribedForChanges {
+			return
+		}
+		
+		let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
+		
+		let notification = CKNotificationInfo()
+		// The user isn't prompted when just this property is set
+		notification.shouldSendContentAvailable = true
+		subscription.notificationInfo = notification
+		
+		let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription],
+		                                               subscriptionIDsToDelete: [])
+		operation.modifySubscriptionsCompletionBlock = { (_, _, error) in
+			
+			if let error = error {
+				print("Error subscriping for notifications \(error)")
+			} else {
+				self.subscribedForChanges = true
+			}
+		}
+		
+		operation.qualityOfService = .utility
+		privateDB.add(operation)
+	}
+	
+	func fetchChanges(completion: @escaping () -> Void) {
+		
+		changedZoneIDs = []
+		
+		// When our change token is nil, we'll fetch everything
+		let changeOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: changeToken)
+		
+		changeOperation.fetchAllChanges = true
+		changeOperation.recordZoneWithIDChangedBlock = { (recordZoneID) in
+			
+			self.changedZoneIDs.append(recordZoneID)
+		}
+		
+		changeOperation.changeTokenUpdatedBlock = { (newToken) in
+			
+			self.changeToken = newToken
+		}
+		
+		changeOperation.fetchDatabaseChangesCompletionBlock = { (newToken, more, error) in
+			
+			if let error = error {
+				print("Got error in fetching changes \(error)")
+				return
+			}
+			
+			self.changeToken = newToken
+			self.fetchZoneChanges(completion: completion)
+		}
+		
+		privateDB.add(changeOperation)
+	}
+	
+	func fetchZoneChanges(completion: @escaping () -> Void) {
+		
+		let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: changedZoneIDs)
+		
+		operation.fetchAllChanges = true
+		operation.recordChangedBlock = { (record) in
+		
+			print("Got record changed with caption \((record[self.captionKey] as! NSString?)!)")
+		}
+		
+		operation.recordWithIDWasDeletedBlock = { (recordID, string) in
+		
+		}
+		
+		operation.recordZoneChangeTokensUpdatedBlock = { (recordZoneID, newChangeToken, lastTokenData) in
+			
+			self.changeToken = newChangeToken
+		}
+		
+		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, more, error) in
+			
+			if let error = error {
+				print("Got error fetching record changes \(error)")
+				return
+			}
+			
+			self.changeToken = newChangeToken
+		}
+			
+		privateDB.add(operation)
 	}
 	
 	func fetchAll(completion: @escaping (CloudFetchResult) -> Void) {

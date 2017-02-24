@@ -6,6 +6,7 @@
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 
+import CloudKit
 import Photos
 import UIKit
 
@@ -16,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	let photoDataSource = PhotoDataSource()
 	let imageStore = ImageStore()
+	let cloudManager = CloudKitManager()
 	
 	let defaults = UserDefaults.standard
 	
@@ -37,10 +39,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		cutlinesViewController.imageStore = imageStore
 		searchViewController.imageStore = imageStore
 		
+		application.registerForRemoteNotifications()
+		
 		// Set initial theme
 		setDarkMode(defaults.bool(forKey: Key.darkMode.rawValue))
 		
 		return true
+	}
+	
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+	                 fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+		
+		let dict = userInfo as! [String: NSObject]
+		let notification = CKNotification(fromRemoteNotificationDictionary: dict)
+		if notification.subscriptionID == cloudManager.subscriptionID {
+			
+			cloudManager.fetchChanges {
+				
+				completionHandler(UIBackgroundFetchResult.newData)
+			}
+		}
 	}
 
 	func applicationWillResignActive(_ application: UIApplication) {

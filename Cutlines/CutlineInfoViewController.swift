@@ -101,7 +101,7 @@ class CutlineInfoViewController: UIViewController {
 		
 		// TODO: Temporary place to test CloudKit upload action
 		let url = imageStore.imageURL(forKey: photo.photoID!)
-		let cloudManager = CloudKitManager()
+		let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
 		cloudManager.save(photo: photo, imageURL: url) { (result) in
 			
 			switch result {

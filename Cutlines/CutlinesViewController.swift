@@ -22,7 +22,7 @@ class CutlinesViewController: UIViewController {
 		collectionView.dataSource = photoDataSource
 		
 		// TODO: temporary place to test cloudkit fetching
-		let cloudManager = CloudKitManager()
+		let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
 		cloudManager.fetchAll { (result) in
 			
 			switch result {

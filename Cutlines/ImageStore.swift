@@ -51,6 +51,7 @@ class ImageStore {
 	}
 	
 	func deleteImage(forKey key: String) {
+		
 		cache.removeObject(forKey: key as NSString)
 		
 		let url = imageURL(forKey: key)
