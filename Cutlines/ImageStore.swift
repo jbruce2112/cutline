@@ -62,7 +62,7 @@ class ImageStore {
 		}
 	}
 	
-	private func imageURL(forKey key: String) -> URL {
+	func imageURL(forKey key: String) -> URL {
 		return imageDirURL.appendingPathComponent(key)
 	}
 }

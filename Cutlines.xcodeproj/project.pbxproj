@@ -28,6 +28,8 @@
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
 		52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */; };
 		52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AC6D101E5A74B800C63013 /* SearchResultCell.swift */; };
+		52D958E21E5FB73500D7B4EE /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D958E11E5FB73500D7B4EE /* CloudKit.framework */; };
+		52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
 		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -38,20 +40,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 525F4CFD1E4AAA34004615FD;
 			remoteInfo = ShareExtension;
-		};
-		52A03E451E4028FE00A275AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 52A03E2F1E4028FE00A275AD;
-			remoteInfo = Cutlines;
-		};
-		52A03E501E4028FE00A275AD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 52A03E2F1E4028FE00A275AD;
-			remoteInfo = Cutlines;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -91,12 +79,12 @@
 		52A03E3A1E4028FE00A275AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52A03E3D1E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		52A03E3F1E4028FE00A275AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		52A03E441E4028FE00A275AD /* CutlinesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		52A03E4F1E4028FE00A275AD /* CutlinesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A03E611E402F6000A275AD /* CutlinesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlinesViewController.swift; sourceTree = "<group>"; };
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlineInfoViewController.swift; sourceTree = "<group>"; };
 		52AC6D101E5A74B800C63013 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
+		52D958E11E5FB73500D7B4EE /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -112,20 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		52A03E411E4028FE00A275AD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		52A03E4C1E4028FE00A275AD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				52D958E21E5FB73500D7B4EE /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +135,7 @@
 			children = (
 				523751FB1E417C4900060607 /* ImageStore.swift */,
 				523751F91E4178A100060607 /* PhotoDataSource.swift */,
+				52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */,
 				523D26821E59FBF9000507DA /* Key.swift */,
 			);
 			name = Model;
@@ -183,6 +159,7 @@
 				52A03E321E4028FE00A275AD /* Cutlines */,
 				525F4CFF1E4AAA34004615FD /* ShareExtension */,
 				52A03E311E4028FE00A275AD /* Products */,
+				52D958E01E5FB73500D7B4EE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -190,8 +167,6 @@
 			isa = PBXGroup;
 			children = (
 				52A03E301E4028FE00A275AD /* Cutlines.app */,
-				52A03E441E4028FE00A275AD /* CutlinesTests.xctest */,
-				52A03E4F1E4028FE00A275AD /* CutlinesUITests.xctest */,
 				525F4CFE1E4AAA34004615FD /* ShareExtension.appex */,
 			);
 			name = Products;
@@ -212,6 +187,14 @@
 				52A03E3F1E4028FE00A275AD /* Info.plist */,
 			);
 			path = Cutlines;
+			sourceTree = "<group>";
+		};
+		52D958E01E5FB73500D7B4EE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				52D958E11E5FB73500D7B4EE /* CloudKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,42 +237,6 @@
 			productReference = 52A03E301E4028FE00A275AD /* Cutlines.app */;
 			productType = "com.apple.product-type.application";
 		};
-		52A03E431E4028FE00A275AD /* CutlinesTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 52A03E5B1E4028FE00A275AD /* Build configuration list for PBXNativeTarget "CutlinesTests" */;
-			buildPhases = (
-				52A03E401E4028FE00A275AD /* Sources */,
-				52A03E411E4028FE00A275AD /* Frameworks */,
-				52A03E421E4028FE00A275AD /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				52A03E461E4028FE00A275AD /* PBXTargetDependency */,
-			);
-			name = CutlinesTests;
-			productName = CutlinesTests;
-			productReference = 52A03E441E4028FE00A275AD /* CutlinesTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		52A03E4E1E4028FE00A275AD /* CutlinesUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 52A03E5E1E4028FE00A275AD /* Build configuration list for PBXNativeTarget "CutlinesUITests" */;
-			buildPhases = (
-				52A03E4B1E4028FE00A275AD /* Sources */,
-				52A03E4C1E4028FE00A275AD /* Frameworks */,
-				52A03E4D1E4028FE00A275AD /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				52A03E511E4028FE00A275AD /* PBXTargetDependency */,
-			);
-			name = CutlinesUITests;
-			productName = CutlinesUITests;
-			productReference = 52A03E4F1E4028FE00A275AD /* CutlinesUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -302,7 +249,7 @@
 				TargetAttributes = {
 					525F4CFD1E4AAA34004615FD = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6MFY8HZGV3;
+						DevelopmentTeam = UVXX33WP85;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -312,25 +259,19 @@
 					};
 					52A03E2F1E4028FE00A275AD = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6MFY8HZGV3;
+						DevelopmentTeam = UVXX33WP85;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
-					};
-					52A03E431E4028FE00A275AD = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6MFY8HZGV3;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 52A03E2F1E4028FE00A275AD;
-					};
-					52A03E4E1E4028FE00A275AD = {
-						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6MFY8HZGV3;
-						ProvisioningStyle = Automatic;
-						TestTargetID = 52A03E2F1E4028FE00A275AD;
 					};
 				};
 			};
@@ -348,8 +289,6 @@
 			projectRoot = "";
 			targets = (
 				52A03E2F1E4028FE00A275AD /* Cutlines */,
-				52A03E431E4028FE00A275AD /* CutlinesTests */,
-				52A03E4E1E4028FE00A275AD /* CutlinesUITests */,
 				525F4CFD1E4AAA34004615FD /* ShareExtension */,
 			);
 		};
@@ -371,20 +310,6 @@
 				52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */,
 				52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */,
 				52A03E391E4028FE00A275AD /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		52A03E421E4028FE00A275AD /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		52A03E4D1E4028FE00A275AD /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,25 +355,12 @@
 				523751FA1E4178A100060607 /* PhotoDataSource.swift in Sources */,
 				523752051E467C0200060607 /* CaptionView.swift in Sources */,
 				523751F81E41744F00060607 /* Cutlines.xcdatamodeld in Sources */,
+				52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */,
 				523751FC1E417C4900060607 /* ImageStore.swift in Sources */,
 				52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */,
 				525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */,
 				52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */,
 				523D26851E5A0512000507DA /* Theme.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		52A03E401E4028FE00A275AD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		52A03E4B1E4028FE00A275AD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -459,16 +371,6 @@
 			isa = PBXTargetDependency;
 			target = 525F4CFD1E4AAA34004615FD /* ShareExtension */;
 			targetProxy = 525F4D061E4AAA34004615FD /* PBXContainerItemProxy */;
-		};
-		52A03E461E4028FE00A275AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 52A03E2F1E4028FE00A275AD /* Cutlines */;
-			targetProxy = 52A03E451E4028FE00A275AD /* PBXContainerItemProxy */;
-		};
-		52A03E511E4028FE00A275AD /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 52A03E2F1E4028FE00A275AD /* Cutlines */;
-			targetProxy = 52A03E501E4028FE00A275AD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -504,10 +406,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
+				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.Cutlines.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -518,10 +420,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
+				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.Cutlines.ShareExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
@@ -575,6 +477,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = NO;
 			};
 			name = Debug;
 		};
@@ -627,10 +530,10 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Cutlines/Cutlines.entitlements;
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
+				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = Cutlines/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.Cutlines;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -642,70 +545,12 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Cutlines/Cutlines.entitlements;
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
+				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = Cutlines/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.Cutlines;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
-			};
-			name = Release;
-		};
-		52A03E5C1E4028FE00A275AD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
-				INFOPLIST_FILE = CutlinesTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlinesTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cutlines.app/Cutlines";
-			};
-			name = Debug;
-		};
-		52A03E5D1E4028FE00A275AD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
-				INFOPLIST_FILE = CutlinesTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlinesTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cutlines.app/Cutlines";
-			};
-			name = Release;
-		};
-		52A03E5F1E4028FE00A275AD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
-				INFOPLIST_FILE = CutlinesUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlinesUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = Cutlines;
-			};
-			name = Debug;
-		};
-		52A03E601E4028FE00A275AD /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				DEVELOPMENT_TEAM = 6MFY8HZGV3;
-				INFOPLIST_FILE = CutlinesUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlinesUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
-				TEST_TARGET_NAME = Cutlines;
 			};
 			name = Release;
 		};
@@ -735,24 +580,6 @@
 			buildConfigurations = (
 				52A03E591E4028FE00A275AD /* Debug */,
 				52A03E5A1E4028FE00A275AD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		52A03E5B1E4028FE00A275AD /* Build configuration list for PBXNativeTarget "CutlinesTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				52A03E5C1E4028FE00A275AD /* Debug */,
-				52A03E5D1E4028FE00A275AD /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		52A03E5E1E4028FE00A275AD /* Build configuration list for PBXNativeTarget "CutlinesUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				52A03E5F1E4028FE00A275AD /* Debug */,
-				52A03E601E4028FE00A275AD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

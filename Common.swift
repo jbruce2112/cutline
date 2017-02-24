@@ -11,7 +11,7 @@ import Foundation
 let appGroupURL = {
 	
 	return FileManager.default.containerURL(
-		forSecurityApplicationGroupIdentifier: "group.com.bruce32.Cutlines")!.appendingPathComponent("SharedPhotos")
+		forSecurityApplicationGroupIdentifier: "group.com.jbruce32.Cutlines")!.appendingPathComponent("SharedPhotos")
 }()
 
 let sharedPhotoImageSuffix = "image"

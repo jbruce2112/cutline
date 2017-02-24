@@ -72,6 +72,7 @@ class PhotoDataSource: NSObject {
 				try viewContext.save()
 				result = .success
 			} catch {
+				viewContext.rollback()
 				result = .failure(error)
 			}
 		}
@@ -90,6 +91,32 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
+	func addPhoto(_ photo: Photo, completion: @escaping (UpdateResult) -> Void) {
+		
+		let IDs = photos.map { $0.photoID }
+		print(IDs)
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			viewContext.insert(photo)
+			
+			do {
+				try viewContext.save()
+				completion(.success)
+			} catch {
+				viewContext.rollback()
+				completion(.failure(error))
+			}
+		}
+	}
+	
+	func allocEmptyPhoto() -> Photo {
+		
+		let entity = persistantContainer.managedObjectModel.entitiesByName["Photo"]
+		return NSManagedObject(entity: entity!, insertInto: nil) as! Photo
+	}
+	
 	func save() {
 		
 		let viewContext = persistantContainer.viewContext
@@ -98,6 +125,7 @@ class PhotoDataSource: NSObject {
 			do {
 				try viewContext.save()
 			} catch {
+				viewContext.rollback()
 				print("Error saving context \(error)")
 			}
 		}
