@@ -10,6 +10,7 @@ import UIKit
 
 class ImageStore {
 	
+	// MARK: Properties
 	private let cache = NSCache<NSString, UIImage>()
 	
 	private let imageDirURL: URL = {
@@ -24,6 +25,7 @@ class ImageStore {
 		                                         withIntermediateDirectories: true, attributes: nil)
 	}
 	
+	// MARK: Functions
 	func setImage(_ image: UIImage, forKey key: String) {
 		
 		cache.setObject(image, forKey: key as NSString)

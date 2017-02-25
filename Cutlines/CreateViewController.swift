@@ -11,13 +11,14 @@ import Photos
 
 class CreateViewController: UIViewController {
 
+	// MARK: Properties
+	var imageURL: URL!
+	var photoManager: PhotoManager!
+	
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var captionView: CaptionView!
 
-	var imageURL: URL!
-	var imageStore: ImageStore!
-	var photoDataSource: PhotoDataSource!
-
+	// MARK: Functions
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
@@ -44,9 +45,10 @@ class CreateViewController: UIViewController {
 		setTheme()
 	}
 	
+	// MARK: Actions
 	@IBAction func save() {
 		
-		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL!], options: nil)
+		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
 		
 		defer {
 			navigationController!.popViewController(animated: true)
@@ -60,29 +62,6 @@ class CreateViewController: UIViewController {
 				return
 			}
 		
-			let id = NSUUID().uuidString
-			imageStore.setImage(image, forKey: id)
-		
-			photoDataSource.addPhoto(id: id, caption: captionView.getCaption(), dateTaken: asset.creationDate!) { (result) in
-				
-				switch result {
-				case let .success(photo):
-					
-					let appDelegate = UIApplication.shared.delegate as! AppDelegate
-					let cloudManager = appDelegate.cloudManager
-					cloudManager.save(photo: photo!) { cloudResult in
-						
-						switch cloudResult {
-						case .success:
-							break
-						case let .failure(error):
-							print("Cloud save from Create failed \(error)")
-						}
-						
-					}
-				case let .failure(error):
-					print("Cutline save failed with error: \(error)")
-				}
-			}
+		photoManager.add(image: image, caption: captionView.getCaption(), dateTaken: asset.creationDate!) {}
 	}
 }

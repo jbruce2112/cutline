@@ -10,19 +10,20 @@ import UIKit
 
 class CutlineInfoViewController: UIViewController {
 	
+	// MARK: Properties
 	var photo: Photo!
-	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!
+	var photoManager: PhotoManager!
 	
 	var animated = false
 	
 	private let imageView = UIImageView()
 	private let captionView = CaptionView()
 	
-	@IBOutlet private var container: UIView!
-	
 	private var initialCaption: String!
 	
+	@IBOutlet private var container: UIView!
+	
+	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -32,7 +33,7 @@ class CutlineInfoViewController: UIViewController {
 			container.addSubview(captionView)
 		}
 		
-		imageView.image = imageStore.image(forKey: photo.photoID!)
+		imageView.image = photoManager.image(for: photo)
 		imageView.contentMode = .scaleAspectFit
 		
 		captionView.text = photo.caption
@@ -98,21 +99,6 @@ class CutlineInfoViewController: UIViewController {
 		if self.animated {
 			flipContainer()
 		}
-		
-		// TODO: Temporary place to force a CloudKit upload action
-		if !photo.inCloud {
-			
-			let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
-			cloudManager.save(photo: photo) { (result) in
-				
-				switch result {
-				case .success:
-					break
-				case let .failure(error):
-					print("Got error from cloudkit add: \(error)")
-				}
-			}
-		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -125,7 +111,7 @@ class CutlineInfoViewController: UIViewController {
 			
 			photo.caption = caption
 			photo.lastUpdated = NSDate()
-			photoDataSource.save()
+			photoManager.update(photo: photo) {}
 		}
 	}
 	

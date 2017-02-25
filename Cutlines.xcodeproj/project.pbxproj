@@ -16,6 +16,7 @@
 		523D26851E5A0512000507DA /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26841E5A0512000507DA /* Theme.swift */; };
 		5244DE8A1E51323E00C9C9ED /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244DE891E51323E00C9C9ED /* Common.swift */; };
 		5244DE8B1E51323E00C9C9ED /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244DE891E51323E00C9C9ED /* Common.swift */; };
+		524530621E61C82D00305843 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
 		525F4D041E4AAA34004615FD /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525F4D021E4AAA34004615FD /* MainInterface.storyboard */; };
@@ -66,6 +67,7 @@
 		523D26821E59FBF9000507DA /* Key.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Key.swift; sourceTree = "<group>"; };
 		523D26841E5A0512000507DA /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		5244DE891E51323E00C9C9ED /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
+		524530611E61C82D00305843 /* PhotoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
 		525F4CF81E48294C004615FD /* SearchResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		525F4CFE1E4AAA34004615FD /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		525F4D001E4AAA34004615FD /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
@@ -110,11 +112,11 @@
 		523751FD1E418C4C00060607 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				52A03E611E402F6000A275AD /* CutlinesViewController.swift */,
-				52A03E631E40330500A275AD /* SearchViewController.swift */,
-				525F4CF81E48294C004615FD /* SearchResultsViewController.swift */,
 				523751FE1E41928700060607 /* CreateViewController.swift */,
 				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
+				52A03E611E402F6000A275AD /* CutlinesViewController.swift */,
+				525F4CF81E48294C004615FD /* SearchResultsViewController.swift */,
+				52A03E631E40330500A275AD /* SearchViewController.swift */,
 				52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
@@ -133,10 +135,11 @@
 		523752071E467DD600060607 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				523751FB1E417C4900060607 /* ImageStore.swift */,
-				523751F91E4178A100060607 /* PhotoDataSource.swift */,
 				52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */,
+				523751FB1E417C4900060607 /* ImageStore.swift */,
 				523D26821E59FBF9000507DA /* Key.swift */,
+				523751F91E4178A100060607 /* PhotoDataSource.swift */,
+				524530611E61C82D00305843 /* PhotoManager.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 			files = (
 				523751FF1E41928700060607 /* CreateViewController.swift in Sources */,
 				52A03E641E40330500A275AD /* SearchViewController.swift in Sources */,
+				524530621E61C82D00305843 /* PhotoManager.swift in Sources */,
 				523D26831E59FBF9000507DA /* Key.swift in Sources */,
 				52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */,
 				52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */,

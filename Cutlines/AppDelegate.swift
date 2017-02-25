@@ -15,9 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 	
-	let photoDataSource = PhotoDataSource()
-	let imageStore = ImageStore()
-	let cloudManager = CloudKitManager()
+	private let photoDataSource = PhotoDataSource()
+	private let imageStore = ImageStore()
+	private let cloudManager = CloudKitManager()
+	private let photoManager = PhotoManager()
 	
 	let defaults = UserDefaults.standard
 	
@@ -33,34 +34,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
 		let searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
 		
-		cutlinesViewController.photoDataSource = photoDataSource
-		searchViewController.photoDataSource = photoDataSource
+		// Inject our objects into the managers and initial view controllers
+		cloudManager.delegate = photoManager
 		cloudManager.photoDataSource = photoDataSource
-		
-		cutlinesViewController.imageStore = imageStore
-		searchViewController.imageStore = imageStore
 		cloudManager.imageStore = imageStore
 		
+		photoManager.cloudManager = cloudManager
+		photoManager.photoDataSource = photoDataSource
+		photoManager.imageStore = imageStore
+		
+		cutlinesViewController.photoManager = photoManager
+		searchViewController.photoManager = photoManager
+		
+		cutlinesViewController.photoDataSource = photoDataSource
+		searchViewController.photoDataSource = photoDataSource
+		
+		// Tell the photo manager to set everything up
+		photoManager.setup {
+			
+			DispatchQueue.main.async {
+				self.cutlinesViewController.refresh()
+			}
+		}
+		
+		// Listen for push events
 		application.registerForRemoteNotifications()
 		
 		// Set initial theme
-		setDarkMode(defaults.bool(forKey: Key.darkMode.rawValue))
-		
-		cloudManager.setup {
-			
-			// Once we're set up, fetch any
-			// changes, and then push up any
-			// remaining photos
-			self.cloudManager.fetchChanges {
-				
-				DispatchQueue.main.async {
-					
-					self.cutlinesViewController.refresh()
-				}
-				
-				self.cloudManager.pushLocalPhotos()
-			}
-		}
+		setDarkMode(defaults.bool(forKey: Key.darkMode.rawValue))		
 		
 		return true
 	}
@@ -115,7 +116,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Restart any tasks that were paused (or not yet started) while the application
 		// was inactive. If the application was previously in the background, optionally refresh the user interface.
 		
-		
 		// Kick off a check for any photos that were added through
 		// a share extension on a background thread.
 		// Refresh the main collection view if any were found.
@@ -151,6 +151,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		defaults.set(enable, forKey: Key.darkMode.rawValue)
 	}
 	
+	// Check for photos given to us by the share extension
+	// by checking for files in our shared group folder.
+	// TODO: Once our logic is moved to its on lib, we can remove this
 	private func checkAppGroupForPhotos() -> Int {
 		
 		var photosAdded = 0

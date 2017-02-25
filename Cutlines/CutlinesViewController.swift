@@ -10,11 +10,13 @@ import UIKit
 
 class CutlinesViewController: UIViewController {
 	
+	// MARK: Properties
+	var photoDataSource: PhotoDataSource!
+	var photoManager: PhotoManager!
+	
 	@IBOutlet private var collectionView: UICollectionView!
 	
-	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!
-	
+	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -50,8 +52,7 @@ class CutlinesViewController: UIViewController {
 			let cutlineInfoController = segue.destination as! CutlineInfoViewController
 			
 			cutlineInfoController.photo = photo
-			cutlineInfoController.photoDataSource = self.photoDataSource
-			cutlineInfoController.imageStore = self.imageStore
+			cutlineInfoController.photoManager = self.photoManager
 			cutlineInfoController.animated = animated
 		}
 	
@@ -82,6 +83,14 @@ class CutlinesViewController: UIViewController {
 		}
 	}
 	
+	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+		super.viewWillTransition(to: size, with: coordinator)
+		
+		// invalidate the current layout so we can reset the cell sizes for the new screen aspect
+		collectionView.collectionViewLayout.invalidateLayout()
+	}
+	
+	// MARK: Actions
 	@IBAction func addCutline() {
 		
 		let imagePicker = UIImagePickerController()
@@ -90,13 +99,6 @@ class CutlinesViewController: UIViewController {
 		imagePicker.delegate = self
 		
 		present(imagePicker, animated: true)
-	}
-	
-	override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-		super.viewWillTransition(to: size, with: coordinator)
-		
-		// invalidate the current layout so we can reset the cell sizes for the new screen aspect
-		collectionView.collectionViewLayout.invalidateLayout()
 	}
 }
 
@@ -129,7 +131,7 @@ extension CutlinesViewController: UICollectionViewDelegate {
 		
 		let photo = photoDataSource.photos[indexPath.row]
 		
-		if let image = imageStore.image(forKey: photo.photoID!) {
+		if let image = photoManager.image(for: photo) {
 			
 			let imageView = cell.viewWithTag(100) as! UIImageView
 			imageView.image = image
@@ -154,8 +156,7 @@ extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerC
 			
 			createViewController.loadViewIfNeeded()
 			
-			createViewController.photoDataSource = self.photoDataSource
-			createViewController.imageStore = self.imageStore
+			createViewController.photoManager = self.photoManager
 			createViewController.imageURL = url
 			createViewController.imageView.image = image
 			

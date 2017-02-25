@@ -38,16 +38,14 @@ struct SearchResult {
 
 class SearchResultsViewController: UITableViewController {
 	
-	var imageStore: ImageStore!
-	var photoDataSource: PhotoDataSource!
-	
 	var results = [SearchResult]()
 	
-	init(imageStore: ImageStore, dataSource: PhotoDataSource) {
+	fileprivate var photoManager: PhotoManager!
+	
+	init(photoManager: PhotoManager) {
 		super.init(style: .plain)
 		
-		self.imageStore = imageStore
-		self.photoDataSource = dataSource
+		self.photoManager = photoManager
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -84,9 +82,9 @@ extension SearchResultsViewController: UIViewControllerPreviewingDelegate {
 		let infoController = presentingViewController?.storyboard?.instantiateViewController(
 																	withIdentifier: "CutlineInfoViewController") as! CutlineInfoViewController
 		
-		infoController.photo = results[selectedIndexPath.row].photo
-		infoController.imageStore = imageStore
-		infoController.photoDataSource = photoDataSource
+		let photo = results[selectedIndexPath.row].photo
+		infoController.photo = photo
+		infoController.photoManager = photoManager
 		
 		return infoController
 	}

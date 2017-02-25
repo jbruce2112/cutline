@@ -10,16 +10,18 @@ import UIKit
 
 class SearchViewController: UITableViewController {
 	
-	var searchController: UISearchController!
-	var searchResultsController: SearchResultsViewController!
-	
+	// MARK: Properties
 	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!
+	var photoManager: PhotoManager!
 	
+	private var searchController: UISearchController!
+	fileprivate var searchResultsController: SearchResultsViewController!
+	
+	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		searchResultsController = SearchResultsViewController(imageStore: imageStore, dataSource: photoDataSource)
+		searchResultsController = SearchResultsViewController(photoManager: photoManager)
 		searchResultsController.tableView.dataSource = self
 		searchResultsController.tableView.delegate = self
 		searchResultsController.tableView.register(SearchResultCell.self, forCellReuseIdentifier: "SearchResultCell")
@@ -47,16 +49,6 @@ class SearchViewController: UITableViewController {
 		searchController.searchBar.barStyle = barStyle
 	}
 	
-	private func readyForSearch() -> Bool {
-		
-		guard
-			searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
-			return false
-		}
-		
-		return true
-	}
-	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		
 		return readyForSearch() ? searchResultsController.results.count : 0
@@ -73,7 +65,7 @@ class SearchViewController: UITableViewController {
 		let result = searchResultsController.results[indexPath.row]
 		
 		cell.textLabel!.text = result.displayString
-		cell.imageView?.image = imageStore.image(forKey: result.photo.photoID!)
+		cell.imageView?.image = photoManager.image(for: result.photo)
 		
 		cell.setTheme()
 		
@@ -101,8 +93,7 @@ class SearchViewController: UITableViewController {
 			let cutlineInfoController = segue.destination as! CutlineInfoViewController
 			
 			cutlineInfoController.photo = photo
-			cutlineInfoController.photoDataSource = self.photoDataSource
-			cutlineInfoController.imageStore = self.imageStore
+			cutlineInfoController.photoManager = photoManager
 			cutlineInfoController.animated = true
 			
 		case "showSettings":
@@ -111,8 +102,20 @@ class SearchViewController: UITableViewController {
 			preconditionFailure("Unexpected segue identifier")
 		}
 	}
+	
+	// MARK: Private functions
+	private func readyForSearch() -> Bool {
+		
+		guard
+			searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
+				return false
+		}
+		
+		return true
+	}
 }
 
+// MARK: UISerachResultsUpdating conformance
 extension SearchViewController: UISearchResultsUpdating {
 	
 	func updateSearchResults(for searchController: UISearchController) {
