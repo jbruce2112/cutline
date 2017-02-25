@@ -106,12 +106,13 @@ class SearchViewController: UITableViewController {
 	// MARK: Private functions
 	private func readyForSearch() -> Bool {
 		
-		guard
-			searchController.isActive, let text = searchController.searchBar.text, !text.isEmpty else {
-				return false
+		if !searchController.isActive {
+			return false
+		} else {
+			
+			let text = searchController.searchBar.text
+			return text != nil && !text!.isEmpty
 		}
-		
-		return true
 	}
 }
 
