@@ -99,6 +99,16 @@ class CutlineInfoViewController: UIViewController {
 		if self.animated {
 			flipContainer()
 		}
+		
+		// Update the Photo object with our changes
+		// and kick off a save before we leave the view
+		let caption = captionView.getCaption()
+		if caption != initialCaption {
+			
+			photo.caption = caption
+			photo.lastUpdated = NSDate()
+			photoManager.update(photo: photo, completion: nil)
+		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {

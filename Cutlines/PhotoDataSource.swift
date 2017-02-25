@@ -75,6 +75,25 @@ class PhotoDataSource: NSObject {
 		return localPhotos
 	}
 	
+	func fetch(withID id: String) -> Photo? {
+		
+		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+		fetchRequest.predicate = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@", id)
+		
+		var result = [Photo]()
+		let viewContext = persistantContainer.viewContext
+		viewContext.performAndWait {
+			
+			do {
+				try result = viewContext.fetch(fetchRequest)
+			} catch {
+				print("Error fetching local photos \(error)")
+			}
+		}
+		
+		return result.first
+	}
+	
 	// Non-blocking
 	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
 		
@@ -142,6 +161,20 @@ class PhotoDataSource: NSObject {
 		
 		let entity = persistantContainer.managedObjectModel.entitiesByName[entityName]
 		return NSManagedObject(entity: entity!, insertInto: nil) as! Photo
+	}
+	
+	func save() {
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			do {
+				try viewContext.save()
+			} catch {
+				viewContext.rollback()
+				print("Error saving context \(error)")
+			}
+		}
 	}
 }
 

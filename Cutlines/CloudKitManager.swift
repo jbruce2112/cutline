@@ -27,11 +27,16 @@ enum CloudPushResult {
 	case failure(CKError)
 }
 
+enum CloudRecordResult {
+	
+	case success([String: CKRecord])
+	case failure(CKError)
+}
+
 // MARK: CloudChangeDelegate
 protocol CloudChangeDelegate: class {
 	
-	func didAdd(photo: Photo, withImage image: UIImage)
-	func didUpdate(photo: Photo)
+	func didModify(photo: Photo, withImage image: UIImage)
 	func didRemove(photoID: String)
 }
 
@@ -128,14 +133,14 @@ class CloudKitManager {
 	}
 	
 	
-	func pushChanges(localPhotos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
+	func pushNew(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
 		
-		if !ready || localPhotos.isEmpty {
+		if !ready || photos.isEmpty {
 			return
 		}
 		
-		let batchSize = localPhotos.count
-		let records = localPhotos.map { getRecord($0) }
+		let batchSize = photos.count
+		let records = photos.map { self.createRecord(from: $0) }
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
 		
 		operation.perRecordCompletionBlock = { (record, error) in
@@ -143,6 +148,12 @@ class CloudKitManager {
 			if let error = error {
 				print("Error saving photo \(error)")
 			}
+			
+			let recordName = record.recordID.recordName
+			let savedPhoto = photos.first { $0.photoID == recordName }
+			
+			// Set the CKRecord on the photo
+			savedPhoto?.ckRecord = self.data(from: record)
 		}
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
@@ -163,6 +174,64 @@ class CloudKitManager {
 		
 		operation.qualityOfService = .utility
 		privateDB.add(operation)
+	}
+	
+	func pushModified(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
+		
+		if !ready {
+			return
+		}
+		
+		var records = [CKRecord]()
+		for photo in photos {
+			
+			// This will give us a record with only
+			// the system fields filled in
+			let rec = record(from: photo.ckRecord!)
+			
+			rec[photoIDKey] = photo.photoID! as NSString
+			
+			// Set the only fields that we allow to be changed
+			applyChanges(from: photo, to: rec)
+			
+			records.append(rec)
+		}
+		
+		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
+		
+		operation.perRecordCompletionBlock = { (record, error) in
+			
+			// If we get a 'ServerRecordChanged' error here, it means
+			// we're in a conflict case. Our local CKRecord is older
+			// than what the cloud has.
+			// This likely means that next time we fetch, we'll have our
+			// *this* change replaced with something from the cloud.
+			// Maybe we could copy this version somewhere else for recovery later.
+			if let error = error {
+				print("Error updating photo \(error)")
+			} else {
+				
+				let recordName = record.recordID.recordName
+				let updatedPhoto = photos.first { $0.photoID == recordName }
+				
+				// Set the updated CKRecord on the photo
+				updatedPhoto?.ckRecord = self.data(from: record)
+				
+				print("Updated photo with new caption '\(record["caption"] as! NSString)'")
+			}
+		}
+		
+		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			if let error = error {
+				completion(.failure(error as! CKError))
+			} else {
+				completion(.success)
+			}
+		}
+		
+		operation.qualityOfService = .utility
+		self.privateDB.add(operation)
 	}
 	
 	func fetchChanges(completion: @escaping () -> Void) {
@@ -228,13 +297,14 @@ class CloudKitManager {
 		
 		operation.optionsByRecordZoneID = [zoneID: options]
 		operation.fetchAllChanges = true
+		
 		operation.recordChangedBlock = { (record) in
 		
-			guard let result = self.unpack(record) else {
+			guard let result = self.getPhoto(from: record) else {
 				return
 			}
 			
-			self.delegate?.didAdd(photo: result.photo, withImage: result.image)
+			self.delegate?.didModify(photo: result.photo, withImage: result.image)
 		}
 		
 		operation.recordWithIDWasDeletedBlock = { (recordID, string) in
@@ -255,8 +325,6 @@ class CloudKitManager {
 			}
 			
 			self.syncState.zoneChangeToken = newChangeToken
-			
-			// Completion handler originally passed to fetchChanges
 			completion()
 		}
 			
@@ -329,9 +397,7 @@ class CloudKitManager {
 		privateDB.add(operation)
 	}
 	
-	private func unpack(_ record: CKRecord) -> FetchResult? {
-		
-		print("Got cloud record with caption \((record[self.captionKey] as! NSString?)!)")
+	private func getPhoto(from record: CKRecord) -> FetchResult? {
 		
 		let photo = self.photoDataSource.allocEmptyPhoto()
 		
@@ -340,6 +406,7 @@ class CloudKitManager {
 		photo.dateTaken = record[self.dateTakenKey] as! NSDate?
 		photo.lastUpdated = record[self.lastUpdatedKey] as! NSDate?
 		photo.photoID = record[self.photoIDKey] as! String?
+		photo.ckRecord = data(from: record)
 		photo.inCloud = true
 		
 		// sanity check
@@ -370,8 +437,10 @@ class CloudKitManager {
 		return fetchResult
 	}
 	
-	private func getRecord(_ photo: Photo) -> CKRecord {
+	private func createRecord(from photo: Photo) -> CKRecord {
 		
+		// We enforce a unique constraint with our photoID in CloudKit
+		// by always creating a record from a CKRecordID with a recordName of photoID
 		let recordID = CKRecordID(recordName: photo.photoID!, zoneID: syncState.recordZone!.zoneID)
 		let record = CKRecord(recordType: photoType, recordID: recordID)
 		
@@ -385,6 +454,36 @@ class CloudKitManager {
 		record[photoIDKey] = photo.photoID as NSString?
 		
 		return record
+	}
+	
+	private func applyChanges(from photo: Photo, to record: CKRecord) {
+		
+		assert(record.recordID.recordName == photo.photoID!)
+		assert(record[photoIDKey] as! String == photo.photoID!)
+		
+		// Only apply changes from allowed fields
+		record[captionKey] = photo.caption! as CKRecordValue?
+		record[lastUpdatedKey] = photo.lastUpdated
+	}
+	
+	// MARK: Functions for converting between NSData and CKRecord
+	// (We store only the system fields of the CKRecord
+	private func data(from record: CKRecord) -> NSData {
+		
+		let archivedData = NSMutableData()
+		let archiver = NSKeyedArchiver(forWritingWith: archivedData)
+		archiver.requiresSecureCoding = true
+		record.encodeSystemFields(with: archiver)
+		archiver.finishEncoding()
+		return archivedData
+	}
+	
+	private func record(from archivedData: NSData) -> CKRecord {
+		
+		let unarchiver = NSKeyedUnarchiver(forReadingWith: archivedData as Data)
+		unarchiver.requiresSecureCoding = true
+		
+		return CKRecord(coder: unarchiver)!
 	}
 	
 	// MARK: Dev/testing functions - for sanity checking
@@ -431,11 +530,11 @@ class CloudKitManager {
 					
 					for record in results {
 						
-						guard let fetchResult = self.unpack(record) else {
+						guard let result = self.getPhoto(from: record) else {
 							return
 						}
 						
-						fetchResults.append(fetchResult)
+						fetchResults.append(result)
 					}
 				}
 			}
