@@ -35,9 +35,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		cutlinesViewController.photoDataSource = photoDataSource
 		searchViewController.photoDataSource = photoDataSource
+		cloudManager.photoDataSource = photoDataSource
 		
 		cutlinesViewController.imageStore = imageStore
 		searchViewController.imageStore = imageStore
+		cloudManager.imageStore = imageStore
 		
 		application.registerForRemoteNotifications()
 		
@@ -57,8 +59,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			cloudManager.fetchChanges {
 				
 				completionHandler(UIBackgroundFetchResult.newData)
+				
+				DispatchQueue.main.async {
+					self.cutlinesViewController.refresh()
+				}
 			}
 		}
+	}
+	
+	func application(_ application: UIApplication,
+	                 didFailToRegisterForRemoteNotificationsWithError error: Error) {
+		
+		print("Failed to register for notifications with \(error)")
 	}
 
 	func applicationWillResignActive(_ application: UIApplication) {
@@ -75,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// and store enough application state information to restore your application to its
 		// current state in case it is terminated later. If your application supports 
 		// background execution, this method is called instead of applicationWillTerminate: when the user quits.
+		cloudManager.saveSyncState()
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {
@@ -125,6 +138,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	private func checkAppGroupForPhotos() -> Int {
 		
 		var photosAdded = 0
+		
+		if !FileManager.default.fileExists(atPath: appGroupURL.path) {
+			return 0
+		}
 		
 		let subPaths: [String]
 		do {

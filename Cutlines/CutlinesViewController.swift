@@ -20,32 +20,6 @@ class CutlinesViewController: UIViewController {
 		
 		collectionView.delegate = self
 		collectionView.dataSource = photoDataSource
-		
-		// TODO: temporary place to test cloudkit fetching
-		let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
-		cloudManager.fetchAll { (result) in
-			
-			switch result {
-			case let .success(results):
-				
-				for result in results {
-					
-					self.photoDataSource.addPhoto(result.photo) { (photoAddResult) in
-						
-						switch photoAddResult {
-						case .success:
-							self.imageStore.setImage(result.image, forKey: result.photo.photoID!)
-						case let .failure(error):
-							print("Failure inserting photo \(error)")
-						}
-					}
-				}
-				
-				self.refresh()
-			case let .failure(error):
-				print("Error fetching images \(error)")
-			}
-		}
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {

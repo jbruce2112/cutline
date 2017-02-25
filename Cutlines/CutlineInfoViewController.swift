@@ -99,10 +99,9 @@ class CutlineInfoViewController: UIViewController {
 			flipContainer()
 		}
 		
-		// TODO: Temporary place to test CloudKit upload action
-		let url = imageStore.imageURL(forKey: photo.photoID!)
+		// TODO: Temporary place to force a CloudKit upload action
 		let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
-		cloudManager.save(photo: photo, imageURL: url) { (result) in
+		cloudManager.save(photo: photo) { (result) in
 			
 			switch result {
 			case .success:

@@ -11,7 +11,7 @@ import CoreData
 
 enum UpdateResult {
 	
-	case success
+	case success(Photo?)
 	case failure(Error)
 }
 
@@ -43,11 +43,32 @@ class PhotoDataSource: NSObject {
 			
 			do {
 				try self.photos = viewContext.fetch(fetchRequest)
-				completion(.success)
+				completion(.success(nil))
 			} catch {
 				completion(.failure(error))
 			}
 		}
+	}
+	
+	func fetchOnlyLocal(limit: Int) -> [Photo] {
+		
+		var localPhotos = [Photo]()
+		
+		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+		fetchRequest.predicate = NSPredicate(format: "\(#keyPath(Photo.inCloud)) == NO")
+		fetchRequest.fetchLimit = limit
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.performAndWait {
+			
+			do {
+				try localPhotos = viewContext.fetch(fetchRequest)
+			} catch {
+				print("Error fetching local photos \(error)")
+			}
+		}
+		
+		return localPhotos
 	}
 	
 	func addPhoto(id: String, caption: String, dateTaken: Date) -> UpdateResult {
@@ -65,12 +86,13 @@ class PhotoDataSource: NSObject {
 			photo.dateTaken = dateTaken as NSDate
 			photo.dateAdded = NSDate()
 			photo.lastUpdated = NSDate()
+			photo.inCloud = false
 			
 			viewContext.insert(photo)
 			
 			do {
 				try viewContext.save()
-				result = .success
+				result = .success(photo)
 			} catch {
 				viewContext.rollback()
 				result = .failure(error)
@@ -93,9 +115,6 @@ class PhotoDataSource: NSObject {
 	
 	func addPhoto(_ photo: Photo, completion: @escaping (UpdateResult) -> Void) {
 		
-		let IDs = photos.map { $0.photoID }
-		print(IDs)
-		
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
 			
@@ -103,7 +122,7 @@ class PhotoDataSource: NSObject {
 			
 			do {
 				try viewContext.save()
-				completion(.success)
+				completion(.success(photo))
 			} catch {
 				viewContext.rollback()
 				completion(.failure(error))

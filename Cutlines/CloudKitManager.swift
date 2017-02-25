@@ -27,6 +27,35 @@ enum CloudFetchResult {
 	case failure(Error)
 }
 
+private class SyncState: NSObject, NSCoding {
+	
+	// MARK: Sync state properties (persisted)
+	fileprivate var dbChangeToken: CKServerChangeToken?
+	fileprivate var zoneChangeToken: CKServerChangeToken?
+	fileprivate var recordZone: CKRecordZone?
+	fileprivate var subscribedForChanges = false
+	
+	override init() {
+		super.init()
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		
+		subscribedForChanges = aDecoder.decodeBool(forKey: "subscribedForChanges")
+		zoneChangeToken = aDecoder.decodeObject(forKey: "zoneChangeToken") as? CKServerChangeToken
+		dbChangeToken = aDecoder.decodeObject(forKey: "dbChangeToken") as? CKServerChangeToken
+		recordZone = aDecoder.decodeObject(forKey: "recordZone") as? CKRecordZone
+	}
+	
+	func encode(with aCoder: NSCoder) {
+		
+		aCoder.encode(recordZone, forKey: "recordZone")
+		aCoder.encode(dbChangeToken, forKey: "dbChangeToken")
+		aCoder.encode(zoneChangeToken, forKey: "zoneChangeToken")
+		aCoder.encode(subscribedForChanges, forKey: "subscribedForChanges")
+	}
+}
+
 class CloudKitManager {
 	
 	private let container: CKContainer
@@ -41,29 +70,68 @@ class CloudKitManager {
 	private let lastUpdatedKey = "lastUpdated"
 	private let photoIDKey = "photoID"
 	
-	private var subscribedForChanges = false
-	
 	let subscriptionID = "private-changes"
 	
-	private var changeToken: CKServerChangeToken?
-	private var changedZoneIDs = [CKRecordZoneID]()
+	private let zoneName = "Photos"
 	
+	var imageStore: ImageStore!
+	var photoDataSource: PhotoDataSource!
+	
+	private var syncState: SyncState!
+	private var syncStateArchive: String
+
 	init() {
+
+		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		syncStateArchive = cacheDir.appendingPathComponent("syncState.archive").path
 		
 		container = CKContainer.default()
 		privateDB = container.privateCloudDatabase
 		
-		registerForSubscription()
-	}
-	
-	func save(photo: Photo, imageURL: URL, completion: @escaping (CloudResult) -> Void) {
+		syncState = loadSyncState()
 		
-		let recordID = CKRecordID(recordName: photo.photoID!)
-		let record = CKRecord(recordType: photoType, recordID: recordID)
-		return save(photo: photo, imageURL: imageURL, toRecord: record, completion: completion)
+		setup {
+			
+			// Once we're set up, fetch any
+			// changes, and then push up any
+			// remaining photos
+			self.fetchChanges {
+				
+				self.pushLocalPhotos()
+			}
+		}
 	}
 	
-	func update(photo: Photo, imageURL: URL, completion: @escaping (CloudResult) -> Void) {
+	func saveSyncState() {
+		
+		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive)
+		print("Sync state saved to \(syncStateArchive)")
+	}
+	
+	private func loadSyncState() -> SyncState {
+		
+		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive) as? SyncState {
+			print("SyncState loaded form archive")
+			return syncState
+		} else {
+			print("Unable to load previous sync state, starting new")
+			return SyncState()
+		}
+	}
+	
+	func save(photo: Photo, completion: @escaping (CloudResult) -> Void) {
+		
+		guard let recordZone = syncState.recordZone else {
+			return
+		}
+		
+		let recordID = CKRecordID(recordName: photo.photoID!, zoneID: recordZone.zoneID)
+		let record = CKRecord(recordType: photoType, recordID: recordID)
+		
+		return save(photo: photo, toRecord: record, completion: completion)
+	}
+	
+	func update(photo: Photo, completion: @escaping (CloudResult) -> Void) {
 		
 		let recordID = CKRecordID(recordName: photo.photoID!)
 		privateDB.fetch(withRecordID: recordID) { (record, error) in
@@ -76,19 +144,14 @@ class CloudKitManager {
 					return
 				}
 				
-				self.save(photo: photo, imageURL: imageURL, toRecord: record, completion: completion)
+				self.save(photo: photo, toRecord: record, completion: completion)
 			}
 		}
 	}
 	
-	private func save(photo: Photo, imageURL: URL, toRecord record: CKRecord, completion: @escaping (CloudResult) -> Void) {
+	private func save(photo: Photo, toRecord record: CKRecord, completion: @escaping (CloudResult) -> Void) {
 		
-		record[captionKey] = photo.caption as NSString?
-		record[dateAddedKey] = photo.dateAdded
-		record[dateTakenKey] = photo.dateTaken
-		record[imageKey] = CKAsset(fileURL: imageURL)
-		record[lastUpdatedKey] = photo.lastUpdated
-		record[photoIDKey] = photo.photoID as NSString?
+		let record = getRecord(photo)
 		
 		privateDB.save(record) { (record, error) in
 			
@@ -97,14 +160,30 @@ class CloudKitManager {
 				completion(.failure(error))
 			} else {
 				print("Photo uploaded successfully")
+				photo.inCloud = true
+				self.photoDataSource.save()
 				completion(.success)
 			}
 		}
 	}
 	
-	func registerForSubscription() {
+	private func setup(completion: @escaping () -> Void) {
 		
-		if subscribedForChanges {
+		createCustomZone {
+			
+			self.registerForSubscription {
+				
+				completion()
+			}
+		}
+	}
+	
+	private func registerForSubscription(completion: @escaping () -> Void) {
+		
+		if syncState.subscribedForChanges {
+			
+			print("Already subscribed to changes")
+			completion()
 			return
 		}
 		
@@ -122,7 +201,42 @@ class CloudKitManager {
 			if let error = error {
 				print("Error subscriping for notifications \(error)")
 			} else {
-				self.subscribedForChanges = true
+				print("Subscribed to changes")
+				self.syncState.subscribedForChanges = true
+			}
+			
+			completion()
+		}
+		
+		operation.qualityOfService = .utility
+		privateDB.add(operation)
+	}
+	
+	private func createCustomZone(completion: @escaping () -> Void) {
+		
+		if let _ = self.syncState.recordZone {
+			
+			print("Already have a custom zone")
+			completion()
+			return
+		}
+		
+		let zone = CKRecordZone(zoneName: self.zoneName)
+		let operation = CKModifyRecordZonesOperation(recordZonesToSave: [zone], recordZoneIDsToDelete: nil)
+		
+		operation.modifyRecordZonesCompletionBlock = { (savedRecods, deletedRecordIDs, error) in
+		
+			if let error = error {
+				print("Error creating recordZone \(error)")
+			} else {
+				print("Record zone successfully created")
+				guard let savedZone = savedRecods?.first else {
+					return
+				}
+				
+				self.syncState.recordZone = savedZone
+				
+				completion()
 			}
 		}
 		
@@ -132,20 +246,21 @@ class CloudKitManager {
 	
 	func fetchChanges(completion: @escaping () -> Void) {
 		
-		changedZoneIDs = []
+		print(#function)
+		var changedZoneIDs = [CKRecordZoneID]()
 		
 		// When our change token is nil, we'll fetch everything
-		let changeOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: changeToken)
+		let changeOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: syncState.dbChangeToken)
 		
 		changeOperation.fetchAllChanges = true
 		changeOperation.recordZoneWithIDChangedBlock = { (recordZoneID) in
 			
-			self.changedZoneIDs.append(recordZoneID)
+			changedZoneIDs.append(recordZoneID)
 		}
 		
 		changeOperation.changeTokenUpdatedBlock = { (newToken) in
 			
-			self.changeToken = newToken
+			self.syncState.dbChangeToken = newToken
 		}
 		
 		changeOperation.fetchDatabaseChangesCompletionBlock = { (newToken, more, error) in
@@ -155,21 +270,43 @@ class CloudKitManager {
 				return
 			}
 			
-			self.changeToken = newToken
-			self.fetchZoneChanges(completion: completion)
+			self.syncState.dbChangeToken = newToken
+			self.fetchChanges(fromZones: changedZoneIDs, completion: completion)
 		}
 		
 		privateDB.add(changeOperation)
 	}
 	
-	func fetchZoneChanges(completion: @escaping () -> Void) {
+	private func fetchChanges(fromZones changedZoneIDs: [CKRecordZoneID], completion: @escaping () -> Void) {
 		
 		let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: changedZoneIDs)
 		
+		// We should only have one changed zone right now
+		assert(changedZoneIDs.count == 1)
+		guard let zoneID = changedZoneIDs.first else {
+			return
+		}
+		
+		let options = CKFetchRecordZoneChangesOptions()
+		options.previousServerChangeToken = self.syncState.zoneChangeToken
+		
+		operation.optionsByRecordZoneID = [zoneID: options]
 		operation.fetchAllChanges = true
 		operation.recordChangedBlock = { (record) in
 		
-			print("Got record changed with caption \((record[self.captionKey] as! NSString?)!)")
+			guard let result = self.unpack(record) else {
+				return
+			}
+			
+			self.photoDataSource.addPhoto(result.photo) { updateResult in
+			
+				switch updateResult {
+				case .success:
+					self.imageStore.setImage(result.image, forKey: result.photo.photoID!)
+				case let .failure(error):
+					print("Error saving photo \(error)")
+				}
+			}
 		}
 		
 		operation.recordWithIDWasDeletedBlock = { (recordID, string) in
@@ -178,7 +315,7 @@ class CloudKitManager {
 		
 		operation.recordZoneChangeTokensUpdatedBlock = { (recordZoneID, newChangeToken, lastTokenData) in
 			
-			self.changeToken = newChangeToken
+			self.syncState.zoneChangeToken = newChangeToken
 		}
 		
 		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, more, error) in
@@ -188,10 +325,50 @@ class CloudKitManager {
 				return
 			}
 			
-			self.changeToken = newChangeToken
+			self.syncState.zoneChangeToken = newChangeToken
+			
+			// Completion handler originally passed to fetchChanges
+			completion()
 		}
 			
 		privateDB.add(operation)
+	}
+	
+	private func unpack(_ record: CKRecord) -> FetchResult? {
+		
+		print("Got record changed with caption \((record[self.captionKey] as! NSString?)!)")
+		
+		let photo = self.photoDataSource.allocEmptyPhoto()
+		
+		photo.caption = record[self.captionKey] as! String?
+		photo.dateAdded = record[self.dateAddedKey] as! NSDate?
+		photo.dateTaken = record[self.dateTakenKey] as! NSDate?
+		photo.lastUpdated = record[self.lastUpdatedKey] as! NSDate?
+		photo.photoID = record[self.photoIDKey] as! String?
+		photo.inCloud = true
+		
+		guard let asset = record[self.imageKey] as? CKAsset else {
+			print("Unable to get CKAsset from record")
+			return nil
+		}
+		
+		let imageData: Data
+		do {
+			imageData = try Data(contentsOf: asset.fileURL)
+		} catch {
+			print("Unable to get Data from CKAsset \(error)")
+			return nil
+		}
+		
+		guard let image = UIImage(data: imageData) else {
+			print("Unable to get UIImage from Data")
+			return nil
+		}
+		
+		var fetchResult = FetchResult()
+		fetchResult.photo = photo
+		fetchResult.image = image
+		return fetchResult
 	}
 	
 	func fetchAll(completion: @escaping (CloudFetchResult) -> Void) {
@@ -214,32 +391,115 @@ class CloudKitManager {
 				
 				if let results = results {
 					
-					for result in results {
+					for record in results {
 						
-						let photo = (UIApplication.shared.delegate as! AppDelegate).photoDataSource.allocEmptyPhoto()
-						
-						photo.caption = result[self.captionKey] as! String?
-						photo.dateAdded = result[self.dateAddedKey] as! NSDate?
-						photo.dateTaken = result[self.dateTakenKey] as! NSDate?
-						photo.lastUpdated = result[self.lastUpdatedKey] as! NSDate?
-						photo.photoID = result[self.photoIDKey] as! String?
-						
-						guard let asset = result[self.imageKey] as? CKAsset else {
+						guard let fetchResult = self.unpack(record) else {
 							return
 						}
 						
-						let imageData: Data
-						do {
-							imageData = try Data(contentsOf: asset.fileURL)
-						} catch {
-							return
-						}
-						
-						var fetchResult = FetchResult()
-						fetchResult.photo = photo
-						fetchResult.image = UIImage(data: imageData)
 						fetchResults.append(fetchResult)
 					}
+				}
+			}
+		}
+	}
+	
+	private func getRecord(_ photo: Photo) -> CKRecord {
+		
+		let imageURL = imageStore.imageURL(forKey: photo.photoID!)
+		
+		let record = CKRecord(recordType: photoType)
+		record[captionKey] = photo.caption as NSString?
+		record[dateAddedKey] = photo.dateAdded
+		record[dateTakenKey] = photo.dateTaken
+		record[imageKey] = CKAsset(fileURL: imageURL)
+		record[lastUpdatedKey] = photo.lastUpdated
+		record[photoIDKey] = photo.photoID as NSString?
+		
+		return record
+	}
+	
+	func pushLocalPhotos(batchSize: Int = 5) {
+		
+		let localPhotos = photoDataSource.fetchOnlyLocal(limit: batchSize)
+		
+		if localPhotos.isEmpty {
+			return
+		}
+		
+		let records = localPhotos.map { getRecord($0) }
+		
+		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
+		operation.perRecordCompletionBlock = { (record, error) in
+			
+			if let error = error {
+				print("Error saving photo in batch \(error)")
+				
+				guard let ckErr = error as? CKError else {
+					
+					print("Couldn't cast error as CKError")
+					return
+				}
+				
+				// The cloud already has this record,
+				// mark it saved below
+				if ckErr.code != .serverRecordChanged {
+					return
+				}				
+			}
+			
+			let photoID = record[self.photoIDKey] as! String?
+			let savedPhoto = localPhotos.first { $0.photoID! == photoID! }
+			
+			savedPhoto?.inCloud = true
+			self.photoDataSource.save()
+		}
+		
+		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			if let error = error {
+				print("Error saving photos with batch size \(batchSize) - \(error)")
+				
+				guard let ckErr = error as? CKError else {
+					print("Couldn't cast error as CKError")
+					return
+				}
+				
+				if ckErr.code == .limitExceeded {
+					print("Retrying push with half of batchSize")
+					self.pushLocalPhotos(batchSize: batchSize / 2)
+				}
+			} else {
+				
+				// Attempt another batch
+				if let saved = saved {
+					print("Uploaded \(saved.count) photos to the cloud")
+				}
+				
+				self.pushLocalPhotos()
+			}
+		}
+		
+		privateDB.add(operation)
+	}
+	
+	// For development/sanity check purposes
+	private func verifyUnique() {
+		
+		self.fetchAll { updateresult in
+			
+			switch updateresult {
+				
+			case .failure:
+				break
+			case let .success(fetchrequests):
+				
+				var myset = Set<String>()
+				for res in fetchrequests {
+					
+					let id = res.photo.photoID!
+					assert(!myset.contains(id))
+					myset.insert(id)
 				}
 			}
 		}

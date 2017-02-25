@@ -66,8 +66,20 @@ class CreateViewController: UIViewController {
 			photoDataSource.addPhoto(id: id, caption: captionView.getCaption(), dateTaken: asset.creationDate!) { (result) in
 				
 				switch result {
-				case .success:
-					break
+				case let .success(photo):
+					
+					let appDelegate = UIApplication.shared.delegate as! AppDelegate
+					let cloudManager = appDelegate.cloudManager
+					cloudManager.save(photo: photo!) { cloudResult in
+						
+						switch cloudResult {
+						case .success:
+							break
+						case let .failure(error):
+							print("Cloud save from Create failed \(error)")
+						}
+						
+					}
 				case let .failure(error):
 					print("Cutline save failed with error: \(error)")
 				}
