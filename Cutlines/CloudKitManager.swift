@@ -89,29 +89,18 @@ class CloudKitManager {
 		privateDB = container.privateCloudDatabase
 		
 		syncState = loadSyncState()
-		
-		setup {
-			
-			// Once we're set up, fetch any
-			// changes, and then push up any
-			// remaining photos
-			self.fetchChanges {
-				
-				self.pushLocalPhotos()
-			}
-		}
 	}
 	
 	func saveSyncState() {
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive)
-		print("Sync state saved to \(syncStateArchive)")
+		print("SyncState saved")
 	}
 	
 	private func loadSyncState() -> SyncState {
 		
 		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive) as? SyncState {
-			print("SyncState loaded form archive")
+			print("SyncState loaded from archive")
 			return syncState
 		} else {
 			print("Unable to load previous sync state, starting new")
@@ -167,7 +156,7 @@ class CloudKitManager {
 		}
 	}
 	
-	private func setup(completion: @escaping () -> Void) {
+	func setup(completion: @escaping () -> Void) {
 		
 		createCustomZone {
 			
@@ -246,7 +235,6 @@ class CloudKitManager {
 	
 	func fetchChanges(completion: @escaping () -> Void) {
 		
-		print(#function)
 		var changedZoneIDs = [CKRecordZoneID]()
 		
 		// When our change token is nil, we'll fetch everything
@@ -278,6 +266,10 @@ class CloudKitManager {
 	}
 	
 	private func fetchChanges(fromZones changedZoneIDs: [CKRecordZoneID], completion: @escaping () -> Void) {
+		
+		if changedZoneIDs.isEmpty {
+			return
+		}
 		
 		let operation = CKFetchRecordZoneChangesOperation(recordZoneIDs: changedZoneIDs)
 		

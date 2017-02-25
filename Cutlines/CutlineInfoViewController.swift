@@ -100,14 +100,17 @@ class CutlineInfoViewController: UIViewController {
 		}
 		
 		// TODO: Temporary place to force a CloudKit upload action
-		let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
-		cloudManager.save(photo: photo) { (result) in
+		if !photo.inCloud {
 			
-			switch result {
-			case .success:
-				break
-			case let .failure(error):
-				print("Got error from cloudkit add: \(error)")
+			let cloudManager = (UIApplication.shared.delegate as! AppDelegate).cloudManager
+			cloudManager.save(photo: photo) { (result) in
+				
+				switch result {
+				case .success:
+					break
+				case let .failure(error):
+					print("Got error from cloudkit add: \(error)")
+				}
 			}
 		}
 	}

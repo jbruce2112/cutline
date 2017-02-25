@@ -46,6 +46,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Set initial theme
 		setDarkMode(defaults.bool(forKey: Key.darkMode.rawValue))
 		
+		cloudManager.setup {
+			
+			// Once we're set up, fetch any
+			// changes, and then push up any
+			// remaining photos
+			self.cloudManager.fetchChanges {
+				
+				DispatchQueue.main.async {
+					
+					self.cutlinesViewController.refresh()
+				}
+				
+				self.cloudManager.pushLocalPhotos()
+			}
+		}
+		
 		return true
 	}
 	
