@@ -93,15 +93,13 @@ class SettingsViewController: UITableViewController {
 	
 	@IBAction private func toggleDarkMode(sender: UISwitch) {
 		
-		// Set the theme for the whole app
+		defaults.set(sender.isOn, forKey: Key.darkMode.rawValue)
+		
+		// Set the theme in the delegate for the root controllers
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
-		appDelegate.setDarkMode(sender.isOn)
+		appDelegate.setTheme()
 		
 		// Force our view to refresh since it's in the foreground
 		setTheme()
-	}
-	
-	private func setDarkMode(_ enabled: Bool) {
-		
 	}
 }

@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		application.registerForRemoteNotifications()
 		
 		// Set initial theme
-		setDarkMode(defaults.bool(forKey: Key.darkMode.rawValue))		
+		setTheme()
 		
 		return true
 	}
@@ -137,18 +137,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 	}
 	
-	func setDarkMode(_ enable: Bool) {
+	func setTheme() {
 		
 		// We're settings these properties in the AppDelegate since it already knows
 		// about the navigation and tab controllers, and we don't currently have any
 		// custom classes to implement their own viewWillAppear()/setTheme() behavior
-		tabBarController.tabBar.barStyle = enable ? .black : .default
+		tabBarController.tabBar.setTheme()
 		
 		for controller in navigationControllers {
-			controller.navigationBar.barStyle = enable ? .black : .default
+			controller.navigationBar.setTheme()
 		}
-		
-		defaults.set(enable, forKey: Key.darkMode.rawValue)
 	}
 	
 	// Check for photos given to us by the share extension

@@ -101,6 +101,7 @@ class CutlineInfoViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		setTheme()
+		newTabBar.setTheme()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
