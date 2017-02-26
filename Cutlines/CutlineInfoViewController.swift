@@ -22,6 +22,11 @@ class CutlineInfoViewController: UIViewController {
 	private var initialCaption: String!
 	
 	@IBOutlet private var container: UIView!
+	@IBOutlet private var newTabBar: UITabBar!
+	
+	private var didDelete = false
+	fileprivate let deleteTag = 1
+	private var originalTabBarHeight: CGFloat = 0
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -48,6 +53,8 @@ class CutlineInfoViewController: UIViewController {
 		
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipContainer))
+		
+		newTabBar.unselectedItemTintColor = newTabBar.theme().systemDefaultColor
 	}
 	
 	override func viewWillLayoutSubviews() {
@@ -76,6 +83,9 @@ class CutlineInfoViewController: UIViewController {
 		// The initial height constraint constant is 20 to allow for some padding
 		heightConstraint?.constant = barHeights + 20
 		heightConstraintLTE?.constant = barHeights + 20
+		
+		originalTabBarHeight = tabBarHeight
+		toggleOriginalTab(visible: false)
 	}
 	
 	override func viewDidLayoutSubviews() {
@@ -117,12 +127,15 @@ class CutlineInfoViewController: UIViewController {
 		// Update the Photo object with our changes
 		// and kick off a save before we leave the view
 		let caption = captionView.getCaption()
-		if caption != initialCaption {
+		if !didDelete && caption != initialCaption {
 			
 			photo.caption = caption
 			photo.lastUpdated = NSDate()
 			photoManager.update(photo: photo) {}
 		}
+		
+		// Show the original tab bar again
+		toggleOriginalTab(visible: true)
 	}
 	
 	func flipContainer() {
@@ -138,6 +151,47 @@ class CutlineInfoViewController: UIViewController {
 		}
 		
 		UIView.transition(from: views.frontView, to: views.backView,
-		                  duration: 0.5, options: [.transitionFlipFromRight, .curveEaseOut], completion: nil)
+		                  duration: 0.4, options: [.transitionFlipFromRight, .curveEaseOut], completion: nil)
+	}
+	
+	private func toggleOriginalTab(visible: Bool) {
+		
+		guard let tabBar = tabBarController?.tabBar else {
+			return
+		}
+		
+		let dy = visible ? -originalTabBarHeight : originalTabBarHeight
+		UIView.transition(with: tabBar, duration: 0.2, options: [], animations: { () in
+			
+			tabBar.frame = tabBar.frame.offsetBy(dx: 0, dy: dy)			
+		}, completion: nil)
+	}
+	
+	fileprivate func deleteItem() {
+		
+		let alertController = UIAlertController(title: nil,
+								message: "This caption will be deleted from Cutlines on all your devices.", preferredStyle: .actionSheet)
+		
+		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+		let deleteAction = UIAlertAction(title: "Delete Caption", style: .destructive) { _ in
+		
+			self.didDelete = true
+			self.photoManager.delete(photo: self.photo, completion: nil)
+			let _ = self.navigationController?.popViewController(animated: true)
+		}
+		
+		alertController.addAction(deleteAction)
+		alertController.addAction(cancelAction)
+		present(alertController, animated: true, completion: nil)
+	}
+}
+
+extension CutlineInfoViewController: UITabBarDelegate {
+	
+	func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+		
+		if item.tag == deleteTag {
+			deleteItem()
+		}
 	}
 }

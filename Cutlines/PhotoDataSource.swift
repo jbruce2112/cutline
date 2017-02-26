@@ -155,6 +155,22 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
+	func delete(photo: Photo, completion: @escaping (UpdateResult) -> Void) {
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			viewContext.delete(photo)
+			
+			do {
+				try viewContext.save()
+				completion(.success(nil))
+			} catch {
+				completion(.failure(error))
+			}
+		}
+	}
+	
 	// Expose the CoreData Photo type for others
 	// to populate and pass around before saving (e.g. CloudManager)
 	func allocEmptyPhoto() -> Photo {

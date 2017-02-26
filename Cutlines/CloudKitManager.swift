@@ -208,6 +208,7 @@ class CloudKitManager {
 			// *this* change replaced with something from the cloud.
 			// Maybe we could copy this version somewhere else for recovery later.
 			if let error = error {
+				
 				print("Error updating photo \(error)")
 			} else {
 				
@@ -217,7 +218,8 @@ class CloudKitManager {
 				// Set the updated CKRecord on the photo
 				updatedPhoto?.ckRecord = self.data(from: record)
 				
-				print("Updated photo with new caption '\(record["caption"] as! NSString)'")
+				print("Updated photo with new caption " +
+						"'\(record["caption"] as! NSString)' and change tag \(record.recordChangeTag!)")
 			}
 		}
 		
@@ -226,6 +228,40 @@ class CloudKitManager {
 			if let error = error {
 				completion(.failure(error as! CKError))
 			} else {
+				completion(.success)
+			}
+		}
+		
+		operation.qualityOfService = .utility
+		self.privateDB.add(operation)
+	}
+	
+	func delete(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
+		
+		if !ready {
+			return
+		}
+		
+		var recordIDs = [CKRecordID]()
+		for photo in photos {
+			
+			// This will give us a record with only
+			// the system fields filled in
+			let rec = record(from: photo.ckRecord!)
+			recordIDs.append(rec.recordID)
+		}
+		
+		let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
+		
+		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			if let error = error {
+				completion(.failure(error as! CKError))
+			} else {
+				
+				if let deleted = deleted {
+					print("\(deleted.count) photos were deleted in the cloud")
+				}
 				completion(.success)
 			}
 		}
@@ -304,6 +340,7 @@ class CloudKitManager {
 				return
 			}
 			
+			print("Fetched photo with caption '\(result.photo.caption)' and change tag \(record.recordChangeTag)")
 			self.delegate?.didModify(photo: result.photo, withImage: result.image)
 		}
 		

@@ -311,9 +311,22 @@
                                     <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="height" multiplier="1:1" id="5qI-kB-mXt"/>
                                 </constraints>
                             </view>
+                            <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gs4-Ln-g3T">
+                                <rect key="frame" x="0.0" y="719" width="1024" height="49"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <items>
+                                    <tabBarItem tag="1" title="Delete" image="trash" id="aPz-09-6r1"/>
+                                </items>
+                                <connections>
+                                    <outlet property="delegate" destination="s7p-6D-dKC" id="H8i-GW-Fny"/>
+                                </connections>
+                            </tabBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="gs4-Ln-g3T" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="B0y-Qa-bjT"/>
+                            <constraint firstAttribute="trailing" secondItem="gs4-Ln-g3T" secondAttribute="trailing" id="BPp-i9-9c4"/>
+                            <constraint firstAttribute="bottom" secondItem="gs4-Ln-g3T" secondAttribute="bottom" id="CDp-aA-MDH"/>
                             <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="width" priority="750" constant="20" id="OXG-EC-ZRX"/>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" secondItem="tlF-T1-Nm5" secondAttribute="height" constant="20" identifier="containerHeightConstraintLTE" id="RSg-8b-r2P"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" secondItem="tlF-T1-Nm5" secondAttribute="width" constant="20" id="XkX-wn-6zd"/>
@@ -323,14 +336,15 @@
                         </constraints>
                     </view>
                     <toolbarItems/>
-                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="container" destination="tlF-T1-Nm5" id="aiE-ZH-lCx"/>
+                        <outlet property="newTabBar" destination="gs4-Ln-g3T" id="9j2-ij-vUQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ac-d9-IoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3268" y="649.92503748125944"/>
+            <point key="canvasLocation" x="3425" y="639"/>
         </scene>
         <!--Search-->
         <scene sceneID="6wE-mx-lGY">
@@ -345,11 +359,11 @@
                                 <rect key="frame" x="0.0" y="28" width="1024" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CPU-b0-3bk" id="ezq-Gj-B5c">
-                                    <rect key="frame" x="0.0" y="0.0" width="830" height="43.5"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="830" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="TXr-uU-W5F">
-                                            <rect key="frame" x="176" y="0.0" width="654" height="43.5"/>
+                                            <rect key="frame" x="176" y="0.0" width="654" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                             <nil key="textColor"/>
@@ -360,7 +374,7 @@
                                 <connections>
                                     <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoAnimated" id="gke-A3-Q5b">
                                         <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="aAk-ws-ut7"/>
-                                        <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfo" id="UkV-oQ-97S"/>
+                                        <segue key="preview" destination="s7p-6D-dKC" identifier="" id="UkV-oQ-97S"/>
                                     </segue>
                                 </connections>
                             </tableViewCell>
@@ -443,9 +457,10 @@
     <resources>
         <image name="photoStack" width="30" height="30"/>
         <image name="settingsFilled" width="22" height="22"/>
+        <image name="trash" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="76m-BG-po3"/>
-        <segue reference="gke-A3-Q5b"/>
+        <segue reference="zGq-Es-g0b"/>
+        <segue reference="yJo-Y8-NKJ"/>
     </inferredMetricsTieBreakers>
 </document>

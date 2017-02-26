@@ -14,6 +14,9 @@ class Theme: NSObject {
 	var backgroundColor: UIColor!
 	var textColor: UIColor!
 	var accentColor: UIColor!
+	
+	//#007AFF
+	let systemDefaultColor = UIColor(colorLiteralRed: 0, green: 122.0 / 255, blue: 255, alpha: 1)
 }
 
 extension UIViewController {
@@ -49,7 +52,7 @@ extension UIView {
 		if appDelegate.defaults.bool(forKey: Key.darkMode.rawValue) {
 			
 			theme.backgroundColor = .black
-			theme.textColor = UIColor(colorLiteralRed: 0, green: 122.0 / 255, blue: 255, alpha: 1)
+			theme.textColor = theme.systemDefaultColor
 			theme.accentColor = .white
 		} else {
 			

@@ -84,6 +84,30 @@ class PhotoManager {
 		}
 	}
 	
+	func delete(photo: Photo, completion: (() -> Void)?) {
+		
+		photoDataSource.delete(photo: photo) { result in
+			
+			switch result {
+			case .success:
+				print("Photo deleted locally")
+			case let .failure(error):
+				print("Photo delete failed locally \(error)")
+			}
+		}
+		
+		cloudManager.delete(photos: [photo]) { cloudResult in
+			
+			// TODO: error handling
+			switch cloudResult {
+			case .success:
+				break
+			case .failure:
+				break
+			}
+		}
+	}
+	
 	func image(for photo: Photo) -> UIImage? {
 		
 		return imageStore.image(forKey: photo.photoID!)
