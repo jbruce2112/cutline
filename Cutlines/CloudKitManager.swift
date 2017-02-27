@@ -173,6 +173,9 @@ class CloudKitManager {
 		}
 		
 		operation.qualityOfService = .utility
+		operation.allowsCellularAccess =
+			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+		
 		privateDB.add(operation)
 	}
 	
@@ -299,6 +302,10 @@ class CloudKitManager {
 			self.fetchChanges(fromZones: changedZoneIDs, completion: completion)
 		}
 		
+		changeOperation.qualityOfService = .utility
+		changeOperation.allowsCellularAccess =
+			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+		
 		privateDB.add(changeOperation)
 	}
 	
@@ -340,11 +347,11 @@ class CloudKitManager {
 				return
 			}
 			
-			print("Fetched photo with caption '\(result.photo.caption)' and change tag \(record.recordChangeTag)")
+			print("Fetched photo with caption '\(result.photo.caption!)' and change tag \(record.recordChangeTag!)")
 			self.delegate?.didModify(photo: result.photo, withImage: result.image)
 		}
 		
-		operation.recordWithIDWasDeletedBlock = { (recordID, string) in
+		operation.recordWithIDWasDeletedBlock = { (recordID, _) in
 		
 			self.delegate?.didRemove(photoID: recordID.recordName)
 		}
@@ -364,7 +371,11 @@ class CloudKitManager {
 			self.syncState.zoneChangeToken = newChangeToken
 			completion()
 		}
-			
+		
+		operation.qualityOfService = .utility
+		operation.allowsCellularAccess =
+			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+		
 		privateDB.add(operation)
 	}
 	
@@ -509,9 +520,11 @@ class CloudKitManager {
 		
 		let archivedData = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWith: archivedData)
+		
 		archiver.requiresSecureCoding = true
 		record.encodeSystemFields(with: archiver)
 		archiver.finishEncoding()
+		
 		return archivedData
 	}
 	

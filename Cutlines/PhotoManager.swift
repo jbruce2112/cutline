@@ -55,7 +55,7 @@ class PhotoManager {
 						break
 					}
 					
-					completion?()					
+					completion?()
 				}
 			case let .failure(error):
 				print("Cutline save failed with error: \(error)")
@@ -86,22 +86,25 @@ class PhotoManager {
 	
 	func delete(photo: Photo, completion: (() -> Void)?) {
 		
-		photoDataSource.delete(photo: photo) { result in
-			
-			switch result {
-			case .success:
-				print("Photo deleted locally")
-			case let .failure(error):
-				print("Photo delete failed locally \(error)")
-			}
-		}
-		
-		cloudManager.delete(photos: [photo]) { cloudResult in
+		self.cloudManager.delete(photos: [photo]) { cloudResult in
 			
 			// TODO: error handling
 			switch cloudResult {
 			case .success:
-				break
+				
+				let photoID = photo.photoID!
+				self.photoDataSource.delete(photoWithID: photo.photoID!) { localResult in
+					
+					switch localResult {
+					case .success:
+						
+						self.imageStore.deleteImage(forKey: photoID)
+						print("Photo deleted locally")
+					case let .failure(error):
+						print("Photo delete failed locally \(error)")
+					}
+				}
+				completion?()
 			case .failure:
 				break
 			}
@@ -169,10 +172,24 @@ extension PhotoManager: CloudChangeDelegate {
 			
 			self.photoDataSource.save()
 			
-			print("Existing photo updated with new caption '\(existingPhoto?.caption!)'")
+			print("Existing photo updated with new caption '\((existingPhoto?.caption)!)'")
 		}
 	}
 	
 	func didRemove(photoID: String) {
+		
+		// We only need to remove this locally
+		photoDataSource.delete(photoWithID: photoID) { result in
+			
+			switch result {
+			case .success:
+				
+				self.imageStore.deleteImage(forKey: photoID)
+				print("Deleted photo with id '\(photoID)'")
+			case let .failure(error):
+				
+				print("Error deleting photo \(error)")
+			}
+		}
 	}
 }

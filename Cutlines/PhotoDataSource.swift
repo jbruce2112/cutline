@@ -155,10 +155,16 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
-	func delete(photo: Photo, completion: @escaping (UpdateResult) -> Void) {
+	func delete(photoWithID id: String, completion: @escaping (UpdateResult) -> Void) {
 		
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
+			
+			guard let photo = self.fetch(withID: id) else {
+				// Still successful even if we didn't have the photo
+				completion(.success(nil))
+				return
+			}
 			
 			viewContext.delete(photo)
 			
