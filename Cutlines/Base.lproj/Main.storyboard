@@ -95,7 +95,7 @@
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
-                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="200" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -117,7 +117,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
-                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="244" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -214,7 +214,7 @@
         <!--Cutlines-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="CutlinesViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="BYZ-38-t0r" customClass="CutlinesViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -460,7 +460,7 @@
         <image name="trash" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="76m-BG-po3"/>
-        <segue reference="gke-A3-Q5b"/>
+        <segue reference="yJo-Y8-NKJ"/>
+        <segue reference="zGq-Es-g0b"/>
     </inferredMetricsTieBreakers>
 </document>
