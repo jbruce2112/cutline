@@ -183,6 +183,23 @@ class CutlineInfoViewController: UIViewController {
 		
 		alertController.addAction(deleteAction)
 		alertController.addAction(cancelAction)
+		
+		// We need to give the alertController an anchor for display when on iPad
+		if let presenter = alertController.popoverPresentationController {
+			
+			// Get the view from the tab bar item
+			guard
+				let tabBarItem = newTabBar.items?.first! as UITabBarItem?,
+				let tabBarItemView = tabBarItem.value(forKey: "view") as? UIView else {
+					
+					print("Unable to determine view for 'Delete' tab bar item")
+					return
+				}
+			
+			presenter.sourceView = tabBarItemView
+			presenter.sourceRect = tabBarItemView.bounds
+		}
+		
 		present(alertController, animated: true, completion: nil)
 	}
 }

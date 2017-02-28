@@ -9,6 +9,13 @@
 import Foundation
 import UIKit
 
+// MARK: PhotoChangeDelegate
+protocol PhotoChangeDelegate: class {
+	
+	func didAdd(photo: Photo)
+	func didRemove(photoID: String)
+}
+
 class PhotoManager {
 	
 	// MARK: Properties
@@ -16,8 +23,10 @@ class PhotoManager {
 	var photoDataSource: PhotoDataSource!
 	var imageStore: ImageStore!
 	
+	weak var delegate: PhotoChangeDelegate?
+	
 	// MARK: Functions
-	func setup(completion: @escaping () -> Void) {
+	func setup() {
 		
 		cloudManager.setup {
 			
@@ -25,8 +34,6 @@ class PhotoManager {
 			// changes, and then push up any
 			// remaining photos
 			self.cloudManager.fetchChanges {
-				
-				completion()
 				
 				self.pushNewLocalPhotos()
 				// TODO: Push up modified photos
@@ -44,12 +51,14 @@ class PhotoManager {
 			switch result {
 			case let .success(photo):
 				
+				self.delegate?.didAdd(photo: photo!)
+				
 				self.cloudManager.pushNew(photos: [photo!]) { cloudResult in
 					
 					// TODO: error handling
 					switch cloudResult {
 					case .success:
-						// The photo has a CKRecord now, save it
+						photo!.inCloud = true
 						self.photoDataSource.save()
 					case .failure:
 						break
@@ -86,6 +95,13 @@ class PhotoManager {
 	
 	func delete(photo: Photo, completion: (() -> Void)?) {
 		
+		// Mark this photo deleted locally before we
+		// attempt the cloud call, so we can filter it out
+		// of our collection view right away
+		photo.markedDeleted = true
+		photoDataSource.save()
+		self.delegate?.didRemove(photoID: photo.photoID!)
+		
 		self.cloudManager.delete(photos: [photo]) { cloudResult in
 			
 			// TODO: error handling
@@ -93,7 +109,7 @@ class PhotoManager {
 			case .success:
 				
 				let photoID = photo.photoID!
-				self.photoDataSource.delete(photoWithID: photo.photoID!) { localResult in
+				self.photoDataSource.delete(photoWithID: photoID) { localResult in
 					
 					switch localResult {
 					case .success:
@@ -105,7 +121,8 @@ class PhotoManager {
 					}
 				}
 				completion?()
-			case .failure:
+			case let .failure(error):
+				print("Error deleting photo from cloud \(error)")
 				break
 			}
 		}
@@ -113,7 +130,11 @@ class PhotoManager {
 	
 	func image(for photo: Photo) -> UIImage? {
 		
-		return imageStore.image(forKey: photo.photoID!)
+		guard let photoID = photo.photoID else {
+			return nil
+		}
+		
+		return imageStore.image(forKey: photoID)
 	}
 	
 	// MARK: Private functions
@@ -130,6 +151,13 @@ class PhotoManager {
 			// TODO: error handling
 			switch result {
 			case .success:
+				
+				for addedPhoto in localPhotos {
+					// TODO: infer this from the ckRecord field
+					addedPhoto.inCloud = true
+				}
+				
+				self.photoDataSource.save()
 				
 				// Push another batch
 				self.pushNewLocalPhotos()
@@ -156,8 +184,10 @@ extension PhotoManager: CloudChangeDelegate {
 				switch result {
 				case .success:
 					
+					modifiedPhoto.inCloud = true
 					self.imageStore.setImage(image, forKey: modifiedPhoto.photoID!)
 					print("New photo added with caption '\(modifiedPhoto.caption!)'")
+					self.delegate?.didAdd(photo: modifiedPhoto)
 				case let .failure(error):
 					
 					print("Error saving photo \(error)")
@@ -165,10 +195,28 @@ extension PhotoManager: CloudChangeDelegate {
 			}
 		} else {
 			
+			assert(existingPhoto!.inCloud)
+			
+			let cloudRecord = cloudManager.record(from: modifiedPhoto.ckRecord!)
+			let localRecord = cloudManager.record(from: existingPhoto!.ckRecord!)
+			
+			if localRecord.recordID == cloudRecord.recordID &&
+				localRecord.recordChangeTag == cloudRecord.recordChangeTag &&
+				localRecord.modificationDate == cloudRecord.modificationDate {
+				
+				// This is expected behavior the first time our device asks
+				// for changes after adding a new photo. CloudKit does not provide
+				// a serverChangeToken after we push changes (adds or deletes),
+				// so we just have to no-op this. Since we're in this scenerio
+				// because we asked for changes, out token should be up to date now.
+				print("Got an update for a change we already have")
+				return
+			}
+			
 			// We got an update for an existing photo, save the changes
-			existingPhoto?.lastUpdated = modifiedPhoto.lastUpdated
-			existingPhoto?.caption = modifiedPhoto.caption
-			existingPhoto?.ckRecord = modifiedPhoto.ckRecord
+			existingPhoto!.lastUpdated = modifiedPhoto.lastUpdated
+			existingPhoto!.caption = modifiedPhoto.caption
+			existingPhoto!.ckRecord = modifiedPhoto.ckRecord
 			
 			self.photoDataSource.save()
 			
@@ -178,7 +226,19 @@ extension PhotoManager: CloudChangeDelegate {
 	
 	func didRemove(photoID: String) {
 		
-		// We only need to remove this locally
+		let existingPhoto = photoDataSource.fetch(withID: photoID)
+		
+		if existingPhoto == nil {
+			// Already gone
+			// This is expected behavior the first time our device asks
+			// for changes after deleting a photo. CloudKit does not provide
+			// a serverChangeToken after we push changes (adds or deletes),
+			// so we just have to no-op this. Since we're in this scenerio
+			// because we asked for changes, our token should be up to date now.
+			print("Fetched a delete for a photo we don't have")
+			return
+		}
+		
 		photoDataSource.delete(photoWithID: photoID) { result in
 			
 			switch result {
@@ -186,6 +246,7 @@ extension PhotoManager: CloudChangeDelegate {
 				
 				self.imageStore.deleteImage(forKey: photoID)
 				print("Deleted photo with id '\(photoID)'")
+				self.delegate?.didRemove(photoID: photoID)
 			case let .failure(error):
 				
 				print("Error deleting photo \(error)")

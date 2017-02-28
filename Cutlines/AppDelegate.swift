@@ -50,12 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		searchViewController.photoDataSource = photoDataSource
 		
 		// Tell the photo manager to set everything up
-		photoManager.setup {
-			
-			DispatchQueue.main.async {
-				self.cutlinesViewController.refresh()
-			}
-		}
+		photoManager.setup()
 		
 		// Listen for push events
 		application.registerForRemoteNotifications()
@@ -76,10 +71,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			cloudManager.fetchChanges {
 				
 				completionHandler(UIBackgroundFetchResult.newData)
-				
-				DispatchQueue.main.async {
-					self.cutlinesViewController.refresh()
-				}
 			}
 		}
 	}
@@ -117,19 +108,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// was inactive. If the application was previously in the background, optionally refresh the user interface.
 		
 		// Kick off a check for any photos that were added through
-		// a share extension on a background thread.
-		// Refresh the main collection view if any were found.
+		// the share extension on a background thread.
 		DispatchQueue.global(qos: .background).async {
 			
-			let photosAdded = self.checkAppGroupForPhotos()
-			
-			if photosAdded == 0 {
-				return
-			}
-			
-			DispatchQueue.main.async {
-				self.cutlinesViewController.refresh()
-			}
+			self.checkAppGroupForPhotos()
 		}
 	}
 
@@ -152,12 +134,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	// Check for photos given to us by the share extension
 	// by checking for files in our shared group folder.
 	// TODO: Once our logic is moved to its on lib, we can remove this
-	private func checkAppGroupForPhotos() -> Int {
-		
-		var photosAdded = 0
+	private func checkAppGroupForPhotos() {
 		
 		if !FileManager.default.fileExists(atPath: appGroupURL.path) {
-			return 0
+			return
 		}
 		
 		let subPaths: [String]
@@ -165,7 +145,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			try subPaths = FileManager.default.contentsOfDirectory(atPath: appGroupURL.path)
 		} catch {
 			print("Unable to read contents of \(appGroupURL) - error: \(error)")
-			return 0
+			return
 		}
 		
 		let encoding = String.Encoding(rawValue: String.Encoding.utf8.rawValue)
@@ -206,7 +186,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			switch result {
 			case .success:
 				do {
-					photosAdded += 1
 					try FileManager.default.removeItem(atPath: fullSubPathURL.path)
 				} catch {
 					print("Unable to remove photo dir path \(fullSubPathURL) from app group dir: \(error)")
@@ -215,7 +194,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				print("Cutline save failed with error: \(error)")
 			}
 		}
-		
-		return photosAdded
 	}
 }

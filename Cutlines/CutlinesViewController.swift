@@ -14,7 +14,7 @@ class CutlinesViewController: UIViewController {
 	var photoDataSource: PhotoDataSource!
 	var photoManager: PhotoManager!
 	
-	@IBOutlet private var collectionView: UICollectionView!
+	@IBOutlet fileprivate var collectionView: UICollectionView!
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -22,6 +22,8 @@ class CutlinesViewController: UIViewController {
 		
 		collectionView.delegate = self
 		collectionView.dataSource = photoDataSource
+		
+		photoManager.delegate = self
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -102,7 +104,7 @@ class CutlinesViewController: UIViewController {
 	}
 }
 
-// MARK: UICollectionViewDelegateFlowLayout
+// MARK: UICollectionViewDelegateFlowLayout conformance
 extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
 	
 	func collectionView(_ collectionView: UICollectionView,
@@ -124,7 +126,7 @@ extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
 	}
 }
 
-// MARK: UICollectionViewDelegate
+// MARK: UICollectionViewDelegate conformance
 extension CutlinesViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -139,7 +141,7 @@ extension CutlinesViewController: UICollectionViewDelegate {
 	}
 }
 
-// MARK: ImagePickerControllerDelegate
+// MARK: ImagePickerControllerDelegate conformance
 extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -162,5 +164,19 @@ extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerC
 			
 			self.show(createViewController, sender: self)
 		}
+	}
+}
+
+// MARK: PhotoChangeDelegate conformance
+extension CutlinesViewController: PhotoChangeDelegate {
+	
+	func didAdd(photo: Photo) {
+		
+		refresh()
+	}
+	
+	func didRemove(photoID: String) {
+		
+		refresh()
 	}
 }

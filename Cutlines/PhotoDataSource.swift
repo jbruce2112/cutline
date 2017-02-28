@@ -42,6 +42,9 @@ class PhotoDataSource: NSObject {
 		let sortByDateAdded = NSSortDescriptor(key: #keyPath(Photo.dateAdded), ascending: true)
 		fetchRequest.sortDescriptors = [sortByDateAdded]
 		
+		// Filter out those that are marked for deletion
+		fetchRequest.predicate = NSPredicate(format: "\(#keyPath(Photo.markedDeleted)) == NO")
+		
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
 			
@@ -161,6 +164,7 @@ class PhotoDataSource: NSObject {
 		viewContext.perform {
 			
 			guard let photo = self.fetch(withID: id) else {
+				print("Photo not deleted from CoreData because we couldn't find it")
 				// Still successful even if we didn't have the photo
 				completion(.success(nil))
 				return

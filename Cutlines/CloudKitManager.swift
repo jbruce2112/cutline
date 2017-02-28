@@ -138,6 +138,9 @@ class CloudKitManager {
 		if !ready || photos.isEmpty {
 			return
 		}
+		for photo in photos {
+			print("Pushing NEW photo with caption \(photo.caption!)")
+		}
 		
 		let batchSize = photos.count
 		let records = photos.map { self.createRecord(from: $0) }
@@ -198,6 +201,7 @@ class CloudKitManager {
 			applyChanges(from: photo, to: rec)
 			
 			records.append(rec)
+			print("Pushing UPDATE for photo with caption \(photo.caption!)")
 		}
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
@@ -309,6 +313,28 @@ class CloudKitManager {
 		privateDB.add(changeOperation)
 	}
 	
+	// MARK: Functions for converting between NSData and CKRecord
+	// (We store only the system fields of the CKRecord)
+	func data(from record: CKRecord) -> NSData {
+		
+		let archivedData = NSMutableData()
+		let archiver = NSKeyedArchiver(forWritingWith: archivedData)
+		
+		archiver.requiresSecureCoding = true
+		record.encodeSystemFields(with: archiver)
+		archiver.finishEncoding()
+		
+		return archivedData
+	}
+	
+	func record(from archivedData: NSData) -> CKRecord {
+		
+		let unarchiver = NSKeyedUnarchiver(forReadingWith: archivedData as Data)
+		unarchiver.requiresSecureCoding = true
+		
+		return CKRecord(coder: unarchiver)!
+	}
+	
 	// MARK: Private functions
 	private func loadSyncState() -> SyncState {
 		
@@ -353,7 +379,9 @@ class CloudKitManager {
 		
 		operation.recordWithIDWasDeletedBlock = { (recordID, _) in
 		
-			self.delegate?.didRemove(photoID: recordID.recordName)
+			let photoID = recordID.recordName
+			print("Fetched delete for photo with ID \(photoID)")
+			self.delegate?.didRemove(photoID: photoID)
 		}
 		
 		operation.recordZoneChangeTokensUpdatedBlock = { (recordZoneID, newChangeToken, lastTokenData) in
@@ -361,7 +389,7 @@ class CloudKitManager {
 			self.syncState.zoneChangeToken = newChangeToken
 		}
 		
-		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, more, error) in
+		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, _, error) in
 			
 			if let error = error {
 				print("Got error fetching record changes \(error)")
@@ -512,28 +540,6 @@ class CloudKitManager {
 		// Only apply changes from allowed fields
 		record[captionKey] = photo.caption! as CKRecordValue?
 		record[lastUpdatedKey] = photo.lastUpdated
-	}
-	
-	// MARK: Functions for converting between NSData and CKRecord
-	// (We store only the system fields of the CKRecord
-	private func data(from record: CKRecord) -> NSData {
-		
-		let archivedData = NSMutableData()
-		let archiver = NSKeyedArchiver(forWritingWith: archivedData)
-		
-		archiver.requiresSecureCoding = true
-		record.encodeSystemFields(with: archiver)
-		archiver.finishEncoding()
-		
-		return archivedData
-	}
-	
-	private func record(from archivedData: NSData) -> CKRecord {
-		
-		let unarchiver = NSKeyedUnarchiver(forReadingWith: archivedData as Data)
-		unarchiver.requiresSecureCoding = true
-		
-		return CKRecord(coder: unarchiver)!
 	}
 	
 	// MARK: Dev/testing functions - for sanity checking
