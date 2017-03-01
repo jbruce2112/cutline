@@ -175,23 +175,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				continue
 			}
 			
-			let id = UUID().uuidString
-			
-			self.imageStore.setImage(image, forKey: id)
-			
 			// Just set dateTaken to now(), since we dont' have the PHAsset in this context
 			let dateTaken = Date()
-			let result = self.photoDataSource.addPhoto(id: id, caption: caption, dateTaken: dateTaken)
-			
-			switch result {
-			case .success:
-				do {
-					try FileManager.default.removeItem(atPath: fullSubPathURL.path)
-				} catch {
-					print("Unable to remove photo dir path \(fullSubPathURL) from app group dir: \(error)")
+			self.photoManager.add(image: image, caption: caption, dateTaken: dateTaken) { result in
+				
+				switch result {
+				case .success:
+					do {
+						try FileManager.default.removeItem(atPath: fullSubPathURL.path)
+					} catch {
+						print("Unable to remove photo dir path \(fullSubPathURL) from app group dir: \(error)")
+					}
+				case let .failure(error):
+					print("Photo add from share extension failed with error: \(error)")
 				}
-			case let .failure(error):
-				print("Cutline save failed with error: \(error)")
 			}
 		}
 	}

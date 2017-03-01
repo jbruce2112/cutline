@@ -370,6 +370,7 @@ class CloudKitManager {
 		operation.recordChangedBlock = { (record) in
 		
 			guard let result = self.getPhoto(from: record) else {
+				print("Unable to get photo from record \(record.recordID.recordName)")
 				return
 			}
 			
@@ -483,7 +484,6 @@ class CloudKitManager {
 		photo.lastUpdated = record[self.lastUpdatedKey] as! NSDate?
 		photo.photoID = record[self.photoIDKey] as! String?
 		photo.ckRecord = data(from: record)
-		photo.inCloud = true
 		
 		// sanity check
 		let recIDEqual = record.recordID.recordName == photo.photoID

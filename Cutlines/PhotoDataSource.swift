@@ -57,25 +57,22 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
-	func fetchOnlyLocal(limit: Int) -> [Photo] {
+	func fetchOnlyLocal(limit: Int?) -> [Photo] {
 		
-		var localPhotos = [Photo]()
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.ckRecord)) == nil")
+		return fetch(withPredicate: predicate, limit: limit)
+	}
+	
+	func fetchModified(limit: Int?) -> [Photo] {
 		
-		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-		fetchRequest.predicate = NSPredicate(format: "\(#keyPath(Photo.inCloud)) == NO")
-		fetchRequest.fetchLimit = limit
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.dirty)) == YES")
+		return fetch(withPredicate: predicate, limit: limit)
+	}
+	
+	func fetchDeleted(limit: Int?) -> [Photo] {
 		
-		let viewContext = persistantContainer.viewContext
-		viewContext.performAndWait {
-			
-			do {
-				try localPhotos = viewContext.fetch(fetchRequest)
-			} catch {
-				print("Error fetching local photos \(error)")
-			}
-		}
-		
-		return localPhotos
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.markedDeleted)) == YES")
+		return fetch(withPredicate: predicate, limit: limit)
 	}
 	
 	func fetch(withID id: String) -> Photo? {
@@ -97,24 +94,10 @@ class PhotoDataSource: NSObject {
 		return result.first
 	}
 	
-	// Non-blocking
 	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
 		
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
-			
-			// Call the blocking version
-			let result = self.addPhoto(id: id, caption: caption, dateTaken: dateTaken)
-			completion(result)
-		}
-	}
-	
-	// Blocking
-	func addPhoto(id: String, caption: String, dateTaken: Date) -> UpdateResult {
-		
-		let viewContext = persistantContainer.viewContext
-		var result: UpdateResult!
-		viewContext.performAndWait {
 			
 			assert(caption != captionPlaceholder)
 			
@@ -125,20 +108,17 @@ class PhotoDataSource: NSObject {
 			photo.dateTaken = dateTaken as NSDate
 			photo.dateAdded = NSDate()
 			photo.lastUpdated = NSDate()
-			photo.inCloud = false
 			
 			viewContext.insert(photo)
 			
 			do {
 				try viewContext.save()
-				result = .success(photo)
+				completion(.success(photo))
 			} catch {
 				viewContext.rollback()
-				result = .failure(error)
+				completion(.failure(error))
 			}
 		}
-		
-		return result
 	}
 	
 	func addPhoto(_ photo: Photo, completion: @escaping (UpdateResult) -> Void) {
@@ -181,6 +161,24 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
+	func delete(photos: [Photo], completion: ((UpdateResult) -> Void)?) {
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.perform {
+			
+			for photo in photos {
+				viewContext.delete(photo)
+			}
+			
+			do {
+				try viewContext.save()
+				completion?(.success(nil))
+			} catch {
+				completion?(.failure(error))
+			}
+		}
+	}
+	
 	// Expose the CoreData Photo type for others
 	// to populate and pass around before saving (e.g. CloudManager)
 	func allocEmptyPhoto() -> Photo {
@@ -201,6 +199,30 @@ class PhotoDataSource: NSObject {
 				print("Error saving context \(error)")
 			}
 		}
+	}
+	
+	private func fetch(withPredicate predicate: NSPredicate, limit: Int?) -> [Photo] {
+		
+		var localPhotos = [Photo]()
+		
+		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
+		fetchRequest.predicate = predicate
+		
+		if let limit = limit {
+			fetchRequest.fetchLimit = limit
+		}
+		
+		let viewContext = persistantContainer.viewContext
+		viewContext.performAndWait {
+			
+			do {
+				try localPhotos = viewContext.fetch(fetchRequest)
+			} catch {
+				print("Error fetching photos \(error)")
+			}
+		}
+		
+		return localPhotos
 	}
 }
 

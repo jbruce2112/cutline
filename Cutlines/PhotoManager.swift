@@ -9,6 +9,11 @@
 import Foundation
 import UIKit
 
+enum PhotoUpdateResult {
+	case success
+	case failure(Error)
+}
+
 // MARK: PhotoChangeDelegate
 protocol PhotoChangeDelegate: class {
 	
@@ -32,16 +37,17 @@ class PhotoManager {
 			
 			// Once we're set up, fetch any
 			// changes, and then push up any
-			// remaining photos
+			// changes of our own
 			self.cloudManager.fetchChanges {
 				
+				self.pushDeletedPhotos()
+				self.pushModifiedPhotos()
 				self.pushNewLocalPhotos()
-				// TODO: Push up modified photos
 			}
 		}
 	}
 	
-	func add(image: UIImage, caption: String, dateTaken: Date, completion: (() -> Void)?) {
+	func add(image: UIImage, caption: String, dateTaken: Date, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		let id = NSUUID().uuidString
 		imageStore.setImage(image, forKey: id)
@@ -58,13 +64,12 @@ class PhotoManager {
 					// TODO: error handling
 					switch cloudResult {
 					case .success:
-						photo!.inCloud = true
+						// Save the CKRecord that the photo now has
 						self.photoDataSource.save()
-					case .failure:
-						break
+						completion?(.success)
+					case let .failure(error):
+						completion?(.failure(error))
 					}
-					
-					completion?()
 				}
 			case let .failure(error):
 				print("Cutline save failed with error: \(error)")
@@ -72,7 +77,7 @@ class PhotoManager {
 		}
 	}
 	
-	func update(photo: Photo, completion: (() -> Void)?) {
+	func update(photo: Photo, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		photo.dirty = true
 		photoDataSource.save()
@@ -87,13 +92,14 @@ class PhotoManager {
 				photo.dirty = false
 				self.photoDataSource.save()
 				print("photo un-marked dirty")
-			case .failure:
-				break
+				completion?(.success)
+			case let .failure(error):
+				completion?(.failure(error))
 			}
 		}
 	}
 	
-	func delete(photo: Photo, completion: (() -> Void)?) {
+	func delete(photo: Photo, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		// Mark this photo deleted locally before we
 		// attempt the cloud call, so we can filter it out
@@ -116,14 +122,15 @@ class PhotoManager {
 						
 						self.imageStore.deleteImage(forKey: photoID)
 						print("Photo deleted locally")
+						completion?(.success)
 					case let .failure(error):
 						print("Photo delete failed locally \(error)")
+						completion?(.failure(error))
 					}
 				}
-				completion?()
 			case let .failure(error):
 				print("Error deleting photo from cloud \(error)")
-				break
+				completion?(.failure(error))
 			}
 		}
 	}
@@ -152,16 +159,66 @@ class PhotoManager {
 			switch result {
 			case .success:
 				
-				for addedPhoto in localPhotos {
-					// TODO: infer this from the ckRecord field
-					addedPhoto.inCloud = true
-				}
-				
+				// Save the CKRecords that were added to the photos
 				self.photoDataSource.save()
 				
 				// Push another batch
-				self.pushNewLocalPhotos()
+				self.pushNewLocalPhotos(batchSize: batchSize)
 				
+			case let .failure(error):
+				print("Not pushing any more photos due to error \(error)")
+			}
+		}
+	}
+	
+	private func pushModifiedPhotos(batchSize: Int = 5) {
+		
+		let modifiedPhotos = photoDataSource.fetchModified(limit: batchSize)
+		
+		if modifiedPhotos.isEmpty {
+			return
+		}
+		
+		cloudManager.pushModified(photos: modifiedPhotos) { result in
+			
+			// TODO: error handling
+			switch result {
+			case .success:
+				
+				// Save the updated CKRecords that were added to the photos
+				self.photoDataSource.save()
+				
+				// Push another batch
+				self.pushModifiedPhotos(batchSize: batchSize)
+				
+			case let .failure(error):
+				print("Not pushing any more photos due to error \(error)")
+			}
+		}
+	}
+	
+	private func pushDeletedPhotos() {
+		
+		let deletedPhotos = photoDataSource.fetchDeleted(limit: nil)
+		
+		if deletedPhotos.isEmpty {
+			return
+		}
+		
+		cloudManager.delete(photos: deletedPhotos) { result in
+			
+			// TODO: error handling
+			switch result {
+			case .success:
+				
+				self.photoDataSource.delete(photos: deletedPhotos) { result in
+					switch result {
+					case .success:
+						break
+					case let .failure(error):
+						print("Error deleting photos from dataSource \(error)")
+					}
+				}
 			case let .failure(error):
 				print("Not pushing any more photos due to error \(error)")
 			}
@@ -184,7 +241,6 @@ extension PhotoManager: CloudChangeDelegate {
 				switch result {
 				case .success:
 					
-					modifiedPhoto.inCloud = true
 					self.imageStore.setImage(image, forKey: modifiedPhoto.photoID!)
 					print("New photo added with caption '\(modifiedPhoto.caption!)'")
 					self.delegate?.didAdd(photo: modifiedPhoto)
@@ -195,7 +251,7 @@ extension PhotoManager: CloudChangeDelegate {
 			}
 		} else {
 			
-			assert(existingPhoto!.inCloud)
+			assert(existingPhoto!.ckRecord != nil)
 			
 			let cloudRecord = cloudManager.record(from: modifiedPhoto.ckRecord!)
 			let localRecord = cloudManager.record(from: existingPhoto!.ckRecord!)

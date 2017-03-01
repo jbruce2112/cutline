@@ -132,7 +132,7 @@ class CutlineInfoViewController: UIViewController {
 			
 			photo.caption = caption
 			photo.lastUpdated = NSDate()
-			photoManager.update(photo: photo) {}
+			photoManager.update(photo: photo, completion: nil)
 		}
 		
 		// Show the original tab bar again
