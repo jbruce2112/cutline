@@ -49,8 +49,7 @@ extension UIView {
 		
 		let theme = Theme()
 		
-		let appDelegate = UIApplication.shared.delegate as! AppDelegate
-		if appDelegate.defaults.bool(forKey: Key.darkMode.rawValue) {
+		if appGroupDefaults.bool(forKey: Key.darkMode.rawValue) {
 			
 			theme.backgroundColor = .black
 			theme.textColor = theme.systemDefaultColor

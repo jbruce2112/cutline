@@ -11,14 +11,16 @@ import UIKit
 class CutlinesViewController: UIViewController {
 	
 	// MARK: Properties
-	var photoDataSource: PhotoDataSource!
 	var photoManager: PhotoManager!
+	fileprivate var photoDataSource: PhotoDataSource!
 	
 	@IBOutlet fileprivate var collectionView: UICollectionView!
 	
 	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		photoDataSource = photoManager.photoDataSource
 		
 		collectionView.delegate = self
 		collectionView.dataSource = photoDataSource

@@ -15,41 +15,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
 	
-	private let photoDataSource = PhotoDataSource()
-	private let imageStore = ImageStore()
-	private let cloudManager = CloudKitManager()
 	private let photoManager = PhotoManager()
-	
-	let defaults = UserDefaults.standard
-	
+		
 	private var tabBarController: UITabBarController!
 	private var navigationControllers: [UINavigationController]!
-	private var cutlinesViewController: CutlinesViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
 		tabBarController = window!.rootViewController as! UITabBarController
 		navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
 		
-		cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
+		let cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
 		let searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
 		
-		// Inject our objects into the managers and initial view controllers
-		cloudManager.delegate = photoManager
-		cloudManager.photoDataSource = photoDataSource
-		cloudManager.imageStore = imageStore
-		
-		photoManager.cloudManager = cloudManager
-		photoManager.photoDataSource = photoDataSource
-		photoManager.imageStore = imageStore
-		
+		// Inject the manager into the initial view controllers
 		cutlinesViewController.photoManager = photoManager
 		searchViewController.photoManager = photoManager
 		
-		cutlinesViewController.photoDataSource = photoDataSource
-		searchViewController.photoDataSource = photoDataSource
-		
 		// Tell the photo manager to set everything up
+		// required for cloud communication, syncing and storage
 		photoManager.setup()
 		
 		// Listen for push events
@@ -66,9 +50,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		let dict = userInfo as! [String: NSObject]
 		let notification = CKNotification(fromRemoteNotificationDictionary: dict)
-		if notification.subscriptionID == cloudManager.subscriptionID {
+		if notification.subscriptionID == photoManager.cloudManager.subscriptionID {
 			
-			cloudManager.fetchChanges {
+			photoManager.cloudManager.fetchChanges {
 				
 				completionHandler(UIBackgroundFetchResult.newData)
 			}
@@ -95,7 +79,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// and store enough application state information to restore your application to its
 		// current state in case it is terminated later. If your application supports 
 		// background execution, this method is called instead of applicationWillTerminate: when the user quits.
-		cloudManager.saveSyncState()
+		photoManager.cloudManager.saveSyncState()
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {
@@ -106,13 +90,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationDidBecomeActive(_ application: UIApplication) {
 		// Restart any tasks that were paused (or not yet started) while the application
 		// was inactive. If the application was previously in the background, optionally refresh the user interface.
-		
-		// Kick off a check for any photos that were added through
-		// the share extension on a background thread.
-		DispatchQueue.global(qos: .background).async {
-			
-			self.checkAppGroupForPhotos()
-		}
 	}
 
 	func applicationWillTerminate(_ application: UIApplication) {
@@ -128,68 +105,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		for controller in navigationControllers {
 			controller.navigationBar.setTheme()
-		}
-	}
-	
-	// Check for photos given to us by the share extension
-	// by checking for files in our shared group folder.
-	// TODO: Once our logic is moved to its on lib, we can remove this
-	private func checkAppGroupForPhotos() {
-		
-		if !FileManager.default.fileExists(atPath: appGroupURL.path) {
-			return
-		}
-		
-		let subPaths: [String]
-		do {
-			try subPaths = FileManager.default.contentsOfDirectory(atPath: appGroupURL.path)
-		} catch {
-			print("Unable to read contents of \(appGroupURL) - error: \(error)")
-			return
-		}
-		
-		let encoding = String.Encoding(rawValue: String.Encoding.utf8.rawValue)
-		
-		for subPath in subPaths {
-			
-			let fullSubPathURL = appGroupURL.appendingPathComponent(subPath)
-			
-			if !fullSubPathURL.hasDirectoryPath {
-				continue
-			}
-			
-			let imagePath = fullSubPathURL.appendingPathComponent(sharedPhotoImageSuffix).path
-			let captionPath = fullSubPathURL.appendingPathComponent(sharedPhotoCaptionSuffix).path
-			
-			let caption: String
-			do {
-				try caption = String(contentsOfFile: captionPath, encoding: encoding)
-			} catch {
-				print("Couldn't read caption file at \(captionPath), error: \(error)")
-				continue
-			}
-			
-			guard
-				let imageURL = URL(string: imagePath),
-				let image = UIImage(contentsOfFile: imageURL.absoluteString) else {
-				continue
-			}
-			
-			// Just set dateTaken to now(), since we dont' have the PHAsset in this context
-			let dateTaken = Date()
-			self.photoManager.add(image: image, caption: caption, dateTaken: dateTaken) { result in
-				
-				switch result {
-				case .success:
-					do {
-						try FileManager.default.removeItem(atPath: fullSubPathURL.path)
-					} catch {
-						print("Unable to remove photo dir path \(fullSubPathURL) from app group dir: \(error)")
-					}
-				case let .failure(error):
-					print("Photo add from share extension failed with error: \(error)")
-				}
-			}
 		}
 	}
 }

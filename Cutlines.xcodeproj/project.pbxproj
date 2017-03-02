@@ -17,6 +17,13 @@
 		5244DE8A1E51323E00C9C9ED /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244DE891E51323E00C9C9ED /* Common.swift */; };
 		5244DE8B1E51323E00C9C9ED /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244DE891E51323E00C9C9ED /* Common.swift */; };
 		524530621E61C82D00305843 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
+		52589E0F1E67B93600C8BA29 /* PhotoDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751F91E4178A100060607 /* PhotoDataSource.swift */; };
+		52589E101E67B93600C8BA29 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
+		52589E111E67BB7900C8BA29 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* Key.swift */; };
+		52589E121E67BC2B00C8BA29 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FB1E417C4900060607 /* ImageStore.swift */; };
+		52589E131E67BC2F00C8BA29 /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
+		52589E141E67BC4F00C8BA29 /* Cutlines.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 523751F61E41744F00060607 /* Cutlines.xcdatamodeld */; };
+		52589E151E67C5D200C8BA29 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D958E11E5FB73500D7B4EE /* CloudKit.framework */; };
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
 		525F4D041E4AAA34004615FD /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525F4D021E4AAA34004615FD /* MainInterface.storyboard */; };
@@ -95,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52589E151E67C5D200C8BA29 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +266,12 @@
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					52A03E2F1E4028FE00A275AD = {
@@ -342,8 +356,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52589E111E67BB7900C8BA29 /* Key.swift in Sources */,
+				52589E101E67B93600C8BA29 /* PhotoManager.swift in Sources */,
 				5244DE8B1E51323E00C9C9ED /* Common.swift in Sources */,
 				525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */,
+				52589E141E67BC4F00C8BA29 /* Cutlines.xcdatamodeld in Sources */,
+				52589E131E67BC2F00C8BA29 /* CloudKitManager.swift in Sources */,
+				52589E0F1E67B93600C8BA29 /* PhotoDataSource.swift in Sources */,
+				52589E121E67BC2B00C8BA29 /* ImageStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

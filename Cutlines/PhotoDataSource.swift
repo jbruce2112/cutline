@@ -24,7 +24,10 @@ class PhotoDataSource: NSObject {
 	
 	private let persistantContainer: NSPersistentContainer = {
 		
+		let persistantStoreURL = appGroupURL.appendingPathComponent("PhotoStore")
+		
 		let container = NSPersistentContainer(name: "Cutlines")
+		container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: persistantStoreURL)]
 		container.loadPersistentStores { (_, error) in
 			
 			if let error = error {

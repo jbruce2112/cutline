@@ -16,6 +16,8 @@ class ShareViewController: SLComposeServiceViewController {
 	var imageURL: URL!
 	var image: UIImage!
 	
+	var photoManager = PhotoManager()
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -61,50 +63,33 @@ class ShareViewController: SLComposeServiceViewController {
 			self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
 		}
 		
-		let imageData: Data
-		
-		// If the provider gave us a UIImage, try to convert it to a Data
-		if image != nil, let data = UIImageJPEGRepresentation(image, 1.0) {
+		// If the provider didn't give us a UIImage, read the contents of the URL we were given
+		if image == nil {
 			
-			imageData = data
-		} else {
+			// Note: The URL from the image is not an ALAsset URL, nor is it possible to
+			// reliably derive one from it, since the NSItemProvider may be from any image source.
+			// So, we just save the image contents to disk along with the caption and load them up when the app starts again.
+			image = UIImage(contentsOfFile: imageURL.path)
 			
-			// Otherwise, read the contents of the URL we were given
-			do {
-				// Note: The URL from the image is not an ALAsset URL, nor is it possible to
-				// reliably derive one from it, since the NSItemProvider may be from any image source.
-				// So, we just save the image contents to disk along with the caption and load them up when the app starts again.
-				try imageData = Data(contentsOf: imageURL)
-			} catch {
-				print("Error loading image from imageURL \(imageURL.path) error: \(error)")
+			if image == nil {
+				
+				print("Error loading image from imageURL \(imageURL.path)")
 				return
 			}
 		}
 		
-		let encoding = String.Encoding.utf8
-		
-		// Create a parent folder to hold each file (caption and image data) for the photo
-		let sharedPhotoURL = appGroupURL.appendingPathComponent(UUID().uuidString)
-		
-		do {
-			try FileManager.default.createDirectory(at: sharedPhotoURL,
-			                                        withIntermediateDirectories: true, attributes: nil)
-		} catch {
-			print("Error creating parent dir for shared photo in app group error: \(error)")
-		}
-		
-		let newImageURL = sharedPhotoURL.appendingPathComponent(sharedPhotoImageSuffix)
-		do {
-			try imageData.write(to: newImageURL)
-		} catch {
-			print("File was unable to be written to \(newImageURL.absoluteString) error: \(error)")
-		}
-		
-		let captionURL = sharedPhotoURL.appendingPathComponent(sharedPhotoCaptionSuffix)
-		do {
-			try self.contentText.write(to: captionURL, atomically: true, encoding: encoding)
-		} catch {
-			print("Caption was unable to be written to \(captionURL.absoluteString) error: \(error)")
+		photoManager.setupNoSync {
+			
+			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date()) { result in
+				
+				switch result {
+					
+				case .success:
+					print("Image added to photomanager from extension successfully")
+				case let .failure(error):
+					print("Failed to add image to photomanager from extension \(error)")
+				}
+			}
 		}
     }
 }

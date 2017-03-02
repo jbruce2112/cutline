@@ -24,11 +24,18 @@ protocol PhotoChangeDelegate: class {
 class PhotoManager {
 	
 	// MARK: Properties
-	var cloudManager: CloudKitManager!
-	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!
+	var cloudManager = CloudKitManager()
+	var photoDataSource = PhotoDataSource()
+	var imageStore = ImageStore()
 	
 	weak var delegate: PhotoChangeDelegate?
+	
+	init() {
+		cloudManager.delegate = self
+		
+		cloudManager.imageStore = imageStore
+		cloudManager.photoDataSource = photoDataSource
+	}
 	
 	// MARK: Functions
 	func setup() {
@@ -44,6 +51,14 @@ class PhotoManager {
 				self.pushModifiedPhotos()
 				self.pushNewLocalPhotos()
 			}
+		}
+	}
+	
+	func setupNoSync(completion: @escaping () -> Void) {
+		
+		cloudManager.setupNoSync {
+			
+			completion()
 		}
 	}
 	

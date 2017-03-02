@@ -8,10 +8,14 @@
 
 import Foundation
 
+let appGroupDomain = "group.com.jbruce32.Cutlines"
+
+let appGroupDefaults = UserDefaults(suiteName: appGroupDomain)!
+
 let appGroupURL = {
 	
 	return FileManager.default.containerURL(
-		forSecurityApplicationGroupIdentifier: "group.com.jbruce32.Cutlines")!.appendingPathComponent("SharedPhotos")
+		forSecurityApplicationGroupIdentifier: appGroupDomain)!
 }()
 
 let sharedPhotoImageSuffix = "image"

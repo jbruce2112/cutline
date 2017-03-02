@@ -126,6 +126,18 @@ class CloudKitManager {
 		}
 	}
 	
+	// Setup for users of this class who don't need syncing/notifications
+	func setupNoSync(completion: @escaping () -> Void) {
+		
+		createCustomZone {
+			
+			// We're ready to push once this is set
+			self.ready = self.syncState.recordZone != nil
+				
+			completion()
+		}
+	}
+	
 	func saveSyncState() {
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive)
@@ -177,7 +189,7 @@ class CloudKitManager {
 		
 		operation.qualityOfService = .utility
 		operation.allowsCellularAccess =
-			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
 		privateDB.add(operation)
 	}
@@ -308,7 +320,7 @@ class CloudKitManager {
 		
 		changeOperation.qualityOfService = .utility
 		changeOperation.allowsCellularAccess =
-			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
 		privateDB.add(changeOperation)
 	}
@@ -403,7 +415,7 @@ class CloudKitManager {
 		
 		operation.qualityOfService = .utility
 		operation.allowsCellularAccess =
-			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
 		privateDB.add(operation)
 	}
