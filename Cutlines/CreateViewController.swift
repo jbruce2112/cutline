@@ -30,6 +30,9 @@ class CreateViewController: UIViewController {
 		captionView.layer.borderWidth = 1
 		captionView.layer.borderColor = UIColor.black.cgColor
 		
+		// Don't mess with the captionView insets
+		automaticallyAdjustsScrollViewInsets = false
+		
 		// Let the captionView fill 80% of the available height of its parent
 		let topConstraint = view.constraints.first { $0.identifier == "captionViewTopConstraint" }
 		topConstraint!.constant = view.bounds.height * 0.1
