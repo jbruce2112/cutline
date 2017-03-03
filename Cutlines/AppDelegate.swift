@@ -19,13 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 	private var tabBarController: UITabBarController!
 	private var navigationControllers: [UINavigationController]!
+	private var cutlinesViewController: CutlinesViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
 		tabBarController = window!.rootViewController as! UITabBarController
 		navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
 		
-		let cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
+		cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
 		let searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
 		
 		// Inject the manager into the initial view controllers
@@ -85,6 +86,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		// Called as part of the transition from the background to the active state;
 		// here you can undo many of the changes made on entering the background.
+		
+		cutlinesViewController.refresh()
 	}
 
 	func applicationDidBecomeActive(_ application: UIApplication) {

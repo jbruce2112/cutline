@@ -97,6 +97,37 @@ class PhotoDataSource: NSObject {
 		return result.first
 	}
 	
+	func addPhoto(_ photo: CloudPhoto, completion: @escaping (UpdateResult) -> Void) {
+		
+		addPhoto(id: photo.photoID!, caption: photo.caption!, dateTaken: photo.dateTaken! as Date) { result in
+		
+			switch result {
+				
+			case let .success(newPhoto):
+				
+				let viewContext = self.persistantContainer.viewContext
+				
+				// Set the remaining properties
+				newPhoto!.ckRecord = photo.ckRecord
+				newPhoto!.dateAdded = photo.dateAdded
+				newPhoto!.lastUpdated = photo.lastUpdated
+				
+				do {
+					
+					try viewContext.save()
+					completion(.success(newPhoto))
+				} catch {
+					
+					completion(.failure(error))
+					print("Error saving context \(error)")
+				}
+				
+			case let .failure(error):
+				completion(.failure(error))
+			}
+		}
+	}
+	
 	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
 		
 		let viewContext = persistantContainer.viewContext
@@ -111,23 +142,6 @@ class PhotoDataSource: NSObject {
 			photo.dateTaken = dateTaken as NSDate
 			photo.dateAdded = NSDate()
 			photo.lastUpdated = NSDate()
-			
-			viewContext.insert(photo)
-			
-			do {
-				try viewContext.save()
-				completion(.success(photo))
-			} catch {
-				viewContext.rollback()
-				completion(.failure(error))
-			}
-		}
-	}
-	
-	func addPhoto(_ photo: Photo, completion: @escaping (UpdateResult) -> Void) {
-		
-		let viewContext = persistantContainer.viewContext
-		viewContext.perform {
 			
 			viewContext.insert(photo)
 			
@@ -180,14 +194,6 @@ class PhotoDataSource: NSObject {
 				completion?(.failure(error))
 			}
 		}
-	}
-	
-	// Expose the CoreData Photo type for others
-	// to populate and pass around before saving (e.g. CloudManager)
-	func allocEmptyPhoto() -> Photo {
-		
-		let entity = persistantContainer.managedObjectModel.entitiesByName[entityName]
-		return NSManagedObject(entity: entity!, insertInto: nil) as! Photo
 	}
 	
 	func save() {

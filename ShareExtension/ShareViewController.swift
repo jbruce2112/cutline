@@ -58,11 +58,6 @@ class ShareViewController: SLComposeServiceViewController {
     override func didSelectPost() {
         // This is called after the user selects Post.
 		
-		defer {
-			// Inform the host that we're done when exiting this function, so it un-blocks its UI.
-			self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-		}
-		
 		// If the provider didn't give us a UIImage, read the contents of the URL we were given
 		if image == nil {
 			
@@ -74,13 +69,16 @@ class ShareViewController: SLComposeServiceViewController {
 			if image == nil {
 				
 				print("Error loading image from imageURL \(imageURL.path)")
+				
+				// Inform the host that we're done when exiting this function, so it un-blocks its UI.
+				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
 				return
 			}
 		}
 		
 		photoManager.setupNoSync {
 			
-			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date()) { result in
+			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date(), qos: .userInitiated) { result in
 				
 				switch result {
 					
@@ -89,6 +87,12 @@ class ShareViewController: SLComposeServiceViewController {
 				case let .failure(error):
 					print("Failed to add image to photomanager from extension \(error)")
 				}
+				
+				// Inform the host that we're done when exiting this function, so it un-blocks its UI.
+				//
+				// The extension seems to be deallocated after this,
+				// so we can't just call this outside this completion handler
+				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
 			}
 		}
     }

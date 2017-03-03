@@ -172,12 +172,12 @@ extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerC
 // MARK: PhotoChangeDelegate conformance
 extension CutlinesViewController: PhotoChangeDelegate {
 	
-	func didAdd(photo: Photo) {
+	func didAdd() {
 		
 		refresh()
 	}
 	
-	func didRemove(photoID: String) {
+	func didRemove() {
 		
 		refresh()
 	}
