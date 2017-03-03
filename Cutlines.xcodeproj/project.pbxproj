@@ -241,6 +241,7 @@
 				52A03E2E1E4028FE00A275AD /* Resources */,
 				525F4D0C1E4AAA34004615FD /* Embed App Extensions */,
 				52AC6D121E5A88A800C63013 /* ShellScript */,
+				52EC6B901E692EBB0094109C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -281,6 +282,7 @@
 					52A03E2F1E4028FE00A275AD = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = UVXX33WP85;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -352,6 +354,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi";
+		};
+		52EC6B901E692EBB0094109C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "INFO_PLIST=\"$BUILT_PRODUCTS_DIR/$INFOPLIST_PATH\"\ntouch $INFO_PLIST";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -562,12 +577,14 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cutlines/Cutlines.entitlements;
 				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = Cutlines/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -577,6 +594,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Cutlines/Cutlines.entitlements;
 				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = Cutlines/Info.plist;

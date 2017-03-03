@@ -19,22 +19,10 @@ class SettingsViewController: UITableViewController {
 	@IBOutlet private var cellSyncSwitch: UISwitch!
 	@IBOutlet private var darkModeSwitch: UISwitch!
 	
-	let version: String = {
-		
-		guard
-			let infoDict = Bundle.main.infoDictionary,
-			let build = infoDict[kCFBundleVersionKey as String] as? String,
-			let version = infoDict["CFBundleShortVersionString"] as? String else {
-				return "0.0.0"
-		}
-		
-		return "Version \(version).\(build)"
-	}()
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		versionLabel.text = version
+		versionLabel.text = getVersion()
 		
 		let linkTitle = "Icons8"
 		let text = "Icon pack by \(linkTitle)" as NSString
@@ -77,6 +65,49 @@ class SettingsViewController: UITableViewController {
 		// force the section headers to refresh
 		tableView.reloadSections(IndexSet(integer: 0), with: .none)
 		tableView.reloadSections(IndexSet(integer: 1), with: .none)
+	}
+	
+	private func getBuildDate() -> Date {
+		
+		guard
+			let infoPath = Bundle.main.path(forResource: "Info.plist", ofType: nil),
+			let infoAttr = try? FileManager.default.attributesOfItem(atPath: infoPath),
+			let infoDate = infoAttr[.modificationDate] as? Date else {
+				
+				return Date()
+		}
+		
+		return infoDate
+	}
+	
+	private func getBuildVersion() -> String {
+		
+		guard
+			let infoDict = Bundle.main.infoDictionary,
+			let build = infoDict[kCFBundleVersionKey as String] as? String,
+			let version = infoDict["CFBundleShortVersionString"] as? String else {
+				return "0.0.0"
+		}
+		
+		return "\(version).\(build)"
+	}
+	
+	private func getVersion() -> String {
+		
+		let formatter = DateFormatter()
+		formatter.locale = Locale(identifier: "en_US")
+		formatter.dateStyle = .medium
+		formatter.timeStyle = .medium
+		
+		let buildDateString = formatter.string(from: getBuildDate())
+		
+		let version = "Version \(getBuildVersion())"
+		
+		#if DEBUG
+			return "\(version) built on \(buildDateString)"
+		#else
+			return version
+		#endif
 	}
 	
 	// MARK: UI Actions
