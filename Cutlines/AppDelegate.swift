@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Inject the manager into the initial view controllers
 		cutlinesViewController.photoManager = photoManager
 		searchViewController.photoManager = photoManager
-		
+				
 		// Tell the photo manager to set everything up
 		// required for cloud communication, syncing and storage
 		photoManager.setup()

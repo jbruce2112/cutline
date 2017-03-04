@@ -76,11 +76,11 @@ class CloudKitManager {
 	weak var delegate: CloudChangeDelegate?
 	
 	init() {
-
+		
 		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
 		syncStateArchive = cacheDir.appendingPathComponent("syncState.archive").path
 		
-		container = CKContainer.default()
+		container = CKContainer(identifier: cloudContainerDomain)
 		privateDB = container.privateCloudDatabase
 		
 		syncState = loadSyncState()
@@ -120,20 +120,20 @@ class CloudKitManager {
 	}
 	
 	
-	func pushNew(photos: [CloudPhoto], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
+	func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
 		
-		if !ready || photos.isEmpty {
+		if !ready || pairs.isEmpty {
 			return
 		}
-		for photo in photos {
-			print("Pushing NEW photo with caption \(photo.caption!)")
+		for pair in pairs {
+			print("Pushing NEW photo with caption \(pair.photo.caption!)")
 		}
 		
-		let batchSize = photos.count
+		let batchSize = pairs.count
 		
 		// Create a CKRecord for each photo
 		let zoneID = syncState.recordZone!.zoneID
-		let records = photos.map { $0.getRecord(withZoneID: zoneID) }
+		let records = pairs.map { CloudPhoto.createRecord(fromPair: $0, withZoneID: zoneID) }
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
 		
@@ -145,13 +145,15 @@ class CloudKitManager {
 			
 			// Look up the original photo by the recordName
 			let recordName = record.recordID.recordName
-			let savedPhoto = photos.first { $0.photoID == recordName }
+			let savedPair = pairs.first { $0.photo.photoID == recordName }
 			
 			// Set the CKRecord on the photo
-			savedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)
+			savedPair?.photo.ckRecord = CloudPhoto.systemData(fromRecord: record)
 		}
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			self.setNetworkBusy(false)
 			
 			if let error = error {
 				
@@ -171,6 +173,7 @@ class CloudKitManager {
 		operation.allowsCellularAccess =
 			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
+		setNetworkBusy(true)
 		privateDB.add(operation)
 	}
 	
@@ -188,7 +191,8 @@ class CloudKitManager {
 			let record = CloudPhoto.systemRecord(fromData: photo.ckRecord!)
 			
 			// Set the only fields that we allow to be changed
-			CloudPhoto.applyChanges(from: photo, to: record)
+			record[CloudPhoto.captionKey] = photo.caption! as CKRecordValue?
+			record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
 			
 			records.append(record)
 			print("Pushing UPDATE for photo with caption \(photo.caption!)")
@@ -222,6 +226,8 @@ class CloudKitManager {
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				completion(.failure(error as! CKError))
 			} else {
@@ -229,6 +235,7 @@ class CloudKitManager {
 			}
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		self.privateDB.add(operation)
 	}
@@ -249,8 +256,6 @@ class CloudKitManager {
 				continue
 			}
 			
-			// This will give us a record with only
-			// the system fields filled in
 			let systemRecord = CloudPhoto.systemRecord(fromData: record)
 			recordIDs.append(systemRecord.recordID)
 		}
@@ -258,6 +263,8 @@ class CloudKitManager {
 		let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			self.setNetworkBusy(false)
 			
 			if let error = error {
 				completion(.failure(error as! CKError))
@@ -270,6 +277,7 @@ class CloudKitManager {
 			}
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		self.privateDB.add(operation)
 	}
@@ -294,6 +302,8 @@ class CloudKitManager {
 		
 		changeOperation.fetchDatabaseChangesCompletionBlock = { (newToken, more, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				print("Got error in fetching changes \(error)")
 				return
@@ -307,6 +317,7 @@ class CloudKitManager {
 		changeOperation.allowsCellularAccess =
 			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
+		setNetworkBusy(true)
 		privateDB.add(changeOperation)
 	}
 	
@@ -350,7 +361,7 @@ class CloudKitManager {
 				return
 			}
 			
-			print("Fetched photo with caption '\(result.caption)' and change tag \(record.recordChangeTag!)")
+			print("Fetched photo with caption '\(result.caption!)' and change tag \(record.recordChangeTag!)")
 			self.delegate?.didModify(photo: result)
 		}
 		
@@ -368,6 +379,8 @@ class CloudKitManager {
 		
 		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, _, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				print("Got error fetching record changes \(error)")
 				return
@@ -381,6 +394,7 @@ class CloudKitManager {
 		operation.allowsCellularAccess =
 			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
+		setNetworkBusy(true)
 		privateDB.add(operation)
 	}
 	
@@ -411,9 +425,11 @@ class CloudKitManager {
 				self.syncState.subscribedForChanges = true
 			}
 			
+			self.setNetworkBusy(false)
 			completion()
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		privateDB.add(operation)
 	}
@@ -442,11 +458,49 @@ class CloudKitManager {
 				
 				self.syncState.recordZone = savedZone
 				
+				self.setNetworkBusy(false)
 				completion()
 			}
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		privateDB.add(operation)
+	}
+	
+	// Manages the network activity icon in the status bar
+	// by maintaining a count of callers passing busy true/false
+	private func setNetworkBusy(_ busy: Bool) {
+		
+	#if TARGET_EXTENSION
+		// The UIApplication.shared API isn't availabe for extensions
+		return
+	#else
+			
+		// Ensure we're on the main thread
+		if !Thread.isMainThread {
+			
+			DispatchQueue.main.async {
+				
+				self.setNetworkBusy(busy)
+			}
+			return
+		}
+		
+		// Static variables need to be attached to a type
+		struct BusyCallers {
+			static var num = 0
+		}
+		
+		if busy {
+			BusyCallers.num += 1
+		} else {
+			BusyCallers.num -= 1
+		}
+		
+		assert(BusyCallers.num >= 0)
+		
+		UIApplication.shared.isNetworkActivityIndicatorVisible = BusyCallers.num > 0
+	#endif
 	}
 }

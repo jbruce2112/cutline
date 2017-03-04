@@ -10,15 +10,13 @@ import CloudKit
 import Foundation
 import UIKit
 
+// Tuple to bind a Photo with an image URL
+typealias PhotoPair = (photo: Photo, url: URL)
+
 // A simple container type to bridge between
 // a Photo (NSObjectModel) type and a CKRecord.
-// This gives the model layer more flexibility
-// in creating Photo objects without needing
-// to allocate an empty CoreData object.
-//
-// Multiple ways to init are provided to allow
-// both the PhotoManager and CloudKitManager
-// to create and and populate this type for use.
+// This allows the model to represent Photos
+// without needing to allocate an empty CoreData object.
 class CloudPhoto {
 	
 	// MARK: Properties
@@ -32,25 +30,25 @@ class CloudPhoto {
 	var image: UIImage?
 	var imageAsset: CKAsset?
 		
-	private static let captionKey = "caption"
-	private static let dateAddedKey = "dateAdded"
-	private static let dateTakenKey = "dateTaken"
-	private static let imageKey = "image"
-	private static let lastUpdatedKey = "lastUpdated"
-	private static let photoIDKey = "photoID"
+	static let captionKey = "caption"
+	static let dateAddedKey = "dateAdded"
+	static let dateTakenKey = "dateTaken"
+	static let imageKey = "image"
+	static let lastUpdatedKey = "lastUpdated"
+	static let photoIDKey = "photoID"
 	
 	init() {
 	}
 	
-	init(from photo: Photo, imageURL: URL) {
+	init(fromPair pair: PhotoPair) {
 		
-		caption = photo.caption!
-		dateAdded = photo.dateAdded!
-		dateTaken = photo.dateTaken!
-		lastUpdated = photo.lastUpdated!
-		photoID = photo.photoID!
-		ckRecord = photo.ckRecord
-		imageAsset = CKAsset(fileURL: imageURL)
+		caption = pair.photo.caption!
+		dateAdded = pair.photo.dateAdded!
+		dateTaken = pair.photo.dateTaken!
+		lastUpdated = pair.photo.lastUpdated!
+		photoID = pair.photo.photoID!
+		ckRecord = pair.photo.ckRecord
+		imageAsset = CKAsset(fileURL: pair.url)
 	}
 	
 	init?(fromRecord record: CKRecord) {
@@ -70,37 +68,12 @@ class CloudPhoto {
 			return nil
 		}
 		
-		let imageData: Data
-		do {
-			imageData = try Data(contentsOf: asset.fileURL)
-		} catch {
-			print("Unable to get Data from CKAsset \(error)")
-			return nil
-		}
-		
-		image = UIImage(data: imageData)
+		image = UIImage(contentsOfFile: asset.fileURL.path)
 		
 		if image == nil {
 			print("Unable to get UIImage from Data")
 			return nil
 		}
-	}
-	
-	func getRecord(withZoneID zoneID: CKRecordZoneID) -> CKRecord {
-		
-		// We enforce a unique constraint with our photoID in CloudKit
-		// by always creating a record from a CKRecordID with a recordName of photoID
-		let recordID = CKRecordID(recordName: photoID!, zoneID: zoneID)
-		let record = CKRecord(recordType: "Photo", recordID: recordID)
-		
-		record[CloudPhoto.captionKey] = caption as NSString?
-		record[CloudPhoto.dateAddedKey] = dateAdded
-		record[CloudPhoto.dateTakenKey] = dateTaken
-		record[CloudPhoto.imageKey] = imageAsset
-		record[CloudPhoto.lastUpdatedKey] = lastUpdated
-		record[CloudPhoto.photoIDKey] = photoID as NSString?
-		
-		return record
 	}
 	
 	// MARK: Static functions for converting between NSData and CKRecord
@@ -125,10 +98,22 @@ class CloudPhoto {
 		return CKRecord(coder: unarchiver)!
 	}
 	
-	static func applyChanges(from photo: Photo, to record: CKRecord) {
+	static func createRecord(fromPair pair: PhotoPair, withZoneID zoneID: CKRecordZoneID) -> CKRecord {
 		
-		// Only apply changes from allowed fields
-		record[captionKey] = photo.caption! as CKRecordValue?
-		record[lastUpdatedKey] = photo.lastUpdated
+		let photo = CloudPhoto(fromPair: pair)
+		
+		// We enforce a unique constraint with our photoID in CloudKit
+		// by always creating a record from a CKRecordID with a recordName of photoID
+		let recordID = CKRecordID(recordName: photo.photoID!, zoneID: zoneID)
+		let record = CKRecord(recordType: "Photo", recordID: recordID)
+		
+		record[CloudPhoto.captionKey] = photo.caption as NSString?
+		record[CloudPhoto.dateAddedKey] = photo.dateAdded
+		record[CloudPhoto.dateTakenKey] = photo.dateTaken
+		record[CloudPhoto.imageKey] = photo.imageAsset
+		record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
+		record[CloudPhoto.photoIDKey] = photo.photoID as NSString?
+		
+		return record
 	}
 }

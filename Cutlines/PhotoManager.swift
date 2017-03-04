@@ -30,12 +30,10 @@ class PhotoManager {
 	
 	weak var delegate: PhotoChangeDelegate?
 	
-	init() {
-		cloudManager.delegate = self
-	}
-	
 	// MARK: Functions
 	func setup() {
+		
+		cloudManager.delegate = self
 		
 		cloudManager.setup {
 			
@@ -71,17 +69,17 @@ class PhotoManager {
 				
 				self.delegate?.didAdd()
 				
+				// Bind the Photo and Image for the add
 				let imageURL = self.imageStore.imageURL(forKey: id)
-				let cloudPhoto = CloudPhoto(from: photo!, imageURL: imageURL)
+				let photoPair = (photo: photo!, url: imageURL)
 				
-				self.cloudManager.pushNew(photos: [cloudPhoto], qos: qos) { cloudResult in
+				self.cloudManager.pushNew(pairs: [photoPair], qos: qos) { cloudResult in
 					
 					// TODO: error handling
 					switch cloudResult {
 					case .success:
 						
 						// Save the CKRecord that the photo now has
-						photo?.ckRecord = cloudPhoto.ckRecord
 						self.photoDataSource.save()
 						completion?(.success)
 					case let .failure(error):
@@ -171,25 +169,18 @@ class PhotoManager {
 			return
 		}
 		
-		let cloudPhotos = localPhotos.map {
+		let photoPairs = localPhotos.map {
 			
-			CloudPhoto(from: $0, imageURL: imageStore.imageURL(forKey: $0.photoID!))
+			(photo: $0, url: imageStore.imageURL(forKey: $0.photoID!))
 		}
 		
-		cloudManager.pushNew(photos: cloudPhotos, qos: nil) { result in
+		cloudManager.pushNew(pairs: photoPairs, qos: nil) { result in
 			
 			// TODO: error handling
 			switch result {
 			case .success:
 				
-				
 				// Save the CKRecords that were added to the photos
-				for cloudPhoto in cloudPhotos {
-					
-					let localPhoto = localPhotos.first { $0.photoID! == cloudPhoto.photoID! }
-					localPhoto!.ckRecord = cloudPhoto.ckRecord
-				}
-				
 				self.photoDataSource.save()
 				
 				// Push another batch

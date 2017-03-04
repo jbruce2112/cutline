@@ -94,17 +94,17 @@ class SettingsViewController: UITableViewController {
 	
 	private func getVersion() -> String {
 		
-		let formatter = DateFormatter()
-		formatter.locale = Locale(identifier: "en_US")
-		formatter.dateStyle = .medium
-		formatter.timeStyle = .medium
-		
-		let buildDateString = formatter.string(from: getBuildDate())
-		
 		let version = "Version \(getBuildVersion())"
 		
 		#if DEBUG
-			return "\(version) built on \(buildDateString)"
+			
+			let formatter = DateFormatter()
+			formatter.locale = Locale(identifier: "en_US")
+			formatter.dateStyle = .medium
+			formatter.timeStyle = .medium
+			
+			let buildDate = formatter.string(from: getBuildDate())
+			return "\(version) built on \(buildDate)"
 		#else
 			return version
 		#endif

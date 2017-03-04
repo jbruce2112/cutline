@@ -20,11 +20,11 @@
 		52589E101E67B93600C8BA29 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
 		52589E111E67BB7900C8BA29 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* Key.swift */; };
 		52589E141E67BC4F00C8BA29 /* Cutlines.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 523751F61E41744F00060607 /* Cutlines.xcdatamodeld */; };
-		52589E151E67C5D200C8BA29 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D958E11E5FB73500D7B4EE /* CloudKit.framework */; };
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
 		525F4D041E4AAA34004615FD /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525F4D021E4AAA34004615FD /* MainInterface.storyboard */; };
 		525F4D081E4AAA34004615FD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 525F4CFE1E4AAA34004615FD /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5291E1481E6A01D700A0BBE1 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5291E1471E6A01D700A0BBE1 /* CloudKit.framework */; };
 		52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E331E4028FE00A275AD /* AppDelegate.swift */; };
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
 		52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3A1E4028FE00A275AD /* Assets.xcassets */; };
@@ -33,7 +33,6 @@
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
 		52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */; };
 		52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AC6D101E5A74B800C63013 /* SearchResultCell.swift */; };
-		52D958E21E5FB73500D7B4EE /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52D958E11E5FB73500D7B4EE /* CloudKit.framework */; };
 		52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
 		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
 		52F3920B1E68F983001EDC48 /* CloudPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F3920A1E68F983001EDC48 /* CloudPhoto.swift */; };
@@ -84,6 +83,7 @@
 		525F4D051E4AAA34004615FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		525F4D0D1E4AC49E004615FD /* Cutlines.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cutlines.entitlements; sourceTree = "<group>"; };
 		525F4D0E1E4AC575004615FD /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
+		5291E1471E6A01D700A0BBE1 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		52A03E301E4028FE00A275AD /* Cutlines.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cutlines.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A03E331E4028FE00A275AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		52A03E381E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -94,7 +94,6 @@
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlineInfoViewController.swift; sourceTree = "<group>"; };
 		52AC6D101E5A74B800C63013 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
-		52D958E11E5FB73500D7B4EE /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		52F3920A1E68F983001EDC48 /* CloudPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudPhoto.swift; sourceTree = "<group>"; };
@@ -105,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52589E151E67C5D200C8BA29 /* CloudKit.framework in Frameworks */,
+				5291E1481E6A01D700A0BBE1 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -113,7 +112,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52D958E21E5FB73500D7B4EE /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +205,7 @@
 		52D958E01E5FB73500D7B4EE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				52D958E11E5FB73500D7B4EE /* CloudKit.framework */,
+				5291E1471E6A01D700A0BBE1 /* CloudKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -455,11 +453,13 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				DEVELOPMENT_TEAM = UVXX33WP85;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG TARGET_EXTENSION";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -469,11 +469,13 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = ShareExtension/ShareExtension.entitlements;
 				DEVELOPMENT_TEAM = UVXX33WP85;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = ShareExtension/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = TARGET_EXTENSION;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
