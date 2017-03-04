@@ -17,21 +17,23 @@ enum PhotoUpdateResult {
 // MARK: PhotoChangeDelegate
 protocol PhotoChangeDelegate: class {
 	
-	func didAdd(photo: Photo)
-	func didRemove(photoID: String)
+	func didAdd()
+	func didRemove()
 }
 
 class PhotoManager {
 	
 	// MARK: Properties
-	var cloudManager: CloudKitManager!
-	var photoDataSource: PhotoDataSource!
-	var imageStore: ImageStore!
+	var cloudManager = CloudKitManager()
+	var photoDataSource = PhotoDataSource()
+	var imageStore = ImageStore()
 	
 	weak var delegate: PhotoChangeDelegate?
 	
 	// MARK: Functions
 	func setup() {
+		
+		cloudManager.delegate = self
 		
 		cloudManager.setup {
 			
@@ -47,7 +49,15 @@ class PhotoManager {
 		}
 	}
 	
-	func add(image: UIImage, caption: String, dateTaken: Date, completion: ((PhotoUpdateResult) -> Void)?) {
+	func setupNoSync(completion: @escaping () -> Void) {
+		
+		cloudManager.setupNoSync {
+			
+			completion()
+		}
+	}
+	
+	func add(image: UIImage, caption: String, dateTaken: Date, qos: QualityOfService?, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		let id = NSUUID().uuidString
 		imageStore.setImage(image, forKey: id)
@@ -57,13 +67,18 @@ class PhotoManager {
 			switch result {
 			case let .success(photo):
 				
-				self.delegate?.didAdd(photo: photo!)
+				self.delegate?.didAdd()
 				
-				self.cloudManager.pushNew(photos: [photo!]) { cloudResult in
+				// Bind the Photo and Image for the add
+				let imageURL = self.imageStore.imageURL(forKey: id)
+				let photoPair = (photo: photo!, url: imageURL)
+				
+				self.cloudManager.pushNew(pairs: [photoPair], qos: qos) { cloudResult in
 					
 					// TODO: error handling
 					switch cloudResult {
 					case .success:
+						
 						// Save the CKRecord that the photo now has
 						self.photoDataSource.save()
 						completion?(.success)
@@ -106,7 +121,8 @@ class PhotoManager {
 		// of our collection view right away
 		photo.markedDeleted = true
 		photoDataSource.save()
-		self.delegate?.didRemove(photoID: photo.photoID!)
+		
+		self.delegate?.didRemove()
 		
 		self.cloudManager.delete(photos: [photo]) { cloudResult in
 			
@@ -153,7 +169,12 @@ class PhotoManager {
 			return
 		}
 		
-		cloudManager.pushNew(photos: localPhotos) { result in
+		let photoPairs = localPhotos.map {
+			
+			(photo: $0, url: imageStore.imageURL(forKey: $0.photoID!))
+		}
+		
+		cloudManager.pushNew(pairs: photoPairs, qos: nil) { result in
 			
 			// TODO: error handling
 			switch result {
@@ -229,21 +250,21 @@ class PhotoManager {
 // MARK: CloudChangeDelegate conformance
 extension PhotoManager: CloudChangeDelegate {
 	
-	func didModify(photo modifiedPhoto: Photo, withImage image: UIImage) {
+	func didModify(photo: CloudPhoto) {
 		
-		let existingPhoto = photoDataSource.fetch(withID: modifiedPhoto.photoID!)
+		let existingPhoto = photoDataSource.fetch(withID: photo.photoID!)
 		
 		if existingPhoto == nil {
 			
 			// We got a new photo from the cloud
-			self.photoDataSource.addPhoto(modifiedPhoto) { result in
+			self.photoDataSource.addPhoto(photo) { result in
 				
 				switch result {
 				case .success:
 					
-					self.imageStore.setImage(image, forKey: modifiedPhoto.photoID!)
-					print("New photo added with caption '\(modifiedPhoto.caption!)'")
-					self.delegate?.didAdd(photo: modifiedPhoto)
+					self.imageStore.setImage(photo.image!, forKey: photo.photoID!)
+					print("New photo added with caption '\(photo.caption!)'")
+					self.delegate?.didAdd()
 				case let .failure(error):
 					
 					print("Error saving photo \(error)")
@@ -253,8 +274,8 @@ extension PhotoManager: CloudChangeDelegate {
 			
 			assert(existingPhoto!.ckRecord != nil)
 			
-			let cloudRecord = cloudManager.record(from: modifiedPhoto.ckRecord!)
-			let localRecord = cloudManager.record(from: existingPhoto!.ckRecord!)
+			let cloudRecord = CloudPhoto.systemRecord(fromData: photo.ckRecord!)
+			let localRecord = CloudPhoto.systemRecord(fromData: existingPhoto!.ckRecord!)
 			
 			if localRecord.recordID == cloudRecord.recordID &&
 				localRecord.recordChangeTag == cloudRecord.recordChangeTag &&
@@ -270,9 +291,9 @@ extension PhotoManager: CloudChangeDelegate {
 			}
 			
 			// We got an update for an existing photo, save the changes
-			existingPhoto!.lastUpdated = modifiedPhoto.lastUpdated
-			existingPhoto!.caption = modifiedPhoto.caption
-			existingPhoto!.ckRecord = modifiedPhoto.ckRecord
+			existingPhoto!.lastUpdated = photo.lastUpdated
+			existingPhoto!.caption = photo.caption
+			existingPhoto!.ckRecord = photo.ckRecord
 			
 			self.photoDataSource.save()
 			
@@ -302,7 +323,7 @@ extension PhotoManager: CloudChangeDelegate {
 				
 				self.imageStore.deleteImage(forKey: photoID)
 				print("Deleted photo with id '\(photoID)'")
-				self.delegate?.didRemove(photoID: photoID)
+				self.delegate?.didRemove()
 			case let .failure(error):
 				
 				print("Error deleting photo \(error)")

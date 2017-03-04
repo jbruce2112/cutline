@@ -19,28 +19,10 @@ class SettingsViewController: UITableViewController {
 	@IBOutlet private var cellSyncSwitch: UISwitch!
 	@IBOutlet private var darkModeSwitch: UISwitch!
 	
-	let defaults: UserDefaults = {
-		
-		let appDelegate = UIApplication.shared.delegate as! AppDelegate
-		return appDelegate.defaults
-	}()
-	
-	let version: String = {
-		
-		guard
-			let infoDict = Bundle.main.infoDictionary,
-			let build = infoDict[kCFBundleVersionKey as String] as? String,
-			let version = infoDict["CFBundleShortVersionString"] as? String else {
-				return "0.0.0"
-		}
-		
-		return "Version \(version).\(build)"
-	}()
-	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		versionLabel.text = version
+		versionLabel.text = getVersion()
 		
 		let linkTitle = "Icons8"
 		let text = "Icon pack by \(linkTitle)" as NSString
@@ -56,8 +38,8 @@ class SettingsViewController: UITableViewController {
 		attributionTextView.textContainer.lineFragmentPadding = 0
 		
 		// load preferences
-		cellSyncSwitch.isOn = defaults.bool(forKey: Key.cellSync.rawValue)
-		darkModeSwitch.isOn = defaults.bool(forKey: Key.darkMode.rawValue)
+		cellSyncSwitch.isOn = appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
+		darkModeSwitch.isOn = appGroupDefaults.bool(forKey: Key.darkMode.rawValue)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -85,15 +67,58 @@ class SettingsViewController: UITableViewController {
 		tableView.reloadSections(IndexSet(integer: 1), with: .none)
 	}
 	
+	private func getBuildDate() -> Date {
+		
+		guard
+			let infoPath = Bundle.main.path(forResource: "Info.plist", ofType: nil),
+			let infoAttr = try? FileManager.default.attributesOfItem(atPath: infoPath),
+			let infoDate = infoAttr[.modificationDate] as? Date else {
+				
+				return Date()
+		}
+		
+		return infoDate
+	}
+	
+	private func getBuildVersion() -> String {
+		
+		guard
+			let infoDict = Bundle.main.infoDictionary,
+			let build = infoDict[kCFBundleVersionKey as String] as? String,
+			let version = infoDict["CFBundleShortVersionString"] as? String else {
+				return "0.0.0"
+		}
+		
+		return "\(version).\(build)"
+	}
+	
+	private func getVersion() -> String {
+		
+		let version = "Version \(getBuildVersion())"
+		
+		#if DEBUG
+			
+			let formatter = DateFormatter()
+			formatter.locale = Locale(identifier: "en_US")
+			formatter.dateStyle = .medium
+			formatter.timeStyle = .medium
+			
+			let buildDate = formatter.string(from: getBuildDate())
+			return "\(version) built on \(buildDate)"
+		#else
+			return version
+		#endif
+	}
+	
 	// MARK: UI Actions
 	@IBAction private func toggleCellSync(sender: UISwitch) {
 		
-		defaults.set(sender.isOn, forKey: Key.cellSync.rawValue)
+		appGroupDefaults.set(sender.isOn, forKey: Key.cellSync.rawValue)
 	}
 	
 	@IBAction private func toggleDarkMode(sender: UISwitch) {
 		
-		defaults.set(sender.isOn, forKey: Key.darkMode.rawValue)
+		appGroupDefaults.set(sender.isOn, forKey: Key.darkMode.rawValue)
 		
 		// Set the theme in the delegate for the root controllers
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate

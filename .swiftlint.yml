@@ -4,6 +4,7 @@ disabled_rules:
         - force_cast
         - force_try
         - vertical_whitespace
+        - nesting
 opt_in_rules:
         - empty_count
         - explicit_init

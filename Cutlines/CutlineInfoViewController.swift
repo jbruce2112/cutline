@@ -41,7 +41,11 @@ class CutlineInfoViewController: UIViewController {
 		imageView.image = photoManager.image(for: photo)
 		imageView.contentMode = .scaleAspectFit
 		
-		captionView.text = photo.caption
+		// Don't clear the placeholder text
+		if !photo.caption!.isEmpty {
+			captionView.text = photo.caption
+		}
+		
 		initialCaption = captionView.getCaption()
 		
 		container.layer.borderWidth = 2.0

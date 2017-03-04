@@ -10,17 +10,6 @@ import CloudKit
 import Foundation
 import UIKit
 
-struct FetchResult {
-	var photo: Photo!
-	var image: UIImage!
-}
-
-enum CloudFetchResult {
-	
-	case success([FetchResult])
-	case failure(Error)
-}
-
 enum CloudPushResult {
 	
 	case success
@@ -36,7 +25,7 @@ enum CloudRecordResult {
 // MARK: CloudChangeDelegate
 protocol CloudChangeDelegate: class {
 	
-	func didModify(photo: Photo, withImage image: UIImage)
+	func didModify(photo: CloudPhoto)
 	func didRemove(photoID: String)
 }
 
@@ -74,16 +63,7 @@ class CloudKitManager {
 	// MARK: Properties
 	private let container: CKContainer
 	private let privateDB: CKDatabase
-	
-	private let photoType = "Photo"
-	
-	private let captionKey = "caption"
-	private let dateAddedKey = "dateAdded"
-	private let dateTakenKey = "dateTaken"
-	private let imageKey = "image"
-	private let lastUpdatedKey = "lastUpdated"
-	private let photoIDKey = "photoID"
-	
+		
 	let subscriptionID = "private-changes"
 	
 	private let zoneName = "Photos"
@@ -95,17 +75,12 @@ class CloudKitManager {
 	
 	weak var delegate: CloudChangeDelegate?
 	
-	// Should remove these. Currently used to
-	// help convert between a CKRecord and a Photo
-	var imageStore: ImageStore!
-	var photoDataSource: PhotoDataSource!
-
 	init() {
-
+		
 		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
 		syncStateArchive = cacheDir.appendingPathComponent("syncState.archive").path
 		
-		container = CKContainer.default()
+		container = CKContainer(identifier: cloudContainerDomain)
 		privateDB = container.privateCloudDatabase
 		
 		syncState = loadSyncState()
@@ -126,6 +101,18 @@ class CloudKitManager {
 		}
 	}
 	
+	// Setup for users of this class who don't need syncing/notifications
+	func setupNoSync(completion: @escaping () -> Void) {
+		
+		createCustomZone {
+			
+			// We're ready to push once this is set
+			self.ready = self.syncState.recordZone != nil
+				
+			completion()
+		}
+	}
+	
 	func saveSyncState() {
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive)
@@ -133,17 +120,21 @@ class CloudKitManager {
 	}
 	
 	
-	func pushNew(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
+	func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
 		
-		if !ready || photos.isEmpty {
+		if !ready || pairs.isEmpty {
 			return
 		}
-		for photo in photos {
-			print("Pushing NEW photo with caption \(photo.caption!)")
+		for pair in pairs {
+			print("Pushing NEW photo with caption \(pair.photo.caption!)")
 		}
 		
-		let batchSize = photos.count
-		let records = photos.map { self.createRecord(from: $0) }
+		let batchSize = pairs.count
+		
+		// Create a CKRecord for each photo
+		let zoneID = syncState.recordZone!.zoneID
+		let records = pairs.map { CloudPhoto.createRecord(fromPair: $0, withZoneID: zoneID) }
+		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
 		
 		operation.perRecordCompletionBlock = { (record, error) in
@@ -152,14 +143,17 @@ class CloudKitManager {
 				print("Error saving photo \(error)")
 			}
 			
+			// Look up the original photo by the recordName
 			let recordName = record.recordID.recordName
-			let savedPhoto = photos.first { $0.photoID == recordName }
+			let savedPair = pairs.first { $0.photo.photoID == recordName }
 			
 			// Set the CKRecord on the photo
-			savedPhoto?.ckRecord = self.data(from: record)
+			savedPair?.photo.ckRecord = CloudPhoto.systemData(fromRecord: record)
 		}
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			self.setNetworkBusy(false)
 			
 			if let error = error {
 				
@@ -175,10 +169,11 @@ class CloudKitManager {
 			}
 		}
 		
-		operation.qualityOfService = .utility
+		operation.qualityOfService = qos ?? .utility
 		operation.allowsCellularAccess =
-			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
+		setNetworkBusy(true)
 		privateDB.add(operation)
 	}
 	
@@ -193,14 +188,13 @@ class CloudKitManager {
 			
 			// This will give us a record with only
 			// the system fields filled in
-			let rec = record(from: photo.ckRecord!)
-			
-			rec[photoIDKey] = photo.photoID! as NSString
+			let record = CloudPhoto.systemRecord(fromData: photo.ckRecord!)
 			
 			// Set the only fields that we allow to be changed
-			applyChanges(from: photo, to: rec)
+			record[CloudPhoto.captionKey] = photo.caption! as CKRecordValue?
+			record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
 			
-			records.append(rec)
+			records.append(record)
 			print("Pushing UPDATE for photo with caption \(photo.caption!)")
 		}
 		
@@ -223,7 +217,7 @@ class CloudKitManager {
 				let updatedPhoto = photos.first { $0.photoID == recordName }
 				
 				// Set the updated CKRecord on the photo
-				updatedPhoto?.ckRecord = self.data(from: record)
+				updatedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)
 				
 				print("Updated photo with new caption " +
 						"'\(record["caption"] as! NSString)' and change tag \(record.recordChangeTag!)")
@@ -232,6 +226,8 @@ class CloudKitManager {
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				completion(.failure(error as! CKError))
 			} else {
@@ -239,6 +235,7 @@ class CloudKitManager {
 			}
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		self.privateDB.add(operation)
 	}
@@ -252,15 +249,22 @@ class CloudKitManager {
 		var recordIDs = [CKRecordID]()
 		for photo in photos {
 			
-			// This will give us a record with only
-			// the system fields filled in
-			let rec = record(from: photo.ckRecord!)
-			recordIDs.append(rec.recordID)
+			// If there's no CKRecord on this photo,
+			// we likely didn't complete the cloud side of
+			// the add for this yet.
+			guard let record = photo.ckRecord else {
+				continue
+			}
+			
+			let systemRecord = CloudPhoto.systemRecord(fromData: record)
+			recordIDs.append(systemRecord.recordID)
 		}
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: nil, recordIDsToDelete: recordIDs)
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
+			
+			self.setNetworkBusy(false)
 			
 			if let error = error {
 				completion(.failure(error as! CKError))
@@ -273,6 +277,7 @@ class CloudKitManager {
 			}
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		self.privateDB.add(operation)
 	}
@@ -297,6 +302,8 @@ class CloudKitManager {
 		
 		changeOperation.fetchDatabaseChangesCompletionBlock = { (newToken, more, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				print("Got error in fetching changes \(error)")
 				return
@@ -308,33 +315,13 @@ class CloudKitManager {
 		
 		changeOperation.qualityOfService = .utility
 		changeOperation.allowsCellularAccess =
-			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
+		setNetworkBusy(true)
 		privateDB.add(changeOperation)
 	}
 	
-	// MARK: Functions for converting between NSData and CKRecord
-	// (We store only the system fields of the CKRecord)
-	func data(from record: CKRecord) -> NSData {
 		
-		let archivedData = NSMutableData()
-		let archiver = NSKeyedArchiver(forWritingWith: archivedData)
-		
-		archiver.requiresSecureCoding = true
-		record.encodeSystemFields(with: archiver)
-		archiver.finishEncoding()
-		
-		return archivedData
-	}
-	
-	func record(from archivedData: NSData) -> CKRecord {
-		
-		let unarchiver = NSKeyedUnarchiver(forReadingWith: archivedData as Data)
-		unarchiver.requiresSecureCoding = true
-		
-		return CKRecord(coder: unarchiver)!
-	}
-	
 	// MARK: Private functions
 	private func loadSyncState() -> SyncState {
 		
@@ -369,13 +356,13 @@ class CloudKitManager {
 		
 		operation.recordChangedBlock = { (record) in
 		
-			guard let result = self.getPhoto(from: record) else {
+			guard let result = CloudPhoto(fromRecord: record) else {
 				print("Unable to get photo from record \(record.recordID.recordName)")
 				return
 			}
 			
-			print("Fetched photo with caption '\(result.photo.caption!)' and change tag \(record.recordChangeTag!)")
-			self.delegate?.didModify(photo: result.photo, withImage: result.image)
+			print("Fetched photo with caption '\(result.caption!)' and change tag \(record.recordChangeTag!)")
+			self.delegate?.didModify(photo: result)
 		}
 		
 		operation.recordWithIDWasDeletedBlock = { (recordID, _) in
@@ -392,6 +379,8 @@ class CloudKitManager {
 		
 		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, _, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				print("Got error fetching record changes \(error)")
 				return
@@ -403,8 +392,9 @@ class CloudKitManager {
 		
 		operation.qualityOfService = .utility
 		operation.allowsCellularAccess =
-			UserDefaults.standard.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
+		setNetworkBusy(true)
 		privateDB.add(operation)
 	}
 	
@@ -435,9 +425,11 @@ class CloudKitManager {
 				self.syncState.subscribedForChanges = true
 			}
 			
+			self.setNetworkBusy(false)
 			completion()
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		privateDB.add(operation)
 	}
@@ -466,134 +458,49 @@ class CloudKitManager {
 				
 				self.syncState.recordZone = savedZone
 				
+				self.setNetworkBusy(false)
 				completion()
 			}
 		}
 		
+		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		privateDB.add(operation)
 	}
 	
-	private func getPhoto(from record: CKRecord) -> FetchResult? {
+	// Manages the network activity icon in the status bar
+	// by maintaining a count of callers passing busy true/false
+	private func setNetworkBusy(_ busy: Bool) {
 		
-		let photo = self.photoDataSource.allocEmptyPhoto()
-		
-		photo.caption = record[self.captionKey] as! String?
-		photo.dateAdded = record[self.dateAddedKey] as! NSDate?
-		photo.dateTaken = record[self.dateTakenKey] as! NSDate?
-		photo.lastUpdated = record[self.lastUpdatedKey] as! NSDate?
-		photo.photoID = record[self.photoIDKey] as! String?
-		photo.ckRecord = data(from: record)
-		
-		// sanity check
-		let recIDEqual = record.recordID.recordName == photo.photoID
-		assert(recIDEqual)
-		
-		guard let asset = record[self.imageKey] as? CKAsset else {
-			print("Unable to get CKAsset from record")
-			return nil
-		}
-		
-		let imageData: Data
-		do {
-			imageData = try Data(contentsOf: asset.fileURL)
-		} catch {
-			print("Unable to get Data from CKAsset \(error)")
-			return nil
-		}
-		
-		guard let image = UIImage(data: imageData) else {
-			print("Unable to get UIImage from Data")
-			return nil
-		}
-		
-		var fetchResult = FetchResult()
-		fetchResult.photo = photo
-		fetchResult.image = image
-		return fetchResult
-	}
-	
-	private func createRecord(from photo: Photo) -> CKRecord {
-		
-		// We enforce a unique constraint with our photoID in CloudKit
-		// by always creating a record from a CKRecordID with a recordName of photoID
-		let recordID = CKRecordID(recordName: photo.photoID!, zoneID: syncState.recordZone!.zoneID)
-		let record = CKRecord(recordType: photoType, recordID: recordID)
-		
-		let imageURL = imageStore.imageURL(forKey: photo.photoID!)
-		
-		record[captionKey] = photo.caption as NSString?
-		record[dateAddedKey] = photo.dateAdded
-		record[dateTakenKey] = photo.dateTaken
-		record[imageKey] = CKAsset(fileURL: imageURL)
-		record[lastUpdatedKey] = photo.lastUpdated
-		record[photoIDKey] = photo.photoID as NSString?
-		
-		return record
-	}
-	
-	private func applyChanges(from photo: Photo, to record: CKRecord) {
-		
-		assert(record.recordID.recordName == photo.photoID!)
-		assert(record[photoIDKey] as! String == photo.photoID!)
-		
-		// Only apply changes from allowed fields
-		record[captionKey] = photo.caption! as CKRecordValue?
-		record[lastUpdatedKey] = photo.lastUpdated
-	}
-	
-	// MARK: Dev/testing functions - for sanity checking
-	private func verifyUnique() {
-		
-		self.fetchAll { updateresult in
+	#if TARGET_EXTENSION
+		// The UIApplication.shared API isn't availabe for extensions
+		return
+	#else
 			
-			switch updateresult {
-				
-			case .failure:
-				break
-			case let .success(fetchrequests):
-				
-				var myset = Set<String>()
-				for res in fetchrequests {
-					
-					let id = res.photo.photoID!
-					assert(!myset.contains(id))
-					myset.insert(id)
-				}
-			}
-		}
-	}
-	
-	private func fetchAll(completion: @escaping (CloudFetchResult) -> Void) {
-		
-		let query = CKQuery(recordType: photoType, predicate: NSPredicate(value: true))
-		
-		privateDB.perform(query, inZoneWith: nil) { (results, error) in
+		// Ensure we're on the main thread
+		if !Thread.isMainThread {
 			
-			if let error = error {
-				print("photo fetchAll failed \(error)")
-				completion(.failure(error))
-			} else {
+			DispatchQueue.main.async {
 				
-				print("photo fetchAll succeeded")
-				var fetchResults = [FetchResult]()
-				
-				defer {
-					completion(.success(fetchResults))
-				}
-				
-				if let results = results {
-					
-					for record in results {
-						
-						guard let result = self.getPhoto(from: record) else {
-							return
-						}
-						
-						fetchResults.append(result)
-					}
-				}
+				self.setNetworkBusy(busy)
 			}
+			return
 		}
+		
+		// Static variables need to be attached to a type
+		struct BusyCallers {
+			static var num = 0
+		}
+		
+		if busy {
+			BusyCallers.num += 1
+		} else {
+			BusyCallers.num -= 1
+		}
+		
+		assert(BusyCallers.num >= 0)
+		
+		UIApplication.shared.isNetworkActivityIndicatorVisible = BusyCallers.num > 0
+	#endif
 	}
 }

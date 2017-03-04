@@ -15,8 +15,7 @@ class ImageStore {
 	
 	private let imageDirURL: URL = {
 		
-		var docsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-		return docsDir.appendingPathComponent("images")
+		return appGroupURL.appendingPathComponent("images")
 	}()
 	
 	init() {

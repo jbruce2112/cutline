@@ -11,8 +11,8 @@ import UIKit
 class SearchViewController: UITableViewController {
 	
 	// MARK: Properties
-	var photoDataSource: PhotoDataSource!
 	var photoManager: PhotoManager!
+	fileprivate var photoDataSource: PhotoDataSource!
 	
 	private var searchController: UISearchController!
 	fileprivate var searchResultsController: SearchResultsViewController!
@@ -20,6 +20,8 @@ class SearchViewController: UITableViewController {
 	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		photoDataSource = photoManager.photoDataSource
 		
 		searchResultsController = SearchResultsViewController(photoManager: photoManager)
 		searchResultsController.tableView.dataSource = self
