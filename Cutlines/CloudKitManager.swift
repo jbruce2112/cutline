@@ -418,6 +418,8 @@ class CloudKitManager {
 		                                               subscriptionIDsToDelete: [])
 		operation.modifySubscriptionsCompletionBlock = { (_, _, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				print("Error subscriping for notifications \(error)")
 			} else {
@@ -425,7 +427,6 @@ class CloudKitManager {
 				self.syncState.subscribedForChanges = true
 			}
 			
-			self.setNetworkBusy(false)
 			completion()
 		}
 		
@@ -448,6 +449,8 @@ class CloudKitManager {
 		
 		operation.modifyRecordZonesCompletionBlock = { (savedRecods, deletedRecordIDs, error) in
 			
+			self.setNetworkBusy(false)
+			
 			if let error = error {
 				print("Error creating recordZone \(error)")
 			} else {
@@ -458,7 +461,6 @@ class CloudKitManager {
 				
 				self.syncState.recordZone = savedZone
 				
-				self.setNetworkBusy(false)
 				completion()
 			}
 		}
