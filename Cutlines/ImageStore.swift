@@ -80,11 +80,17 @@ class ImageStore {
 		
 		let options: [NSString: Any] = [
 			kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
-			kCGImageSourceCreateThumbnailFromImageAlways: true
-		]
+			kCGImageSourceCreateThumbnailFromImageAlways: true]
+		
+		// Convert from CGOrientation to UIImageOrientation
+		// so the returned image is correctly oriented
+		let cgOrientation = origDictionary[kCGImagePropertyOrientation] as? Int
+		let orientation = uiOrientation(fromCGOrientation: cgOrientation)
 		
 		// The Image I/O framework will cache the thumbnail for us
-		return CGImageSourceCreateThumbnailAtIndex(original, 0, options as CFDictionary?).flatMap { UIImage(cgImage: $0) }
+		return CGImageSourceCreateThumbnailAtIndex(original, 0, options as CFDictionary?).flatMap {
+			UIImage(cgImage: $0, scale: 1.0, orientation: orientation)
+		}
 	}
 	
 	func deleteImage(forKey key: String) {
@@ -102,5 +108,34 @@ class ImageStore {
 	
 	func imageURL(forKey key: String) -> URL {
 		return imageDirURL.appendingPathComponent(key)
+	}
+	
+	// MARK: Private functions
+	private func uiOrientation(fromCGOrientation cgOrientation: Int?) -> UIImageOrientation {
+		
+		guard let cgOrientation = cgOrientation else {
+			return .up
+		}
+		
+		switch cgOrientation {
+		case 1:
+			return .up
+		case 2:
+			return .upMirrored
+		case 3:
+			return .down
+		case 4:
+			return .downMirrored
+		case 5:
+			return .leftMirrored
+		case 6:
+			return .right
+		case 7:
+			return .rightMirrored
+		case 8:
+			return .left
+		default:
+			return .up
+		}
 	}
 }
