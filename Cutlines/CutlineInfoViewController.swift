@@ -58,7 +58,7 @@ class CutlineInfoViewController: UIViewController {
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipContainer))
 		
-		newTabBar.unselectedItemTintColor = newTabBar.theme().systemDefaultColor
+		newTabBar.unselectedItemTintColor = view.tintColor
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false

@@ -160,6 +160,15 @@ class PhotoManager {
 		return imageStore.image(forKey: photoID)
 	}
 	
+	func thumbnail(for photo: Photo, withSize size: CGSize) -> UIImage? {
+		
+		guard let photoID = photo.photoID else {
+			return nil
+		}
+		
+		return imageStore.thumbnail(forKey: photoID, size: size)
+	}
+	
 	// MARK: Private functions
 	private func pushNewLocalPhotos(batchSize: Int = 5) {
 		

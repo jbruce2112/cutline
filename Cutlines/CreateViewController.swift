@@ -15,6 +15,8 @@ class CreateViewController: UIViewController {
 	var imageURL: URL!
 	var photoManager: PhotoManager!
 	
+	private var cancelled = false
+	
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var captionView: CaptionView!
 
@@ -23,7 +25,7 @@ class CreateViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		navigationItem.rightBarButtonItem =
-			UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(save))
+			UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
 		
 		navigationItem.title = "Create"
 		
@@ -48,8 +50,23 @@ class CreateViewController: UIViewController {
 		setTheme()
 	}
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		if !cancelled {
+			save()
+		}
+	}
+	
 	// MARK: Actions
-	@IBAction func save() {
+	@IBAction func cancel() {
+		
+		cancelled = true
+		
+		let _ = navigationController?.popViewController(animated: true)
+	}
+	
+	private func save() {
 		
 		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
 		
