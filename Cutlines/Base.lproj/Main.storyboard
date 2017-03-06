@@ -95,7 +95,7 @@
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
-                                        <rect key="frame" x="0.0" y="200" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -117,7 +117,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
-                                        <rect key="frame" x="0.0" y="244" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -253,9 +253,9 @@
                                             <constraint firstItem="wg2-pb-si9" firstAttribute="top" secondItem="QVi-Vo-KDH" secondAttribute="top" id="cFp-4d-gsA"/>
                                         </constraints>
                                         <connections>
-                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoAnimated" id="yJo-Y8-NKJ">
-                                                <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="LuF-ef-IN3"/>
-                                                <segue key="preview" destination="s7p-6D-dKC" identifier="showCutlineInfo" id="O0z-zi-U9X"/>
+                                            <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="yJo-Y8-NKJ">
+                                                <segue key="commit" inheritsFrom="parent" id="LuF-ef-IN3"/>
+                                                <segue key="preview" inheritsFrom="commit" id="O0z-zi-U9X"/>
                                             </segue>
                                         </connections>
                                     </collectionViewCell>
@@ -372,9 +372,9 @@
                                     </subviews>
                                 </tableViewCellContentView>
                                 <connections>
-                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfoAnimated" id="gke-A3-Q5b">
-                                        <segue key="commit" destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="aAk-ws-ut7"/>
-                                        <segue key="preview" destination="s7p-6D-dKC" identifier="" id="UkV-oQ-97S"/>
+                                    <segue destination="s7p-6D-dKC" kind="show" identifier="showCutlineInfo" id="gke-A3-Q5b">
+                                        <segue key="commit" inheritsFrom="parent" id="aAk-ws-ut7"/>
+                                        <segue key="preview" inheritsFrom="commit" id="UkV-oQ-97S"/>
                                     </segue>
                                 </connections>
                             </tableViewCell>
@@ -460,7 +460,7 @@
         <image name="trash" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="yJo-Y8-NKJ"/>
-        <segue reference="zGq-Es-g0b"/>
+        <segue reference="gke-A3-Q5b"/>
+        <segue reference="76m-BG-po3"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -76,14 +76,14 @@ class SearchViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
-		performSegue(withIdentifier: "showCutlineInfoAnimated", sender: searchResultsController.tableView.cellForRow(at: indexPath))
+		performSegue(withIdentifier: "showCutlineInfo", sender: searchResultsController.tableView.cellForRow(at: indexPath))
 	}
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		
 		switch segue.identifier! {
 			
-		case "showCutlineInfoAnimated":
+		case "showCutlineInfo":
 			
 			guard
 				let cell = sender as? UITableViewCell,
@@ -95,9 +95,7 @@ class SearchViewController: UITableViewController {
 			let cutlineInfoController = segue.destination as! CutlineInfoViewController
 			
 			cutlineInfoController.photo = photo
-			cutlineInfoController.photoManager = photoManager
-			cutlineInfoController.animated = true
-			
+			cutlineInfoController.photoManager = photoManager			
 		case "showSettings":
 			break
 		default:

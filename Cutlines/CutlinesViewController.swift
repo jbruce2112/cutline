@@ -43,9 +43,9 @@ class CutlinesViewController: UIViewController {
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		
-		let prepareInfoController = {
-			[unowned self] (animated: Bool) in
-			
+		switch segue.identifier! {
+		
+		case "showCutlineInfo":
 			guard
 				let cell = sender as? UICollectionViewCell,
 				let selectedIndex = self.collectionView.indexPath(for: cell) else {
@@ -57,15 +57,6 @@ class CutlinesViewController: UIViewController {
 			
 			cutlineInfoController.photo = photo
 			cutlineInfoController.photoManager = self.photoManager
-			cutlineInfoController.animated = animated
-		}
-	
-		switch segue.identifier! {
-			
-		case "showCutlineInfoAnimated":
-			prepareInfoController(true)
-		case "showCutlineInfo":
-			prepareInfoController(false)
 		case "showSettings":
 			break
 		default:

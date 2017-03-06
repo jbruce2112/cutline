@@ -14,8 +14,6 @@ class CutlineInfoViewController: UIViewController {
 	var photo: Photo!
 	var photoManager: PhotoManager!
 	
-	var animated = false
-	
 	private let imageView = UIImageView()
 	private let captionView = CaptionView()
 	
@@ -32,11 +30,7 @@ class CutlineInfoViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		if animated {
-			container.addSubview(imageView)
-		} else {
-			container.addSubview(captionView)
-		}
+		container.addSubview(captionView)
 		
 		imageView.image = photoManager.image(for: photo)
 		imageView.contentMode = .scaleAspectFit
@@ -109,24 +103,6 @@ class CutlineInfoViewController: UIViewController {
 		
 		setTheme()
 		newTabBar.setTheme()
-	}
-	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		
-		if self.animated {
-			flipContainer()
-		}
-		
-		// Update the Photo object with our changes
-		// and kick off a save before we leave the view
-		let caption = captionView.getCaption()
-		if caption != initialCaption {
-			
-			photo.caption = caption
-			photo.lastUpdated = NSDate()
-			photoManager.update(photo: photo, completion: nil)
-		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
