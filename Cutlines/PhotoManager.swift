@@ -78,7 +78,6 @@ class PhotoManager {
 					// TODO: error handling
 					switch cloudResult {
 					case .success:
-						
 						// Save the CKRecord that the photo now has
 						self.photoDataSource.save()
 						completion?(.success)
@@ -281,22 +280,31 @@ extension PhotoManager: CloudChangeDelegate {
 			}
 		} else {
 			
-			assert(existingPhoto!.ckRecord != nil)
+			// It's technically possible for us to have added a photo locally,
+			// told the cloud about it, and then exited before we were able to
+			// add the record to our local store. We should just save the
+			// current version from the cloud when this happens.
 			
-			let cloudRecord = CloudPhoto.systemRecord(fromData: photo.ckRecord!)
-			let localRecord = CloudPhoto.systemRecord(fromData: existingPhoto!.ckRecord!)
-			
-			if localRecord.recordID == cloudRecord.recordID &&
-				localRecord.recordChangeTag == cloudRecord.recordChangeTag &&
-				localRecord.modificationDate == cloudRecord.modificationDate {
+			if let existingRecord = existingPhoto!.ckRecord {
 				
-				// This is expected behavior the first time our device asks
-				// for changes after adding a new photo. CloudKit does not provide
-				// a serverChangeToken after we push changes (adds or deletes),
-				// so we just have to no-op this. Since we're in this scenerio
-				// because we asked for changes, out token should be up to date now.
-				print("Got an update for a change we already have")
-				return
+				let localRecord = CloudPhoto.systemRecord(fromData: existingRecord)
+				let cloudRecord = CloudPhoto.systemRecord(fromData: photo.ckRecord!)
+				
+				if localRecord.recordID == cloudRecord.recordID &&
+					localRecord.recordChangeTag == cloudRecord.recordChangeTag &&
+					localRecord.modificationDate == cloudRecord.modificationDate {
+					
+					// This is expected behavior the first time our device asks
+					// for changes after adding a new photo. CloudKit does not provide
+					// a serverChangeToken after we push changes (adds or deletes),
+					// so we just have to no-op this. Since we're in this scenerio
+					// because we asked for changes, out token should be up to date now.
+					print("Got an update for a change we already have")
+					return
+				}
+			} else {
+				// Assert so we can verify how we got here
+				assert(false)
 			}
 			
 			// We got an update for an existing photo, save the changes
