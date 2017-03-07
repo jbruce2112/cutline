@@ -14,7 +14,7 @@ class CutlineInfoViewController: UIViewController {
 	var photo: Photo!
 	var photoManager: PhotoManager!
 	
-	private let imageView = UIImageView()
+	private let polaroidView = PolaroidView()
 	private let captionView = CaptionView()
 	
 	private var initialCaption: String!
@@ -31,8 +31,10 @@ class CutlineInfoViewController: UIViewController {
 		
 		container.addSubview(captionView)
 		
-		imageView.image = photoManager.image(for: photo)
-		imageView.contentMode = .scaleAspectFit
+		captionView.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: 0.0)
+		
+		polaroidView.image = photoManager.image(for: photo)
+		polaroidView.setNeedsLayout()
 		
 		// Don't clear the placeholder text
 		if !photo.caption!.isEmpty {
@@ -41,10 +43,10 @@ class CutlineInfoViewController: UIViewController {
 		
 		initialCaption = captionView.getCaption()
 		
-		container.layer.borderWidth = 2.0
+		container.layer.borderWidth = 0.75
 		container.layer.borderColor = UIColor.gray.cgColor
 		
-		container.layer.shadowRadius = 5
+		container.layer.shadowRadius = 10
 		container.layer.shadowColor = UIColor.gray.cgColor
 		container.layer.shadowOpacity = 0.6
 		
@@ -92,7 +94,7 @@ class CutlineInfoViewController: UIViewController {
 		
 		// Set container's subview frames to its bounds here
 		// to give autolayout a chance to finish sizing the container
-		imageView.frame = container.bounds
+		polaroidView.frame = container.bounds
 		captionView.frame = container.bounds
 	}
 	
@@ -126,10 +128,10 @@ class CutlineInfoViewController: UIViewController {
 		// flip this view again later on
 		var views: (frontView: UIView, backView: UIView)
 		
-		if imageView.superview != nil {
-			views = (frontView: imageView, backView: captionView)
+		if polaroidView.superview != nil {
+			views = (frontView: polaroidView, backView: captionView)
 		} else {
-			views = (frontView: captionView, backView: imageView)
+			views = (frontView: captionView, backView: polaroidView)
 		}
 		
 		UIView.transition(from: views.frontView, to: views.backView,

@@ -20,6 +20,7 @@
 		52589E101E67B93600C8BA29 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
 		52589E111E67BB7900C8BA29 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* Key.swift */; };
 		52589E141E67BC4F00C8BA29 /* Cutlines.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 523751F61E41744F00060607 /* Cutlines.xcdatamodeld */; };
+		525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525E6D101E6E15D20060EB51 /* PolaroidView.swift */; };
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
 		525F4D041E4AAA34004615FD /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525F4D021E4AAA34004615FD /* MainInterface.storyboard */; };
@@ -76,6 +77,7 @@
 		523D26841E5A0512000507DA /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		5244DE891E51323E00C9C9ED /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Common.swift; sourceTree = "<group>"; };
 		524530611E61C82D00305843 /* PhotoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		525E6D101E6E15D20060EB51 /* PolaroidView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolaroidView.swift; sourceTree = "<group>"; };
 		525F4CF81E48294C004615FD /* SearchResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		525F4CFE1E4AAA34004615FD /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		525F4D001E4AAA34004615FD /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
@@ -135,6 +137,7 @@
 			isa = PBXGroup;
 			children = (
 				523752041E467C0200060607 /* CaptionView.swift */,
+				525E6D101E6E15D20060EB51 /* PolaroidView.swift */,
 				52AC6D101E5A74B800C63013 /* SearchResultCell.swift */,
 				523D26841E5A0512000507DA /* Theme.swift */,
 			);
@@ -391,6 +394,7 @@
 			files = (
 				523751FF1E41928700060607 /* CreateViewController.swift in Sources */,
 				52A03E641E40330500A275AD /* SearchViewController.swift in Sources */,
+				525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */,
 				524530621E61C82D00305843 /* PhotoManager.swift in Sources */,
 				523D26831E59FBF9000507DA /* Key.swift in Sources */,
 				52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */,

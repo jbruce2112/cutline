@@ -305,7 +305,7 @@
                         <subviews>
                             <view contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="tlF-T1-Nm5">
                                 <rect key="frame" x="10" y="156" width="355" height="355"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="0.99607843137254903" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="height" multiplier="1:1" id="5qI-kB-mXt"/>
