@@ -47,8 +47,7 @@ class SearchViewController: UITableViewController {
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
 		
-		let barStyle: UIBarStyle = theme.backgroundColor == UIColor.black ? .black : .default
-		searchController.searchBar.barStyle = barStyle
+		searchController.searchBar.barStyle = theme.barStyle
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

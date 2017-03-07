@@ -24,7 +24,6 @@ class CutlineInfoViewController: UIViewController {
 	
 	private var didDelete = false
 	fileprivate let deleteTag = 1
-	private var originalTabBarHeight: CGFloat = 0
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -62,7 +61,6 @@ class CutlineInfoViewController: UIViewController {
 		super.viewWillLayoutSubviews()
 		
 		guard
-			let tabController = tabBarController,
 			let navController = navigationController else {
 				return
 		}
@@ -72,7 +70,7 @@ class CutlineInfoViewController: UIViewController {
 		// The constraints in the storyboard only set the relationship between the view and the container,
 		// and the view also extends under the toolbars. This can be disabled, but it looks better if the view
 		// extends underneath and then the container just constrains itself within the status bars.
-		let tabBarHeight = tabController.tabBar.isHidden ? 0 : tabController.tabBar.frame.height
+		let tabBarHeight = newTabBar.isHidden ? 0 : newTabBar.frame.height
 		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
 		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
 		
@@ -85,8 +83,8 @@ class CutlineInfoViewController: UIViewController {
 		heightConstraint?.constant = barHeights + 20
 		heightConstraintLTE?.constant = barHeights + 20
 		
-		originalTabBarHeight = tabBarHeight
-		toggleOriginalTab(visible: false)
+		// Hide the tabBar from the previous view
+		tabBarController?.tabBar.isHidden = true
 	}
 	
 	override func viewDidLayoutSubviews() {
@@ -119,7 +117,7 @@ class CutlineInfoViewController: UIViewController {
 		}
 		
 		// Show the original tab bar again
-		toggleOriginalTab(visible: true)
+		tabBarController?.tabBar.isHidden = false
 	}
 	
 	func flipContainer() {
@@ -136,19 +134,6 @@ class CutlineInfoViewController: UIViewController {
 		
 		UIView.transition(from: views.frontView, to: views.backView,
 		                  duration: 0.4, options: [.transitionFlipFromRight, .curveEaseOut], completion: nil)
-	}
-	
-	private func toggleOriginalTab(visible: Bool) {
-		
-		guard let tabBar = tabBarController?.tabBar else {
-			return
-		}
-		
-		let dy = visible ? -originalTabBarHeight : originalTabBarHeight
-		UIView.transition(with: tabBar, duration: 0.2, options: [], animations: { () in
-			
-			tabBar.frame = tabBar.frame.offsetBy(dx: 0, dy: dy)			
-		}, completion: nil)
 	}
 	
 	fileprivate func deleteItem() {

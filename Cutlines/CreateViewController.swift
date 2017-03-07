@@ -15,7 +15,7 @@ class CreateViewController: UIViewController {
 	var imageURL: URL!
 	var photoManager: PhotoManager!
 	
-	private var cancelled = false
+	private var canceled = false
 	
 	@IBOutlet var imageView: UIImageView!
 	@IBOutlet var captionView: CaptionView!
@@ -53,7 +53,7 @@ class CreateViewController: UIViewController {
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		if !cancelled {
+		if !canceled {
 			save()
 		}
 	}
@@ -61,7 +61,7 @@ class CreateViewController: UIViewController {
 	// MARK: Actions
 	@IBAction func cancel() {
 		
-		cancelled = true
+		canceled = true
 		
 		let _ = navigationController?.popViewController(animated: true)
 	}
