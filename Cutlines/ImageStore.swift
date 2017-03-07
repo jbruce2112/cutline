@@ -13,15 +13,25 @@ class ImageStore {
 	
 	// MARK: Properties
 	private let cache = NSCache<NSString, UIImage>()
+	private let thumbCache = NSCache<NSString, UIImage>()
 	
 	private let imageDirURL: URL = {
 		
 		return appGroupURL.appendingPathComponent("images")
 	}()
 	
+	private let thumbDirURL: URL = {
+		
+		return FileManager.default.urls(for: .cachesDirectory,
+		                                in: .userDomainMask).first!.appendingPathComponent("thumbnails")
+	}()
+	
 	init() {
 		
 		try! FileManager.default.createDirectory(at: imageDirURL,
+		                                         withIntermediateDirectories: true, attributes: nil)
+		
+		try! FileManager.default.createDirectory(at: thumbDirURL,
 		                                         withIntermediateDirectories: true, attributes: nil)
 	}
 	
@@ -54,9 +64,25 @@ class ImageStore {
 	
 	func thumbnail(forKey key: String, size: CGSize) -> UIImage? {
 		
-		let url = imageURL(forKey: key)
+		// Check the thumbnail cache first
+		let thumbKey = key + "_\(max(size.width, size.height))"
+		if let exisitingThumbnail = thumbCache.object(forKey: thumbKey as NSString) {
+			return exisitingThumbnail
+		}
 		
-		guard let original = CGImageSourceCreateWithURL(url as CFURL, nil) else {
+		// Check the disk for an archived thumbnail
+		let thumbnailURL = thumbURL(forKey: thumbKey)
+		if let thumbFromDisk = UIImage(contentsOfFile: thumbnailURL.path) {
+			
+			// Got a thumbnail from disk, add it to the cache and return
+			thumbCache.setObject(thumbFromDisk, forKey: thumbKey as NSString)
+			return thumbFromDisk
+		}
+		
+		// Don't have a thumbnail for this image and size yet - create one
+		
+		let originalImageURL = imageURL(forKey: key)
+		guard let original = CGImageSourceCreateWithURL(originalImageURL as CFURL, nil) else {
 			return nil
 		}
 		
@@ -87,10 +113,22 @@ class ImageStore {
 		let cgOrientation = origDictionary[kCGImagePropertyOrientation] as? Int
 		let orientation = uiOrientation(fromCGOrientation: cgOrientation)
 		
-		// The Image I/O framework will cache the thumbnail for us
-		return CGImageSourceCreateThumbnailAtIndex(original, 0, options as CFDictionary?).flatMap {
+		let thumb = CGImageSourceCreateThumbnailAtIndex(original, 0, options as CFDictionary?).flatMap {
 			UIImage(cgImage: $0, scale: 1.0, orientation: orientation)
 		}
+		
+		guard let thumbnail = thumb else {
+			return nil
+		}
+		
+		// We have the thumbnail now - write it to disk and add it to our cache
+		thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
+		
+		if let data = UIImageJPEGRepresentation(thumbnail, 1) {
+			let _ = try? data.write(to: thumbnailURL, options: [.atomic])
+		}
+		
+		return thumbnail
 	}
 	
 	func deleteImage(forKey key: String) {
@@ -111,6 +149,10 @@ class ImageStore {
 	}
 	
 	// MARK: Private functions
+	private func thumbURL(forKey key: String) -> URL {
+		return thumbDirURL.appendingPathComponent(key)
+	}
+	
 	private func uiOrientation(fromCGOrientation cgOrientation: Int?) -> UIImageOrientation {
 		
 		guard let cgOrientation = cgOrientation else {
