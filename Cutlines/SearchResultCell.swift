@@ -21,11 +21,4 @@ class SearchResultCell: UITableViewCell {
 		
 		imageView?.contentMode = .scaleAspectFill
 	}
-	
-	override func setTheme(_ theme: Theme) {
-		super.setTheme(theme)
-		
-		backgroundColor = theme.backgroundColor
-		textLabel?.textColor = theme.textColor
-	}
 }

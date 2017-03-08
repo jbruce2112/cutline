@@ -77,3 +77,13 @@ extension UINavigationBar {
 		barStyle = theme.barStyle
 	}
 }
+
+extension UITableViewCell {
+	
+	override func setTheme(_ theme: Theme) {
+		super.setTheme(theme)
+		
+		backgroundColor = theme.backgroundColor
+		textLabel?.textColor = theme.textColor
+	}
+}

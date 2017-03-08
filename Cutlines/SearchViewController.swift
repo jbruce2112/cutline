@@ -14,7 +14,7 @@ class SearchViewController: UITableViewController {
 	var photoManager: PhotoManager!
 	
 	private var searchBar: UISearchBar!
-	private var searchResultsViewController = SearchResultsViewController()
+	private var resultsViewController = SearchResultsViewController()
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -22,9 +22,13 @@ class SearchViewController: UITableViewController {
 		
 		definesPresentationContext = true
 		
-		searchResultsViewController.photoManager = photoManager
-		searchBar = searchResultsViewController.searchController.searchBar
+		resultsViewController.photoManager = photoManager
+		searchBar = resultsViewController.searchController.searchBar
 		tableView.tableHeaderView = searchBar
+		
+		tableView.dataSource = self
+		
+		resultsViewController.searchController.delegate = self
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -33,9 +37,52 @@ class SearchViewController: UITableViewController {
 		setTheme()
 	}
 	
+	override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		
+		resultsViewController.saveRecent()		
+	}
+	
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
 		
 		searchBar.barStyle = theme.barStyle
+	}
+	
+	// MARK: UITableViewDataSource functions
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		
+		return resultsViewController.recentSearches.count
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		
+		let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+		
+		cell.textLabel!.text = resultsViewController.recentSearches[indexPath.row]
+		cell.setTheme()
+		
+		return cell
+	}
+	
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		
+		return section == 0 ? "Recent Searches" : nil
+	}
+	
+	// MARK: UITableViewDelegate functions
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
+		// Trigger a search using the selected term
+		resultsViewController.searchController.isActive = true
+		resultsViewController.searchController.searchBar.text = resultsViewController.recentSearches[indexPath.row]
+	}
+}
+
+extension SearchViewController: UISearchControllerDelegate {
+	
+	func willDismissSearchController(_ searchController: UISearchController) {
+		
+		tableView.reloadData()
 	}
 }
