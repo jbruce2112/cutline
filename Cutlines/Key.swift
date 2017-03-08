@@ -11,5 +11,5 @@ import Foundation
 enum Key: String {
 	
 	case cellSync = "CellSyncEnabled"
-	case darkMode = "DarModeEnabled"
+	case nightMode = "NightModeEnabled"
 }

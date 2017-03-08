@@ -17,7 +17,7 @@ let appGroupDefaults: UserDefaults = {
 	
 	// Register default preference values here since we only have a couple preferences
 	let defaultValues: [String: Any] = [Key.cellSync.rawValue: true,
-	                                    Key.darkMode.rawValue: true]
+	                                    Key.nightMode.rawValue: true]
 	
 	defaults.register(defaults: defaultValues)
 	

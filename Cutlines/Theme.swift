@@ -12,9 +12,11 @@ import UIKit
 class Theme: NSObject {
 	
 	var backgroundColor: UIColor!
+	var altBackgroundColor: UIColor!
 	var textColor: UIColor!
 	var accentColor: UIColor!
 	var barStyle: UIBarStyle!
+	var isNight = false
 }
 
 extension UIViewController {
@@ -46,15 +48,19 @@ extension UIView {
 		
 		let theme = Theme()
 		
-		if appGroupDefaults.bool(forKey: Key.darkMode.rawValue) {
+		if appGroupDefaults.bool(forKey: Key.nightMode.rawValue) {
 			
+			theme.isNight = true
 			theme.backgroundColor = .black
+			theme.altBackgroundColor = UIColor(colorLiteralRed: 25.0 / 255.0, green: 25.0 / 225.0, blue: 25.0 / 225.0, alpha: 1.0)
 			theme.textColor = tintColor
 			theme.accentColor = .white
 			theme.barStyle = .black
 		} else {
 			
+			theme.isNight = false
 			theme.backgroundColor = .white
+			theme.altBackgroundColor = UIColor(colorLiteralRed: 227.0 / 255.0, green: 227.0 / 255.0, blue: 227.0 / 255.0, alpha: 1.0)
 			theme.textColor = .black
 			theme.accentColor = .blue
 			theme.barStyle = .default

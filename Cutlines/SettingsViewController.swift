@@ -39,7 +39,7 @@ class SettingsViewController: UITableViewController {
 		
 		// load preferences
 		cellSyncSwitch.isOn = appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
-		darkModeSwitch.isOn = appGroupDefaults.bool(forKey: Key.darkMode.rawValue)
+		darkModeSwitch.isOn = appGroupDefaults.bool(forKey: Key.nightMode.rawValue)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -51,15 +51,29 @@ class SettingsViewController: UITableViewController {
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
 		
+		var backgroundColor: UIColor!
+		var foregroundColor: UIColor!
+		
+		// Styling this view controller is a special case for now
+		if theme.isNight {
+			backgroundColor = theme.backgroundColor
+			foregroundColor = theme.altBackgroundColor
+		} else {
+			backgroundColor = theme.altBackgroundColor
+			foregroundColor = theme.backgroundColor
+		}
+		
+		view.backgroundColor = backgroundColor
+		
 		versionLabel.textColor = theme.textColor
 		attributionTextView.textColor = theme.textColor
-		attributionTextView.backgroundColor = theme.backgroundColor
+		attributionTextView.backgroundColor = foregroundColor
 		
 		cellSyncLabel.textColor = theme.textColor
 		darkModeLabel.textColor = theme.textColor
 		
 		for cell in tableView.visibleCells {
-			cell.backgroundColor = theme.backgroundColor
+			cell.backgroundColor = foregroundColor
 		}
 		
 		// force the section headers to refresh
@@ -118,7 +132,7 @@ class SettingsViewController: UITableViewController {
 	
 	@IBAction private func toggleDarkMode(sender: UISwitch) {
 		
-		appGroupDefaults.set(sender.isOn, forKey: Key.darkMode.rawValue)
+		appGroupDefaults.set(sender.isOn, forKey: Key.nightMode.rawValue)
 		
 		// Set the theme in the delegate for the root controllers
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate
