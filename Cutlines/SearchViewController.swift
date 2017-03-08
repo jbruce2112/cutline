@@ -16,6 +16,12 @@ class SearchViewController: UITableViewController {
 	private var searchBar: UISearchBar!
 	private var resultsViewController = SearchResultsViewController()
 	
+	fileprivate var recentSearches = [String]()
+	
+	fileprivate let recentSearchTermLimit = 5
+	fileprivate var lastSearchTerm: String?
+	fileprivate var recentSearchesArchive: String!
+	
 	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -29,6 +35,11 @@ class SearchViewController: UITableViewController {
 		tableView.dataSource = self
 		
 		resultsViewController.searchController.delegate = self
+		resultsViewController.searchTermDelegate = self
+		
+		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		recentSearchesArchive = cacheDir.appendingPathComponent("recentSearches.archive").path		
+		recentSearches = loadRecent()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -40,7 +51,7 @@ class SearchViewController: UITableViewController {
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		
-		resultsViewController.saveRecent()		
+		saveRecent()
 	}
 	
 	override func setTheme(_ theme: Theme) {
@@ -58,14 +69,14 @@ class SearchViewController: UITableViewController {
 	// MARK: UITableViewDataSource functions
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		
-		return resultsViewController.recentSearches.count
+		return recentSearches.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
 		
-		cell.textLabel!.text = resultsViewController.recentSearches[indexPath.row]
+		cell.textLabel!.text = recentSearches[indexPath.row]
 		cell.setTheme()
 		
 		return cell
@@ -100,14 +111,69 @@ class SearchViewController: UITableViewController {
 		
 		// Trigger a search using the selected term
 		resultsViewController.searchController.isActive = true
-		resultsViewController.searchController.searchBar.text = resultsViewController.recentSearches[indexPath.row]
+		resultsViewController.searchController.searchBar.text = recentSearches[indexPath.row]
+	}
+	
+	// MARK: Private functions
+	private func loadRecent() -> [String] {
+		
+		if let recent = NSKeyedUnarchiver.unarchiveObject(withFile: recentSearchesArchive) as? [String] {
+			print("Previous search terms loaded from archive")
+			return recent
+		} else {
+			print("Unable to load previous search terms, starting new")
+			return [String]()
+		}
+	}
+	
+	private func saveRecent() {
+		
+		NSKeyedArchiver.archiveRootObject(recentSearches, toFile: recentSearchesArchive)
+		print("Recent searches saved")
 	}
 }
 
+// MARK: UISearchControllerDelegate conformance
 extension SearchViewController: UISearchControllerDelegate {
 	
 	func willDismissSearchController(_ searchController: UISearchController) {
 		
 		tableView.reloadData()
+	}
+}
+
+// MARK: SearchTermDelegate conformance
+extension SearchViewController: SearchTermDelegate {
+	
+	func didPerformSearch(withTerm searchTerm: String) {
+		
+		lastSearchTerm = searchTerm
+		
+		if searchTerm.isEmpty {
+			return
+		}
+		
+		// Kick off a save in a few seconds for this search term for the recent list
+		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(2)) {
+			
+			// Cancel the save if we started another search by the time this ran
+			if self.lastSearchTerm != searchTerm {
+				
+				print("Last search term \(self.lastSearchTerm) doesn't match pending save \(searchTerm)")
+				return
+			}
+			
+			// We're only storing a few terms - don't bother with duplicates
+			if self.recentSearches.contains(searchTerm) {
+				return
+			}
+			
+			if self.recentSearches.count == self.recentSearchTermLimit {
+				self.recentSearches.removeLast()
+			}
+			
+			self.recentSearches.insert(searchTerm, at: 0)
+			print("Added recent search term \(searchTerm)")
+		}
 	}
 }

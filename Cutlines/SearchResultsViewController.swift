@@ -37,6 +37,11 @@ struct SearchResult {
 	}
 }
 
+protocol SearchTermDelegate: class {
+	
+	func didPerformSearch(withTerm searchTerm: String)
+}
+
 class SearchResultsViewController: UITableViewController {
 	
 	// MARK: Properties
@@ -45,12 +50,7 @@ class SearchResultsViewController: UITableViewController {
 	var searchController: UISearchController!
 	var photoManager: PhotoManager!
 	
-	var recentSearches = [String]()
-	
-	let recentSearchTermLimit = 5
-	fileprivate var lastSearchTerm: String?
-	private var canceledSearchTerms = Set<String>()
-	private var recentSearchesArchive: String!
+	weak var searchTermDelegate: SearchTermDelegate?
 	
 	init() {
 		super.init(style: .plain)
@@ -62,11 +62,6 @@ class SearchResultsViewController: UITableViewController {
 		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.register(SearchResultCell.self, forCellReuseIdentifier: "SearchResultCell")
-		
-		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-		recentSearchesArchive = cacheDir.appendingPathComponent("recentSearches.archive").path
-		
-		recentSearches = loadRecent()
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -83,12 +78,6 @@ class SearchResultsViewController: UITableViewController {
 		super.viewWillAppear(animated)
 		
 		setTheme()
-	}
-	
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-		
-		saveRecent()
 	}
 	
 	// MARK: TableView delegate functions
@@ -134,12 +123,6 @@ class SearchResultsViewController: UITableViewController {
 		presentingViewController?.navigationController?.pushViewController(cutlineInfoViewController, animated: true)
 	}
 	
-	func saveRecent() {
-		
-		NSKeyedArchiver.archiveRootObject(recentSearches, toFile: recentSearchesArchive)
-		print("Recent searches saved")
-	}
-	
 	// MARK: Private functions
 	private func readyForSearch() -> Bool {
 		
@@ -151,18 +134,7 @@ class SearchResultsViewController: UITableViewController {
 			return text != nil && !text!.isEmpty
 		}
 	}
-	
-	private func loadRecent() -> [String] {
-		if let recent = NSKeyedUnarchiver.unarchiveObject(withFile: recentSearchesArchive) as? [String] {
-			print("Previous search terms loaded from archive")
-			return recent
-		} else {
-			print("Unable to load previous search terms, starting new")
-			return [String]()
-		}
-	}
 }
-
 
 // MARK: UISearchResultsUpdating conformance
 extension SearchResultsViewController: UISearchResultsUpdating {
@@ -170,7 +142,6 @@ extension SearchResultsViewController: UISearchResultsUpdating {
 	func updateSearchResults(for searchController: UISearchController) {
 		
 		let searchTerm = searchController.searchBar.text!.lowercased()
-		lastSearchTerm = searchTerm
 		
 		// Get all photos containing the searchTerm
 		let photos = photoManager.photoDataSource.photos.filter { $0.caption!.lowercased().contains(searchTerm) }
@@ -180,32 +151,7 @@ extension SearchResultsViewController: UISearchResultsUpdating {
 		
 		tableView.reloadData()
 		
-		if searchTerm.isEmpty {
-			return
-		}
-		
-		// Kick off a save in a few seconds for this search term for the recent list
-		DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + .seconds(3)) {
-			
-			// Cancel the save if we started another search by the time this ran
-			if self.lastSearchTerm != searchTerm {
-				
-				print("Last search term \(self.lastSearchTerm) doesn't match pending save \(searchTerm)")
-				return
-			}
-			
-			// We're only storing a few terms - don't bother with duplicates
-			if self.recentSearches.contains(searchTerm) {
-				return
-			}
-			
-			if self.recentSearches.count == self.recentSearchTermLimit {
-				self.recentSearches.removeLast()
-			}
-			
-			self.recentSearches.insert(searchTerm, at: 0)
-			print("Added recent search term \(searchTerm)")
-		}
+		searchTermDelegate?.didPerformSearch(withTerm: searchTerm)
 	}
 }
 
