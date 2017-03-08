@@ -66,6 +66,11 @@ class CreateViewController: UIViewController {
 		let _ = navigationController?.popViewController(animated: true)
 	}
 	
+	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
+		
+		captionView.endEditing(true)
+	}
+	
 	private func save() {
 		
 		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
@@ -83,10 +88,5 @@ class CreateViewController: UIViewController {
 			}
 		
 		photoManager.add(image: image, caption: captionView.getCaption(), dateTaken: asset.creationDate!, qos: nil, completion: nil)
-	}
-	
-	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
-		
-		captionView.endEditing(true)
 	}
 }

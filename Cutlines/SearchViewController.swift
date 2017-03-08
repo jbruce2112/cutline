@@ -47,6 +47,9 @@ class SearchViewController: UITableViewController {
 		super.setTheme(theme)
 		
 		searchBar.barStyle = theme.barStyle
+		
+		// force the section headers to refresh
+		tableView.reloadSections(IndexSet(integer: 0), with: .none)
 	}
 	
 	// MARK: UITableViewDataSource functions
