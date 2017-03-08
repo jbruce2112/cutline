@@ -138,6 +138,11 @@ class CutlineInfoViewController: UIViewController {
 		                  duration: 0.4, options: [.transitionFlipFromRight, .curveEaseOut], completion: nil)
 	}
 	
+	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
+		
+		captionView.endEditing(true)
+	}
+	
 	fileprivate func deleteItem() {
 		
 		let alertController = UIAlertController(title: nil,
@@ -174,6 +179,7 @@ class CutlineInfoViewController: UIViewController {
 	}
 }
 
+// MARK: UITabBarDelegate conformance
 extension CutlineInfoViewController: UITabBarDelegate {
 	
 	func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

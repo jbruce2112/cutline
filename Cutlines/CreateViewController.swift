@@ -84,4 +84,9 @@ class CreateViewController: UIViewController {
 		
 		photoManager.add(image: image, caption: captionView.getCaption(), dateTaken: asset.creationDate!, qos: nil, completion: nil)
 	}
+	
+	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
+		
+		captionView.endEditing(true)
+	}
 }

@@ -201,6 +201,9 @@
                             <constraint firstAttribute="trailing" secondItem="zYP-FQ-k5u" secondAttribute="trailing" constant="20" identifier="captionViewTrailingConstraint" id="plW-Lz-PFc"/>
                             <constraint firstItem="PCp-6C-W7R" firstAttribute="top" secondItem="u8p-If-Bvc" secondAttribute="bottom" id="qS4-Om-zmV"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="mlD-M6-gEp" appends="YES" id="oGr-Df-IrS"/>
+                        </connections>
                     </view>
                     <connections>
                         <outlet property="captionView" destination="zYP-FQ-k5u" id="aiP-Wi-uAF"/>
@@ -208,6 +211,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7p6-Zp-nh8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="mlD-M6-gEp">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="ao2-nU-MXq" id="w1F-iZ-Rjh"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3063" y="-233"/>
         </scene>
@@ -334,6 +342,9 @@
                             <constraint firstItem="tlF-T1-Nm5" firstAttribute="centerX" secondItem="gl7-TF-CYj" secondAttribute="centerX" id="nwE-Sc-zTz"/>
                             <constraint firstItem="tlF-T1-Nm5" firstAttribute="centerY" secondItem="gl7-TF-CYj" secondAttribute="centerY" id="tb0-NJ-Neg"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="l6i-4f-kng" appends="YES" id="Qma-eI-KYq"/>
+                        </connections>
                     </view>
                     <toolbarItems/>
                     <nil key="simulatedBottomBarMetrics"/>
@@ -343,6 +354,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ac-d9-IoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="l6i-4f-kng">
+                    <connections>
+                        <action selector="backgroundTapped:" destination="s7p-6D-dKC" id="ASp-cw-ZPb"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3425" y="639"/>
         </scene>
