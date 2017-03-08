@@ -15,6 +15,7 @@ struct SearchResult {
 	
 	let displayString: String!
 	
+	// TODO: comment
 	init(photo: Photo, searchTerm: String) {
 		
 		self.photo = photo
@@ -38,14 +39,22 @@ struct SearchResult {
 
 class SearchResultsViewController: UITableViewController {
 	
+	// MARK: Properties
 	var results = [SearchResult]()
 	
-	fileprivate var photoManager: PhotoManager!
+	var searchController: UISearchController!
+	var photoManager: PhotoManager!
 	
-	init(photoManager: PhotoManager) {
+	init() {
 		super.init(style: .plain)
 		
-		self.photoManager = photoManager
+		searchController = UISearchController(searchResultsController: self)
+		searchController.searchResultsUpdater = self
+		searchController.dimsBackgroundDuringPresentation = false
+		
+		tableView.dataSource = self
+		tableView.delegate = self
+		tableView.register(SearchResultCell.self, forCellReuseIdentifier: "SearchResultCell")
 	}
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -62,6 +71,79 @@ class SearchResultsViewController: UITableViewController {
 		super.viewWillAppear(animated)
 		
 		setTheme()
+	}
+	
+	// MARK: TableView delegate functions
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		
+		return readyForSearch() ? results.count : 0
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		
+		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath)
+		
+		if !readyForSearch() {
+			return cell
+		}
+		
+		let result = results[indexPath.row]
+		
+		cell.textLabel!.text = result.displayString
+		cell.imageView?.image = photoManager.image(for: result.photo)
+		
+		cell.setTheme()
+		
+		return cell
+	}
+	
+	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		
+		guard
+			let cell = tableView.cellForRow(at: indexPath),
+			let selectedIndex =	self.tableView.indexPath(for: cell) else {
+				return
+		}
+		
+		let photo = results[selectedIndex.row].photo
+		
+		let cutlineInfoViewController =
+			presentingViewController?.storyboard?.instantiateViewController(withIdentifier: "CutlineInfoViewController") as! CutlineInfoViewController
+		
+		cutlineInfoViewController.photo = photo
+		cutlineInfoViewController.photoManager = photoManager
+		
+		presentingViewController?.navigationController?.pushViewController(cutlineInfoViewController, animated: true)
+	}
+	
+	// MARK: Private functions
+	private func readyForSearch() -> Bool {
+		
+		if !searchController.isActive {
+			return false
+		} else {
+			
+			let text = searchController.searchBar.text
+			return text != nil && !text!.isEmpty
+		}
+	}
+}
+
+
+// MARK: UISearchResultsUpdating conformance
+extension SearchResultsViewController: UISearchResultsUpdating {
+	
+	func updateSearchResults(for searchController: UISearchController) {
+		
+		let searchTerm = searchController.searchBar.text!.lowercased()
+		
+		// Get all photos containing the searchTerm
+		let photos = photoManager.photoDataSource.photos.filter { $0.caption!.lowercased().contains(searchTerm) }
+		
+		// Create search results out of all of them
+		results = photos.map { SearchResult(photo: $0, searchTerm: searchTerm) }
+		
+		tableView.reloadData()
 	}
 }
 
