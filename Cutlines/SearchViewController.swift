@@ -50,6 +50,9 @@ class SearchViewController: UITableViewController {
 		
 		// force the section headers to refresh
 		tableView.reloadSections(IndexSet(integer: 0), with: .none)
+		
+		tableView.backgroundView = UIView()
+		tableView.backgroundView?.setTheme()
 	}
 	
 	// MARK: UITableViewDataSource functions
@@ -71,6 +74,25 @@ class SearchViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 		
 		return section == 0 ? "Recent Searches" : nil
+	}
+	
+	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+		
+		if section != 0 {
+			return nil
+		}
+		
+		let view = UITableViewHeaderFooterView()
+		view.contentView.setTheme()
+		
+		let theme = view.contentView.theme()
+		view.contentView.backgroundColor = theme.altBackgroundColor
+		
+		if theme.isNight {
+			view.textLabel?.textColor = .white
+		}
+		
+		return view
 	}
 	
 	// MARK: UITableViewDelegate functions
