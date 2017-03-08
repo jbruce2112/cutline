@@ -78,7 +78,7 @@ class ShareViewController: SLComposeServiceViewController {
 		
 		photoManager.setupNoSync {
 			
-			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date(), qos: .userInitiated) { result in
+			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date(), qos: .userInteractive) { result in
 				
 				switch result {
 					
