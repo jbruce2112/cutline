@@ -205,7 +205,7 @@ class CloudKitManager {
 			// If we get a 'ServerRecordChanged' error here, it means
 			// we're in a conflict case. Our local CKRecord is older
 			// than what the cloud has.
-			// This likely means that next time we fetch, we'll have our
+			// This likely means that next time we fetch, we'll have
 			// *this* change replaced with something from the cloud.
 			// Maybe we could copy this version somewhere else for recovery later.
 			if let error = error {
@@ -337,6 +337,7 @@ class CloudKitManager {
 	private func fetchChanges(fromZones changedZoneIDs: [CKRecordZoneID], completion: @escaping () -> Void) {
 		
 		if changedZoneIDs.isEmpty {
+			completion()
 			return
 		}
 		
@@ -345,6 +346,7 @@ class CloudKitManager {
 		// We should only have one changed zone right now
 		assert(changedZoneIDs.count == 1)
 		guard let zoneID = changedZoneIDs.first else {
+			completion()
 			return
 		}
 		
@@ -383,6 +385,7 @@ class CloudKitManager {
 			
 			if let error = error {
 				print("Got error fetching record changes \(error)")
+				completion()
 				return
 			}
 			

@@ -223,7 +223,8 @@ class PhotoManager {
 			switch result {
 			case .success:
 				
-				// Save the updated CKRecords that were added to the photos
+				// Mark un-dirty and save the updated CKRecords added to the photos
+				modifiedPhotos.forEach { $0.dirty = false }
 				self.photoDataSource.save()
 				
 				// Push another batch
