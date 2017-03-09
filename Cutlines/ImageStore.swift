@@ -62,36 +62,42 @@ class ImageStore {
 		return imageFromDisk
 	}
 	
-	func thumbnail(forKey key: String, size: CGSize) -> UIImage? {
+	func thumbnail(forKey key: String, size: CGSize, completion: @escaping (UIImage?) -> Void) {
 		
 		// Check the thumbnail cache first
 		let thumbKey = key + "_\(max(size.width, size.height))"
 		if let exisitingThumbnail = thumbCache.object(forKey: thumbKey as NSString) {
-			return exisitingThumbnail
+			completion(exisitingThumbnail)
+			return
 		}
 		
-		// Check the disk for an archived thumbnail
-		let thumbnailURL = thumbURL(forKey: thumbKey)
-		if let thumbFromDisk = UIImage(contentsOfFile: thumbnailURL.path) {
+		DispatchQueue.global().async {
 			
-			// Got a thumbnail from disk, add it to the cache and return
-			thumbCache.setObject(thumbFromDisk, forKey: thumbKey as NSString)
-			return thumbFromDisk
+			// Check the disk for an archived thumbnail
+			let thumbnailURL = self.thumbURL(forKey: thumbKey)
+			if let thumbFromDisk = UIImage(contentsOfFile: thumbnailURL.path) {
+				
+				// Got a thumbnail from disk, add it to the cache and return
+				self.thumbCache.setObject(thumbFromDisk, forKey: thumbKey as NSString)
+				completion(thumbFromDisk)
+				return
+			}
+			
+			// Don't have a thumbnail for this image and size yet - create one
+			guard let thumbnail = self.createThumbnail(forKey: key, size: size) else {
+				completion(nil)
+				return
+			}
+			
+			// Write the thumbnail to disk and add it to our cache
+			self.thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
+			
+			if let data = UIImageJPEGRepresentation(thumbnail, 0.7) {
+				let _ = try? data.write(to: thumbnailURL, options: [.atomic])
+			}
+			
+			completion(thumbnail)
 		}
-		
-		// Don't have a thumbnail for this image and size yet - create one
-		guard let thumbnail = createThumbnail(forKey: key, size: size) else {
-			return nil
-		}
-		
-		// Write the thumbnail to disk and add it to our cache
-		thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
-		
-		if let data = UIImageJPEGRepresentation(thumbnail, 0.7) {
-			let _ = try? data.write(to: thumbnailURL, options: [.atomic])
-		}
-		
-		return thumbnail
 	}
 	
 	func deleteImage(forKey key: String) {

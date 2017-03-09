@@ -253,7 +253,6 @@
                                                 </imageView>
                                             </subviews>
                                         </view>
-                                        <color key="backgroundColor" red="0.0" green="0.50196081400000003" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstItem="wg2-pb-si9" firstAttribute="leading" secondItem="QVi-Vo-KDH" secondAttribute="leading" id="BUh-k9-8IS"/>
                                             <constraint firstAttribute="bottom" secondItem="wg2-pb-si9" secondAttribute="bottom" id="PMi-Of-RMY"/>
@@ -470,7 +469,7 @@
         <image name="trash" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="76m-BG-po3"/>
         <segue reference="yJo-Y8-NKJ"/>
+        <segue reference="zGq-Es-g0b"/>
     </inferredMetricsTieBreakers>
 </document>

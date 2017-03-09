@@ -159,13 +159,22 @@ class PhotoManager {
 		return imageStore.image(forKey: photoID)
 	}
 	
-	func thumbnail(for photo: Photo, withSize size: CGSize) -> UIImage? {
+	func thumbnail(for photo: Photo, withSize size: CGSize, completion: @escaping (UIImage?) -> Void) {
 		
 		guard let photoID = photo.photoID else {
-			return nil
+			
+			DispatchQueue.main.async {
+				completion(nil)
+			}
+			return
 		}
 		
-		return imageStore.thumbnail(forKey: photoID, size: size)
+		imageStore.thumbnail(forKey: photoID, size: size) { image in
+			
+			DispatchQueue.main.async {
+				completion(image)
+			}
+		}
 	}
 	
 	// MARK: Private functions

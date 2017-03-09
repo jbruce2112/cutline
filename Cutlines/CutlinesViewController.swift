@@ -125,10 +125,15 @@ extension CutlinesViewController: UICollectionViewDelegate {
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		
 		let photo = photoDataSource.photos[indexPath.row]
-		let thumbnail = photoManager.thumbnail(for: photo, withSize: cell.frame.size)
-		
-		let imageView = cell.viewWithTag(100) as! UIImageView
-		imageView.image = thumbnail
+		photoManager.thumbnail(for: photo, withSize: cell.frame.size) { fetchedThumbnail in
+			
+			guard let thumbnail = fetchedThumbnail else {
+				return
+			}
+			
+			let imageView = cell.viewWithTag(100) as! UIImageView
+			imageView.image = thumbnail
+		}
 	}
 }
 
