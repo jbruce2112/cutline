@@ -280,9 +280,12 @@ extension PhotoManager: CloudChangeDelegate {
 				switch result {
 				case .success:
 					
-					self.imageStore.setImage(photo.image!, forKey: photo.photoID!)
-					print("New photo added with caption '\(photo.caption!)'")
-					self.delegate?.didAdd()
+					DispatchQueue.global().async {
+						
+						self.imageStore.setImage(photo.image!, forKey: photo.photoID!)
+						print("New photo added with caption '\(photo.caption!)'")
+						self.delegate?.didAdd()
+					}
 				case let .failure(error):
 					
 					print("Error saving photo \(error)")
