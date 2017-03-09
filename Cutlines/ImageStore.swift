@@ -80,6 +80,43 @@ class ImageStore {
 		}
 		
 		// Don't have a thumbnail for this image and size yet - create one
+		guard let thumbnail = createThumbnail(forKey: key, size: size) else {
+			return nil
+		}
+		
+		// Write the thumbnail to disk and add it to our cache
+		thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
+		
+		if let data = UIImageJPEGRepresentation(thumbnail, 0.7) {
+			let _ = try? data.write(to: thumbnailURL, options: [.atomic])
+		}
+		
+		return thumbnail
+	}
+	
+	func deleteImage(forKey key: String) {
+		
+		cache.removeObject(forKey: key as NSString)
+		
+		let url = imageURL(forKey: key)
+		
+		do {
+			try FileManager.default.removeItem(at: url)
+		} catch {
+			print("Error removing the image from disk: \(error)")
+		}
+	}
+	
+	func imageURL(forKey key: String) -> URL {
+		return imageDirURL.appendingPathComponent(key)
+	}
+	
+	// MARK: Private functions
+	private func thumbURL(forKey key: String) -> URL {
+		return thumbDirURL.appendingPathComponent(key)
+	}
+	
+	private func createThumbnail(forKey key: String, size: CGSize) -> UIImage? {
 		
 		let originalImageURL = imageURL(forKey: key)
 		guard let original = CGImageSourceCreateWithURL(originalImageURL as CFURL, nil) else {
@@ -113,44 +150,9 @@ class ImageStore {
 		let cgOrientation = origDictionary[kCGImagePropertyOrientation] as? Int
 		let orientation = uiOrientation(fromCGOrientation: cgOrientation)
 		
-		let thumb = CGImageSourceCreateThumbnailAtIndex(original, 0, options as CFDictionary?).flatMap {
+		return CGImageSourceCreateThumbnailAtIndex(original, 0, options as CFDictionary?).flatMap {
 			UIImage(cgImage: $0, scale: 1.0, orientation: orientation)
 		}
-		
-		guard let thumbnail = thumb else {
-			return nil
-		}
-		
-		// We have the thumbnail now - write it to disk and add it to our cache
-		thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
-		
-		if let data = UIImageJPEGRepresentation(thumbnail, 1) {
-			let _ = try? data.write(to: thumbnailURL, options: [.atomic])
-		}
-		
-		return thumbnail
-	}
-	
-	func deleteImage(forKey key: String) {
-		
-		cache.removeObject(forKey: key as NSString)
-		
-		let url = imageURL(forKey: key)
-		
-		do {
-			try FileManager.default.removeItem(at: url)
-		} catch {
-			print("Error removing the image from disk: \(error)")
-		}
-	}
-	
-	func imageURL(forKey key: String) -> URL {
-		return imageDirURL.appendingPathComponent(key)
-	}
-	
-	// MARK: Private functions
-	private func thumbURL(forKey key: String) -> URL {
-		return thumbDirURL.appendingPathComponent(key)
 	}
 	
 	private func uiOrientation(fromCGOrientation cgOrientation: Int?) -> UIImageOrientation {
