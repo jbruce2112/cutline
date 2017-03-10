@@ -20,12 +20,11 @@ class CutlineInfoViewController: UIViewController {
 	private var initialCaption: String!
 	
 	@IBOutlet private var container: UIView!
+	@IBOutlet private var shareButton: UIBarButtonItem!
 	@IBOutlet private var deleteButton: UIBarButtonItem!
 	@IBOutlet private var toolbar: UIToolbar!
 	
 	private var didDelete = false
-	fileprivate let shareTag = 1
-	fileprivate let deleteTag = 2
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -163,12 +162,12 @@ class CutlineInfoViewController: UIViewController {
 		// We need to give the alertController an anchor for display when on iPad
 		if let presenter = alertController.popoverPresentationController {
 			
-			guard let deleteButton = toolbar.viewWithTag(deleteTag) else {
+			guard let deleteButtonView = deleteButton.value(forKey: "view") as? UIView else {
 				return
 			}
 			
-			presenter.sourceView = deleteButton
-			presenter.sourceRect = deleteButton.bounds
+			presenter.sourceView = deleteButtonView
+			presenter.sourceRect = deleteButtonView.bounds
 		}
 		
 		present(alertController, animated: true, completion: nil)
@@ -178,6 +177,16 @@ class CutlineInfoViewController: UIViewController {
 		
 		let shareController = UIActivityViewController(activityItems:
 			[captionView.getCaption(), polaroidView.image!], applicationActivities: nil)
+		
+		if let presenter = shareController.popoverPresentationController {
+			
+			guard let shareButtonView = shareButton.value(forKey: "view") as? UIView else {
+				return
+			}
+			
+			presenter.sourceView = shareButtonView
+			presenter.sourceRect = shareButtonView.bounds
+		}
 		
 		present(shareController, animated: true)
 	}
