@@ -10,41 +10,69 @@ import UIKit
 
 class SearchResultCell: UITableViewCell {
 	
+	// MARK: Properties
+	var resultText: String?
+	var resultImage: UIImage?
+	
+	private let resultLabel = UILabel()
+	private let resultImageView = UIImageView()
+	
+	override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+		super.init(style: .default, reuseIdentifier: "SearchResultCell")
+		
+		setup()
+	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		super.init(coder: aDecoder)
+		
+		setup()
+	}
+	
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		
-		guard let imageView = imageView, let textLabel = textLabel else {
-			return
-		}
+		resultLabel.text = resultText
+		resultImageView.image = resultImage
 		
-		imageView.clipsToBounds = true
-		imageView.contentMode = .scaleAspectFill
-		imageView.translatesAutoresizingMaskIntoConstraints = false
-		textLabel.translatesAutoresizingMaskIntoConstraints = false
+		resultImageView.clipsToBounds = true
+		resultImageView.contentMode = .scaleAspectFill
+		resultImageView.translatesAutoresizingMaskIntoConstraints = false
+		resultLabel.translatesAutoresizingMaskIntoConstraints = false
 		
 		var constraints = [NSLayoutConstraint]()
 		
 		// tie the image to the superviews leadind and top edges
-		constraints.append(imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5))
-		constraints.append(imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5))
+		constraints.append(resultImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5))
+		constraints.append(resultImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5))
 		
 		// make the image a square
-		constraints.append(imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor))
+		constraints.append(resultImageView.widthAnchor.constraint(equalTo: resultImageView.heightAnchor))
 		
 		// pad the image from the superview's top and bottom edges
-		constraints.append(imageView.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor, constant: -10))
+		constraints.append(resultImageView.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor, constant: -10))
 		
 		// set a lower priority for this equality so the image grows as large as it can
-		let heightConstraint = imageView.heightAnchor.constraint(equalTo: contentView.heightAnchor)
+		let heightConstraint = resultImageView.heightAnchor.constraint(equalTo: contentView.heightAnchor)
 		heightConstraint.priority = UILayoutPriorityDefaultHigh
 		constraints.append(heightConstraint)
 		
 		// Center the label vertically and give it some padding between the image
-		constraints.append(textLabel.centerYAnchor.constraint(equalTo: imageView.centerYAnchor))
-		constraints.append(textLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 10))
+		constraints.append(resultLabel.centerYAnchor.constraint(equalTo: resultImageView.centerYAnchor))
+		constraints.append(resultLabel.leadingAnchor.constraint(equalTo: resultImageView.trailingAnchor, constant: 10))
 		
 		NSLayoutConstraint.activate(constraints)
 		
 		separatorInset = UIEdgeInsets(top: 0, left: contentView.frame.size.height, bottom: 0, right: 0)
+	}
+	
+	// MARK: Private functions
+	private func setup() {
+		
+		// Using the default textLabel & imageView properties of UITableViewCell
+		// results in the cell incorrectly re-laying out its subview when the cell is touched
+		// so we just ignore those properties and create our own
+		contentView.addSubview(resultLabel)
+		contentView.addSubview(resultImageView)
 	}
 }

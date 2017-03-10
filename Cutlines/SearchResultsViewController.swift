@@ -93,7 +93,7 @@ class SearchResultsViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
-		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
 		
 		if !readyForSearch() {
 			return cell
@@ -101,12 +101,13 @@ class SearchResultsViewController: UITableViewController {
 		
 		let result = results[indexPath.row]
 		
-		cell.textLabel!.text = result.displayString
-		cell.imageView?.image = UIImage()
+		cell.resultText = result.displayString
 		
 		photoManager.thumbnail(for: result.photo, withSize: cell.frame.size) { thumbnail in
 			
-			cell.imageView?.image = thumbnail
+			cell.resultImage = thumbnail
+			cell.setNeedsLayout()
+			cell.layoutIfNeeded()
 		}
 		
 		cell.setTheme()
