@@ -222,7 +222,7 @@
         <!--Cutlines-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="BYZ-38-t0r" customClass="CutlinesViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="BYZ-38-t0r" customClass="CollectionViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
@@ -298,10 +298,10 @@
             </objects>
             <point key="canvasLocation" x="2014" y="139"/>
         </scene>
-        <!--Cutline Info View Controller-->
+        <!--Edit View Controller-->
         <scene sceneID="wpO-em-x63">
             <objects>
-                <viewController storyboardIdentifier="CutlineInfoViewController" id="s7p-6D-dKC" customClass="CutlineInfoViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EditViewController" id="s7p-6D-dKC" customClass="EditViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="hMP-hz-cLS"/>
                         <viewControllerLayoutGuide type="bottom" id="tA0-js-zhG"/>

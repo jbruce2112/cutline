@@ -114,13 +114,13 @@ class SearchResultsViewController: UITableViewController {
 		
 		let photo = results[selectedIndex.row].photo
 		
-		let cutlineInfoViewController =
-			presentingViewController?.storyboard?.instantiateViewController(withIdentifier: "CutlineInfoViewController") as! CutlineInfoViewController
+		let editViewController =
+			presentingViewController?.storyboard?.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
 		
-		cutlineInfoViewController.photo = photo
-		cutlineInfoViewController.photoManager = photoManager
+		editViewController.photo = photo
+		editViewController.photoManager = photoManager
 		
-		presentingViewController?.navigationController?.pushViewController(cutlineInfoViewController, animated: true)
+		presentingViewController?.navigationController?.pushViewController(editViewController, animated: true)
 	}
 	
 	// MARK: Private functions
@@ -169,13 +169,13 @@ extension SearchResultsViewController: UIViewControllerPreviewingDelegate {
 			return nil
 		}
 		
-		let infoController = presentingViewController?.storyboard?.instantiateViewController(
-																	withIdentifier: "CutlineInfoViewController") as! CutlineInfoViewController
+		let editController = presentingViewController?.storyboard?.instantiateViewController(
+																	withIdentifier: "EditViewController") as! EditViewController
 		
 		let photo = results[selectedIndexPath.row].photo
-		infoController.photo = photo
-		infoController.photoManager = photoManager
+		editController.photo = photo
+		editController.photoManager = photoManager
 		
-		return infoController
+		return editController
 	}
 }

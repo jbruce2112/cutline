@@ -30,9 +30,9 @@
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
 		52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3A1E4028FE00A275AD /* Assets.xcassets */; };
 		52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */; };
-		52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E611E402F6000A275AD /* CutlinesViewController.swift */; };
+		52A03E621E402F6000A275AD /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E611E402F6000A275AD /* CollectionViewController.swift */; };
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
-		52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */; };
+		52A03E661E403CDC00A275AD /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* EditViewController.swift */; };
 		52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AC6D101E5A74B800C63013 /* SearchResultCell.swift */; };
 		52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
 		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
@@ -92,9 +92,9 @@
 		52A03E3A1E4028FE00A275AD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52A03E3D1E4028FE00A275AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		52A03E3F1E4028FE00A275AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		52A03E611E402F6000A275AD /* CutlinesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlinesViewController.swift; sourceTree = "<group>"; };
+		52A03E611E402F6000A275AD /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
-		52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CutlineInfoViewController.swift; sourceTree = "<group>"; };
+		52A03E651E403CDC00A275AD /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		52AC6D101E5A74B800C63013 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -123,9 +123,9 @@
 		523751FD1E418C4C00060607 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				52A03E611E402F6000A275AD /* CollectionViewController.swift */,
 				523751FE1E41928700060607 /* CreateViewController.swift */,
-				52A03E651E403CDC00A275AD /* CutlineInfoViewController.swift */,
-				52A03E611E402F6000A275AD /* CutlinesViewController.swift */,
+				52A03E651E403CDC00A275AD /* EditViewController.swift */,
 				525F4CF81E48294C004615FD /* SearchResultsViewController.swift */,
 				52A03E631E40330500A275AD /* SearchViewController.swift */,
 				52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */,
@@ -397,9 +397,9 @@
 				525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */,
 				524530621E61C82D00305843 /* PhotoManager.swift in Sources */,
 				523D26831E59FBF9000507DA /* Key.swift in Sources */,
-				52A03E661E403CDC00A275AD /* CutlineInfoViewController.swift in Sources */,
+				52A03E661E403CDC00A275AD /* EditViewController.swift in Sources */,
 				52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */,
-				52A03E621E402F6000A275AD /* CutlinesViewController.swift in Sources */,
+				52A03E621E402F6000A275AD /* CollectionViewController.swift in Sources */,
 				5244DE8A1E51323E00C9C9ED /* Common.swift in Sources */,
 				523751FA1E4178A100060607 /* PhotoDataSource.swift in Sources */,
 				523752051E467C0200060607 /* CaptionView.swift in Sources */,

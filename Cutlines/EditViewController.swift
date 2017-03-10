@@ -1,5 +1,5 @@
 //
-//  CutlineInfoViewController.swift
+//  EditViewController.swift
 //  Cutlines
 //
 //  Created by John Bruce on 1/30/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CutlineInfoViewController: UIViewController {
+class EditViewController: UIViewController {
 	
 	// MARK: Properties
 	var photo: Photo!

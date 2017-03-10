@@ -19,18 +19,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 	private var tabBarController: UITabBarController!
 	private var navigationControllers: [UINavigationController]!
-	private var cutlinesViewController: CutlinesViewController!
+	private var collectionViewController: CollectionViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
 		tabBarController = window!.rootViewController as! UITabBarController
 		navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
 		
-		cutlinesViewController = navigationControllers[0].viewControllers.first! as! CutlinesViewController
+		collectionViewController = navigationControllers[0].viewControllers.first! as! CollectionViewController
 		let searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
 		
 		// Inject the manager into the initial view controllers
-		cutlinesViewController.photoManager = photoManager
+		collectionViewController.photoManager = photoManager
 		searchViewController.photoManager = photoManager
 				
 		// Tell the photo manager to set everything up
@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Called as part of the transition from the background to the active state;
 		// here you can undo many of the changes made on entering the background.
 		
-		cutlinesViewController.refresh()
+		collectionViewController.refresh()
 	}
 
 	func applicationDidBecomeActive(_ application: UIApplication) {

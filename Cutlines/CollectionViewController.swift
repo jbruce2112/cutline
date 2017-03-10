@@ -1,5 +1,5 @@
 //
-//  CutlinesViewController.swift
+//  CollectionViewController.swift
 //  Cutlines
 //
 //  Created by John Bruce on 1/30/17.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CutlinesViewController: UIViewController {
+class CollectionViewController: UIViewController {
 	
 	// MARK: Properties
 	var photoManager: PhotoManager!
@@ -53,10 +53,10 @@ class CutlinesViewController: UIViewController {
 			}
 			
 			let photo = self.photoDataSource.photos[selectedIndex.row]
-			let cutlineInfoController = segue.destination as! CutlineInfoViewController
+			let editViewController = segue.destination as! EditViewController
 			
-			cutlineInfoController.photo = photo
-			cutlineInfoController.photoManager = self.photoManager
+			editViewController.photo = photo
+			editViewController.photoManager = self.photoManager
 		case "showSettings":
 			break
 		default:
@@ -98,7 +98,7 @@ class CutlinesViewController: UIViewController {
 }
 
 // MARK: UICollectionViewDelegateFlowLayout conformance
-extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
+extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 	
 	func collectionView(_ collectionView: UICollectionView,
 	                    layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -120,7 +120,7 @@ extension CutlinesViewController: UICollectionViewDelegateFlowLayout {
 }
 
 // MARK: UICollectionViewDelegate conformance
-extension CutlinesViewController: UICollectionViewDelegate {
+extension CollectionViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		
@@ -138,7 +138,7 @@ extension CutlinesViewController: UICollectionViewDelegate {
 }
 
 // MARK: ImagePickerControllerDelegate conformance
-extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+extension CollectionViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
 		
@@ -164,7 +164,7 @@ extension CutlinesViewController: UINavigationControllerDelegate, UIImagePickerC
 }
 
 // MARK: PhotoChangeDelegate conformance
-extension CutlinesViewController: PhotoChangeDelegate {
+extension CollectionViewController: PhotoChangeDelegate {
 	
 	func didAdd() {
 		
