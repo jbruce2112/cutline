@@ -66,6 +66,12 @@ class SearchResultCell: UITableViewCell {
 		separatorInset = UIEdgeInsets(top: 0, left: contentView.frame.size.height, bottom: 0, right: 0)
 	}
 	
+	override func setTheme(_ theme: Theme) {
+		super.setTheme(theme)
+		
+		resultLabel.textColor = theme.textColor
+	}
+	
 	// MARK: Private functions
 	private func setup() {
 		
