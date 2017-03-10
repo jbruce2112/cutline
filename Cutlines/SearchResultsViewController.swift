@@ -86,6 +86,11 @@ class SearchResultsViewController: UITableViewController {
 		return readyForSearch() ? results.count : 0
 	}
 	
+	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		
+		return 80.0
+	}
+	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath)
@@ -97,7 +102,12 @@ class SearchResultsViewController: UITableViewController {
 		let result = results[indexPath.row]
 		
 		cell.textLabel!.text = result.displayString
-		cell.imageView?.image = photoManager.image(for: result.photo)
+		cell.imageView?.image = UIImage()
+		
+		photoManager.thumbnail(for: result.photo, withSize: cell.frame.size) { thumbnail in
+			
+			cell.imageView?.image = thumbnail
+		}
 		
 		cell.setTheme()
 		
