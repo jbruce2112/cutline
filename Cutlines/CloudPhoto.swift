@@ -64,14 +64,14 @@ class CloudPhoto {
 		assert(record.recordID.recordName == photoID)
 		
 		guard let asset = record[CloudPhoto.imageKey] as? CKAsset else {
-			print("Unable to get CKAsset from record")
+			Log("Unable to get CKAsset from record")
 			return nil
 		}
 		
 		image = UIImage(contentsOfFile: asset.fileURL.path)
 		
 		if image == nil {
-			print("Unable to get UIImage from Data")
+			Log("Unable to get UIImage from Data")
 			return nil
 		}
 	}

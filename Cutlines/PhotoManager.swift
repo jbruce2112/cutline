@@ -86,7 +86,7 @@ class PhotoManager {
 					}
 				}
 			case let .failure(error):
-				print("Cutline save failed with error: \(error)")
+				Log("Cutline save failed with error: \(error)")
 			}
 		}
 	}
@@ -95,7 +95,7 @@ class PhotoManager {
 		
 		photo.dirty = true
 		photoDataSource.save()
-		print("photo marked dirty")
+		Log("photo marked dirty")
 		
 		cloudManager.pushModified(photos: [photo]) { cloudResult in
 			
@@ -105,7 +105,7 @@ class PhotoManager {
 				
 				photo.dirty = false
 				self.photoDataSource.save()
-				print("photo un-marked dirty")
+				Log("photo un-marked dirty")
 				completion?(.success)
 			case let .failure(error):
 				completion?(.failure(error))
@@ -136,15 +136,15 @@ class PhotoManager {
 					case .success:
 						
 						self.imageStore.deleteImage(forKey: photoID)
-						print("Photo deleted locally")
+						Log("Photo deleted locally")
 						completion?(.success)
 					case let .failure(error):
-						print("Photo delete failed locally \(error)")
+						Log("Photo delete failed locally \(error)")
 						completion?(.failure(error))
 					}
 				}
 			case let .failure(error):
-				print("Error deleting photo from cloud \(error)")
+				Log("Error deleting photo from cloud \(error)")
 				completion?(.failure(error))
 			}
 		}
@@ -204,7 +204,7 @@ class PhotoManager {
 				self.pushNewLocalPhotos(batchSize: batchSize)
 				
 			case let .failure(error):
-				print("Not pushing any more photos due to error \(error)")
+				Log("Not pushing any more photos due to error \(error)")
 			}
 		}
 	}
@@ -231,7 +231,7 @@ class PhotoManager {
 				self.pushModifiedPhotos(batchSize: batchSize)
 				
 			case let .failure(error):
-				print("Not pushing any more photos due to error \(error)")
+				Log("Not pushing any more photos due to error \(error)")
 			}
 		}
 	}
@@ -255,11 +255,11 @@ class PhotoManager {
 					case .success:
 						break
 					case let .failure(error):
-						print("Error deleting photos from dataSource \(error)")
+						Log("Error deleting photos from dataSource \(error)")
 					}
 				}
 			case let .failure(error):
-				print("Not pushing any more photos due to error \(error)")
+				Log("Not pushing any more photos due to error \(error)")
 			}
 		}
 	}
@@ -283,12 +283,12 @@ extension PhotoManager: CloudChangeDelegate {
 					DispatchQueue.global().async {
 						
 						self.imageStore.setImage(photo.image!, forKey: photo.photoID!)
-						print("New photo added with caption '\(photo.caption!)'")
+						Log("New photo added with caption '\(photo.caption!)'")
 						self.delegate?.didAdd()
 					}
 				case let .failure(error):
 					
-					print("Error saving photo \(error)")
+					Log("Error saving photo \(error)")
 				}
 			}
 		} else {
@@ -312,7 +312,7 @@ extension PhotoManager: CloudChangeDelegate {
 					// a serverChangeToken after we push changes (adds or deletes),
 					// so we just have to no-op this. Since we're in this scenerio
 					// because we asked for changes, out token should be up to date now.
-					print("Got an update for a change we already have")
+					Log("Got an update for a change we already have")
 					return
 				}
 			} else {
@@ -327,7 +327,7 @@ extension PhotoManager: CloudChangeDelegate {
 			
 			self.photoDataSource.save()
 			
-			print("Existing photo updated with new caption '\((existingPhoto?.caption)!)'")
+			Log("Existing photo updated with new caption '\((existingPhoto?.caption)!)'")
 		}
 	}
 	
@@ -342,7 +342,7 @@ extension PhotoManager: CloudChangeDelegate {
 			// a serverChangeToken after we push changes (adds or deletes),
 			// so we just have to no-op this. Since we're in this scenerio
 			// because we asked for changes, our token should be up to date now.
-			print("Fetched a delete for a photo we don't have")
+			Log("Fetched a delete for a photo we don't have")
 			return
 		}
 		
@@ -352,11 +352,11 @@ extension PhotoManager: CloudChangeDelegate {
 			case .success:
 				
 				self.imageStore.deleteImage(forKey: photoID)
-				print("Deleted photo with id '\(photoID)'")
+				Log("Deleted photo with id '\(photoID)'")
 				self.delegate?.didRemove()
 			case let .failure(error):
 				
-				print("Error deleting photo \(error)")
+				Log("Error deleting photo \(error)")
 			}
 		}
 	}

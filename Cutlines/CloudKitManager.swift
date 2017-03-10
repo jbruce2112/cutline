@@ -116,7 +116,7 @@ class CloudKitManager {
 	func saveSyncState() {
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive)
-		print("SyncState saved")
+		Log("SyncState saved")
 	}
 	
 	
@@ -126,7 +126,7 @@ class CloudKitManager {
 			return
 		}
 		for pair in pairs {
-			print("Pushing NEW photo with caption \(pair.photo.caption!)")
+			Log("Pushing NEW photo with caption \(pair.photo.caption!)")
 		}
 		
 		let batchSize = pairs.count
@@ -140,7 +140,7 @@ class CloudKitManager {
 		operation.perRecordCompletionBlock = { (record, error) in
 			
 			if let error = error {
-				print("Error saving photo \(error)")
+				Log("Error saving photo \(error)")
 			}
 			
 			// Look up the original photo by the recordName
@@ -157,12 +157,12 @@ class CloudKitManager {
 			
 			if let error = error {
 				
-				print("Error saving photos with batch size \(batchSize) - \(error)")
+				Log("Error saving photos with batch size \(batchSize) - \(error)")
 				completion(.failure(error as! CKError))
 			} else {
 				
 				if let saved = saved {
-					print("Uploaded \(saved.count) photos to the cloud")
+					Log("Uploaded \(saved.count) photos to the cloud")
 				}
 				
 				completion(.success)
@@ -195,7 +195,7 @@ class CloudKitManager {
 			record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
 			
 			records.append(record)
-			print("Pushing UPDATE for photo with caption \(photo.caption!)")
+			Log("Pushing UPDATE for photo with caption \(photo.caption!)")
 		}
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
@@ -210,7 +210,7 @@ class CloudKitManager {
 			// Maybe we could copy this version somewhere else for recovery later.
 			if let error = error {
 				
-				print("Error updating photo \(error)")
+				Log("Error updating photo \(error)")
 			} else {
 				
 				let recordName = record.recordID.recordName
@@ -219,7 +219,7 @@ class CloudKitManager {
 				// Set the updated CKRecord on the photo
 				updatedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)
 				
-				print("Updated photo with new caption " +
+				Log("Updated photo with new caption " +
 						"'\(record["caption"] as! NSString)' and change tag \(record.recordChangeTag!)")
 			}
 		}
@@ -271,7 +271,7 @@ class CloudKitManager {
 			} else {
 				
 				if let deleted = deleted {
-					print("\(deleted.count) photos were deleted in the cloud")
+					Log("\(deleted.count) photos were deleted in the cloud")
 				}
 				completion(.success)
 			}
@@ -305,7 +305,7 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				print("Got error in fetching changes \(error)")
+				Log("Got error in fetching changes \(error)")
 				return
 			}
 			
@@ -326,10 +326,10 @@ class CloudKitManager {
 	private func loadSyncState() -> SyncState {
 		
 		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive) as? SyncState {
-			print("SyncState loaded from archive")
+			Log("SyncState loaded from archive")
 			return syncState
 		} else {
-			print("Unable to load previous SyncState, starting new")
+			Log("Unable to load previous SyncState, starting new")
 			return SyncState()
 		}
 	}
@@ -359,18 +359,18 @@ class CloudKitManager {
 		operation.recordChangedBlock = { (record) in
 		
 			guard let result = CloudPhoto(fromRecord: record) else {
-				print("Unable to get photo from record \(record.recordID.recordName)")
+				Log("Unable to get photo from record \(record.recordID.recordName)")
 				return
 			}
 			
-			print("Fetched photo with caption '\(result.caption!)' and change tag \(record.recordChangeTag!)")
+			Log("Fetched photo with caption '\(result.caption!)' and change tag \(record.recordChangeTag!)")
 			self.delegate?.didModify(photo: result)
 		}
 		
 		operation.recordWithIDWasDeletedBlock = { (recordID, _) in
 		
 			let photoID = recordID.recordName
-			print("Fetched delete for photo with ID \(photoID)")
+			Log("Fetched delete for photo with ID \(photoID)")
 			self.delegate?.didRemove(photoID: photoID)
 		}
 		
@@ -384,7 +384,7 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				print("Got error fetching record changes \(error)")
+				Log("Got error fetching record changes \(error)")
 				completion()
 				return
 			}
@@ -405,7 +405,7 @@ class CloudKitManager {
 		
 		if syncState.subscribedForChanges {
 			
-			print("Already subscribed to changes")
+			Log("Already subscribed to changes")
 			completion()
 			return
 		}
@@ -424,9 +424,9 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				print("Error subscriping for notifications \(error)")
+				Log("Error subscriping for notifications \(error)")
 			} else {
-				print("Subscribed to changes")
+				Log("Subscribed to changes")
 				self.syncState.subscribedForChanges = true
 			}
 			
@@ -442,7 +442,7 @@ class CloudKitManager {
 		
 		if self.syncState.recordZone != nil {
 			
-			print("Already have a custom zone")
+			Log("Already have a custom zone")
 			completion()
 			return
 		}
@@ -455,9 +455,9 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				print("Error creating recordZone \(error)")
+				Log("Error creating recordZone \(error)")
 			} else {
-				print("Record zone successfully created")
+				Log("Record zone successfully created")
 				guard let savedZone = savedRecods?.first else {
 					return
 				}

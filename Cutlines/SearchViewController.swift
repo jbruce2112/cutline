@@ -118,10 +118,10 @@ class SearchViewController: UITableViewController {
 	private func loadRecent() -> [String] {
 		
 		if let recent = NSKeyedUnarchiver.unarchiveObject(withFile: recentSearchesArchive) as? [String] {
-			print("Previous search terms loaded from archive")
+			Log("Previous search terms loaded from archive")
 			return recent
 		} else {
-			print("Unable to load previous search terms, starting new")
+			Log("Unable to load previous search terms, starting new")
 			return [String]()
 		}
 	}
@@ -129,7 +129,7 @@ class SearchViewController: UITableViewController {
 	private func saveRecent() {
 		
 		NSKeyedArchiver.archiveRootObject(recentSearches, toFile: recentSearchesArchive)
-		print("Recent searches saved")
+		Log("Recent searches saved")
 	}
 }
 
@@ -159,7 +159,7 @@ extension SearchViewController: SearchTermDelegate {
 			// Cancel the save if we started another search by the time this ran
 			if self.lastSearchTerm != searchTerm {
 				
-				print("Last search term \(self.lastSearchTerm) doesn't match pending save \(searchTerm)")
+				Log("Last search term \(self.lastSearchTerm) doesn't match pending save \(searchTerm)")
 				return
 			}
 			
@@ -173,7 +173,7 @@ extension SearchViewController: SearchTermDelegate {
 			}
 			
 			self.recentSearches.insert(searchTerm, at: 0)
-			print("Added recent search term \(searchTerm)")
+			Log("Added recent search term \(searchTerm)")
 		}
 	}
 }

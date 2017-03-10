@@ -109,7 +109,7 @@ class ImageStore {
 		do {
 			try FileManager.default.removeItem(at: url)
 		} catch {
-			print("Error removing the image from disk: \(error)")
+			Log("Error removing the image from disk: \(error)")
 		}
 	}
 	

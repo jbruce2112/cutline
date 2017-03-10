@@ -83,7 +83,7 @@ class CreateViewController: UIViewController {
 			let image = imageView.image,
 			let asset = results.firstObject else  {
 				
-				print("Error fetching asset URL \(imageURL.absoluteString)")
+				Log("Error fetching asset URL \(imageURL.absoluteString)")
 				return
 			}
 		

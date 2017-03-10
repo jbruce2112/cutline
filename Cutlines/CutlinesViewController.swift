@@ -73,7 +73,7 @@ class CutlinesViewController: UIViewController {
 			case .success:
 				self.collectionView.reloadData()
 			case let .failure(error):
-				print("Error refreshing data source \(error)")
+				Log("Error refreshing data source \(error)")
 			}
 		}
 	}

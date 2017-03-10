@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication,
 	                 didFailToRegisterForRemoteNotificationsWithError error: Error) {
 		
-		print("Failed to register for notifications with \(error)")
+		Log("Failed to register for notifications with \(error)")
 	}
 
 	func applicationWillResignActive(_ application: UIApplication) {

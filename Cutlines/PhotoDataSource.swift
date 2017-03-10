@@ -31,7 +31,7 @@ class PhotoDataSource: NSObject {
 		container.loadPersistentStores { (_, error) in
 			
 			if let error = error {
-				print("Error setting up Core Data \(error)")
+				Log("Error setting up Core Data \(error)")
 			}
 		}
 		return container
@@ -90,7 +90,7 @@ class PhotoDataSource: NSObject {
 			do {
 				try result = viewContext.fetch(fetchRequest)
 			} catch {
-				print("Error fetching local photos \(error)")
+				Log("Error fetching local photos \(error)")
 			}
 		}
 		
@@ -119,7 +119,7 @@ class PhotoDataSource: NSObject {
 				} catch {
 					
 					completion(.failure(error))
-					print("Error saving context \(error)")
+					Log("Error saving context \(error)")
 				}
 				
 			case let .failure(error):
@@ -161,7 +161,7 @@ class PhotoDataSource: NSObject {
 		viewContext.perform {
 			
 			guard let photo = self.fetch(withID: id) else {
-				print("Photo not deleted from CoreData because we couldn't find it")
+				Log("Photo not deleted from CoreData because we couldn't find it")
 				// Still successful even if we didn't have the photo
 				completion(.success(nil))
 				return
@@ -205,7 +205,7 @@ class PhotoDataSource: NSObject {
 				try viewContext.save()
 			} catch {
 				viewContext.rollback()
-				print("Error saving context \(error)")
+				Log("Error saving context \(error)")
 			}
 		}
 	}
@@ -227,7 +227,7 @@ class PhotoDataSource: NSObject {
 			do {
 				try localPhotos = viewContext.fetch(fetchRequest)
 			} catch {
-				print("Error fetching photos \(error)")
+				Log("Error fetching photos \(error)")
 			}
 		}
 		
