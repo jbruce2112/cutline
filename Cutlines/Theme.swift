@@ -97,5 +97,10 @@ extension UITableViewCell {
 		super.setTheme(theme)
 		
 		textLabel?.textColor = theme.textColor
+		
+		let selectedView = UIView()
+		selectedView.backgroundColor = theme.altBackgroundColor
+		
+		selectedBackgroundView = selectedView
 	}
 }
