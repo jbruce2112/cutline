@@ -20,10 +20,12 @@ class CutlineInfoViewController: UIViewController {
 	private var initialCaption: String!
 	
 	@IBOutlet private var container: UIView!
-	@IBOutlet private var newTabBar: UITabBar!
+	@IBOutlet private var deleteButton: UIBarButtonItem!
+	@IBOutlet private var toolbar: UIToolbar!
 	
 	private var didDelete = false
-	fileprivate let deleteTag = 1
+	fileprivate let shareTag = 1
+	fileprivate let deleteTag = 2
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -53,8 +55,6 @@ class CutlineInfoViewController: UIViewController {
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipContainer))
 		
-		newTabBar.unselectedItemTintColor = view.tintColor
-		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
 	}
@@ -72,11 +72,11 @@ class CutlineInfoViewController: UIViewController {
 		// The constraints in the storyboard only set the relationship between the view and the container,
 		// and the view also extends under the toolbars. This can be disabled, but it looks better if the view
 		// extends underneath and then the container just constrains itself within the status bars.
-		let tabBarHeight = newTabBar.isHidden ? 0 : newTabBar.frame.height
+		let toolBarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
 		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
 		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
 		
-		let barHeights = statusBarHeight + navBarHeight + tabBarHeight
+		let barHeights = statusBarHeight + navBarHeight + toolBarHeight
 		
 		let heightConstraintLTE = view.constraints.first { $0.identifier == "containerHeightConstraintLTE" }
 		let heightConstraint = view.constraints.first { $0.identifier == "containerHeightConstraint" }
@@ -85,8 +85,6 @@ class CutlineInfoViewController: UIViewController {
 		heightConstraint?.constant = barHeights + 20
 		heightConstraintLTE?.constant = barHeights + 20
 		
-		// Hide the tabBar from the previous view
-		tabBarController?.tabBar.isHidden = true
 	}
 	
 	override func viewDidLayoutSubviews() {
@@ -102,7 +100,10 @@ class CutlineInfoViewController: UIViewController {
 		super.viewWillAppear(animated)
 		
 		setTheme()
-		newTabBar.setTheme()
+		toolbar.setTheme()
+		
+		// Hide the tabBar from the previous view
+		tabBarController?.tabBar.isHidden = true
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -143,7 +144,7 @@ class CutlineInfoViewController: UIViewController {
 		captionView.endEditing(true)
 	}
 	
-	fileprivate func deleteItem() {
+	@IBAction func deleteItem() {
 		
 		let alertController = UIAlertController(title: nil,
 								message: "This caption will be deleted from Cutlines on all your devices.", preferredStyle: .actionSheet)
@@ -162,30 +163,22 @@ class CutlineInfoViewController: UIViewController {
 		// We need to give the alertController an anchor for display when on iPad
 		if let presenter = alertController.popoverPresentationController {
 			
-			// Get the view from the tab bar item
-			guard
-				let tabBarItem = newTabBar.items?.first! as UITabBarItem?,
-				let tabBarItemView = tabBarItem.value(forKey: "view") as? UIView else {
-					
-					print("Unable to determine view for 'Delete' tab bar item")
-					return
-				}
+			guard let deleteButton = toolbar.viewWithTag(deleteTag) else {
+				return
+			}
 			
-			presenter.sourceView = tabBarItemView
-			presenter.sourceRect = tabBarItemView.bounds
+			presenter.sourceView = deleteButton
+			presenter.sourceRect = deleteButton.bounds
 		}
 		
 		present(alertController, animated: true, completion: nil)
 	}
-}
-
-// MARK: UITabBarDelegate conformance
-extension CutlineInfoViewController: UITabBarDelegate {
 	
-	func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+	@IBAction func shareItem() {
 		
-		if item.tag == deleteTag {
-			deleteItem()
-		}
+		let shareController = UIActivityViewController(activityItems:
+			[captionView.getCaption(), polaroidView.image!], applicationActivities: nil)
+		
+		present(shareController, animated: true)
 	}
 }

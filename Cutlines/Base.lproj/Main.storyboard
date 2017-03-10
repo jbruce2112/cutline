@@ -95,7 +95,7 @@
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
-                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="200" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -117,7 +117,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
-                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="244" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -318,26 +318,34 @@
                                     <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="height" multiplier="1:1" id="5qI-kB-mXt"/>
                                 </constraints>
                             </view>
-                            <tabBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gs4-Ln-g3T">
-                                <rect key="frame" x="0.0" y="618" width="375" height="49"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yqy-mk-Ih0">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
-                                    <tabBarItem tag="1" title="Delete" image="trash" id="aPz-09-6r1"/>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="zTR-Mw-f1i"/>
+                                    <barButtonItem systemItem="action" id="riE-5e-ohj">
+                                        <connections>
+                                            <action selector="shareItem" destination="s7p-6D-dKC" id="gvd-Jw-nB5"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="yHq-SI-ahp"/>
+                                    <barButtonItem systemItem="trash" id="cSj-Ak-P7k">
+                                        <connections>
+                                            <action selector="deleteItem" destination="s7p-6D-dKC" id="AE7-Mi-N5V"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="KCM-ml-zvS"/>
                                 </items>
-                                <connections>
-                                    <outlet property="delegate" destination="s7p-6D-dKC" id="H8i-GW-Fny"/>
-                                </connections>
-                            </tabBar>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="gs4-Ln-g3T" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="B0y-Qa-bjT"/>
-                            <constraint firstAttribute="trailing" secondItem="gs4-Ln-g3T" secondAttribute="trailing" id="BPp-i9-9c4"/>
-                            <constraint firstAttribute="bottom" secondItem="gs4-Ln-g3T" secondAttribute="bottom" id="CDp-aA-MDH"/>
+                            <constraint firstItem="Yqy-mk-Ih0" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="AY4-eX-KJe"/>
+                            <constraint firstItem="tA0-js-zhG" firstAttribute="top" secondItem="Yqy-mk-Ih0" secondAttribute="bottom" id="Ebc-Fk-viv"/>
                             <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="width" priority="750" constant="20" id="OXG-EC-ZRX"/>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" secondItem="tlF-T1-Nm5" secondAttribute="height" constant="20" identifier="containerHeightConstraintLTE" id="RSg-8b-r2P"/>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" secondItem="tlF-T1-Nm5" secondAttribute="width" constant="20" id="XkX-wn-6zd"/>
                             <constraint firstAttribute="height" secondItem="tlF-T1-Nm5" secondAttribute="height" priority="750" constant="20" identifier="containerHeightConstraint" id="YNN-F7-yuP"/>
+                            <constraint firstAttribute="trailing" secondItem="Yqy-mk-Ih0" secondAttribute="trailing" id="fjQ-4V-Kye"/>
                             <constraint firstItem="tlF-T1-Nm5" firstAttribute="centerX" secondItem="gl7-TF-CYj" secondAttribute="centerX" id="nwE-Sc-zTz"/>
                             <constraint firstItem="tlF-T1-Nm5" firstAttribute="centerY" secondItem="gl7-TF-CYj" secondAttribute="centerY" id="tb0-NJ-Neg"/>
                         </constraints>
@@ -349,7 +357,8 @@
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="container" destination="tlF-T1-Nm5" id="aiE-ZH-lCx"/>
-                        <outlet property="newTabBar" destination="gs4-Ln-g3T" id="9j2-ij-vUQ"/>
+                        <outlet property="deleteButton" destination="cSj-Ak-P7k" id="lsh-Nh-CtZ"/>
+                        <outlet property="toolbar" destination="Yqy-mk-Ih0" id="gLK-Ug-h1S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ac-d9-IoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -466,7 +475,6 @@
     <resources>
         <image name="photoStack" width="30" height="30"/>
         <image name="settingsFilled" width="22" height="22"/>
-        <image name="trash" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="yJo-Y8-NKJ"/>
