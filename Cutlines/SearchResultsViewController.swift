@@ -57,7 +57,7 @@ class SearchResultsViewController: UITableViewController {
 		
 		searchController = UISearchController(searchResultsController: self)
 		searchController.searchResultsUpdater = self
-		searchController.dimsBackgroundDuringPresentation = true
+		searchController.dimsBackgroundDuringPresentation = false
 		
 		tableView.dataSource = self
 		tableView.delegate = self
