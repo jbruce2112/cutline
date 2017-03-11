@@ -315,9 +315,6 @@ extension PhotoManager: CloudChangeDelegate {
 					Log("Got an update for a change we already have")
 					return
 				}
-			} else {
-				// Assert so we can verify how we got here
-				assert(false)
 			}
 			
 			// We got an update for an existing photo, save the changes
