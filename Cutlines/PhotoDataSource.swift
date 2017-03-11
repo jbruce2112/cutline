@@ -62,13 +62,13 @@ class PhotoDataSource: NSObject {
 	
 	func fetchOnlyLocal(limit: Int?) -> [Photo] {
 		
-		let predicate = NSPredicate(format: "\(#keyPath(Photo.ckRecord)) == nil")
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.ckRecord)) == nil AND \(#keyPath(Photo.markedDeleted)) == NO")
 		return fetch(withPredicate: predicate, limit: limit)
 	}
 	
 	func fetchModified(limit: Int?) -> [Photo] {
 		
-		let predicate = NSPredicate(format: "\(#keyPath(Photo.dirty)) == YES")
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.dirty)) == YES AND \(#keyPath(Photo.markedDeleted)) == NO")
 		return fetch(withPredicate: predicate, limit: limit)
 	}
 	
@@ -80,13 +80,13 @@ class PhotoDataSource: NSObject {
 	
 	func fetch(withID id: String) -> Photo? {
 		
-		let predicate = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@", id)
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@ AND \(#keyPath(Photo.markedDeleted)) == NO", id)
 		return fetch(withPredicate: predicate, limit: 1).first
 	}
 	
 	func fetch(containing searchTerm: String) -> [Photo] {
 		
-		let predicate = NSPredicate(format: "\(#keyPath(Photo.caption)) contains[c] %@", searchTerm)
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.caption)) contains[c] %@ AND \(#keyPath(Photo.markedDeleted)) == NO", searchTerm)
 		return fetch(withPredicate: predicate, limit: nil)
 	}
 	

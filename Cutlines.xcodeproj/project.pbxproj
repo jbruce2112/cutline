@@ -34,6 +34,7 @@
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
 		52A03E661E403CDC00A275AD /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* EditViewController.swift */; };
 		52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AC6D101E5A74B800C63013 /* SearchResultCell.swift */; };
+		52CB722F1E74604C00D3C7E5 /* CutlinesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CB722E1E74604C00D3C7E5 /* CutlinesTests.swift */; };
 		52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
 		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
 		52F3920B1E68F983001EDC48 /* CloudPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F3920A1E68F983001EDC48 /* CloudPhoto.swift */; };
@@ -50,6 +51,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 525F4CFD1E4AAA34004615FD;
 			remoteInfo = ShareExtension;
+		};
+		52CB72311E74604C00D3C7E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 52A03E2F1E4028FE00A275AD;
+			remoteInfo = Cutlines;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -96,6 +104,9 @@
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		52A03E651E403CDC00A275AD /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		52AC6D101E5A74B800C63013 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
+		52CB722C1E74604C00D3C7E5 /* CutlinesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		52CB722E1E74604C00D3C7E5 /* CutlinesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlinesTests.swift; sourceTree = "<group>"; };
+		52CB72301E74604C00D3C7E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudKitManager.swift; sourceTree = "<group>"; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		52F3920A1E68F983001EDC48 /* CloudPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CloudPhoto.swift; sourceTree = "<group>"; };
@@ -111,6 +122,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		52A03E2D1E4028FE00A275AD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		52CB72291E74604C00D3C7E5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -174,6 +192,7 @@
 				5244DE891E51323E00C9C9ED /* Common.swift */,
 				52A03E321E4028FE00A275AD /* Cutlines */,
 				525F4CFF1E4AAA34004615FD /* ShareExtension */,
+				52CB722D1E74604C00D3C7E5 /* CutlinesTests */,
 				52A03E311E4028FE00A275AD /* Products */,
 				52D958E01E5FB73500D7B4EE /* Frameworks */,
 			);
@@ -184,6 +203,7 @@
 			children = (
 				52A03E301E4028FE00A275AD /* Cutlines.app */,
 				525F4CFE1E4AAA34004615FD /* ShareExtension.appex */,
+				52CB722C1E74604C00D3C7E5 /* CutlinesTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -203,6 +223,15 @@
 				52A03E3F1E4028FE00A275AD /* Info.plist */,
 			);
 			path = Cutlines;
+			sourceTree = "<group>";
+		};
+		52CB722D1E74604C00D3C7E5 /* CutlinesTests */ = {
+			isa = PBXGroup;
+			children = (
+				52CB722E1E74604C00D3C7E5 /* CutlinesTests.swift */,
+				52CB72301E74604C00D3C7E5 /* Info.plist */,
+			);
+			path = CutlinesTests;
 			sourceTree = "<group>";
 		};
 		52D958E01E5FB73500D7B4EE /* Frameworks */ = {
@@ -254,6 +283,24 @@
 			productReference = 52A03E301E4028FE00A275AD /* Cutlines.app */;
 			productType = "com.apple.product-type.application";
 		};
+		52CB722B1E74604C00D3C7E5 /* CutlinesTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 52CB72351E74604C00D3C7E5 /* Build configuration list for PBXNativeTarget "CutlinesTests" */;
+			buildPhases = (
+				52CB72281E74604C00D3C7E5 /* Sources */,
+				52CB72291E74604C00D3C7E5 /* Frameworks */,
+				52CB722A1E74604C00D3C7E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				52CB72321E74604C00D3C7E5 /* PBXTargetDependency */,
+			);
+			name = CutlinesTests;
+			productName = CutlinesTests;
+			productReference = 52CB722C1E74604C00D3C7E5 /* CutlinesTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -300,6 +347,12 @@
 							};
 						};
 					};
+					52CB722B1E74604C00D3C7E5 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = UVXX33WP85;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 52A03E2F1E4028FE00A275AD;
+					};
 				};
 			};
 			buildConfigurationList = 52A03E2B1E4028FE00A275AD /* Build configuration list for PBXProject "Cutlines" */;
@@ -317,6 +370,7 @@
 			targets = (
 				52A03E2F1E4028FE00A275AD /* Cutlines */,
 				525F4CFD1E4AAA34004615FD /* ShareExtension */,
+				52CB722B1E74604C00D3C7E5 /* CutlinesTests */,
 			);
 		};
 /* End PBXProject section */
@@ -337,6 +391,13 @@
 				52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */,
 				52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */,
 				52A03E391E4028FE00A275AD /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		52CB722A1E74604C00D3C7E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +475,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		52CB72281E74604C00D3C7E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52CB722F1E74604C00D3C7E5 /* CutlinesTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -421,6 +490,11 @@
 			isa = PBXTargetDependency;
 			target = 525F4CFD1E4AAA34004615FD /* ShareExtension */;
 			targetProxy = 525F4D061E4AAA34004615FD /* PBXContainerItemProxy */;
+		};
+		52CB72321E74604C00D3C7E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 52A03E2F1E4028FE00A275AD /* Cutlines */;
+			targetProxy = 52CB72311E74604C00D3C7E5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -587,6 +661,7 @@
 				CODE_SIGN_ENTITLEMENTS = Cutlines/Cutlines.entitlements;
 				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = Cutlines/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -604,10 +679,39 @@
 				CODE_SIGN_ENTITLEMENTS = Cutlines/Cutlines.entitlements;
 				DEVELOPMENT_TEAM = UVXX33WP85;
 				INFOPLIST_FILE = Cutlines/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.Cutlines;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		52CB72331E74604C00D3C7E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = UVXX33WP85;
+				INFOPLIST_FILE = CutlinesTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.CutlinesTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cutlines.app/Cutlines";
+			};
+			name = Debug;
+		};
+		52CB72341E74604C00D3C7E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = UVXX33WP85;
+				INFOPLIST_FILE = CutlinesTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.jbruce32.CutlinesTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cutlines.app/Cutlines";
 			};
 			name = Release;
 		};
@@ -637,6 +741,15 @@
 			buildConfigurations = (
 				52A03E591E4028FE00A275AD /* Debug */,
 				52A03E5A1E4028FE00A275AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		52CB72351E74604C00D3C7E5 /* Build configuration list for PBXNativeTarget "CutlinesTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52CB72331E74604C00D3C7E5 /* Debug */,
+				52CB72341E74604C00D3C7E5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

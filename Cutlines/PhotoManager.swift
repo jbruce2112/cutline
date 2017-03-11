@@ -244,12 +244,14 @@ class PhotoManager {
 			return
 		}
 		
-		cloudManager.delete(photos: deletedPhotos) { result in
+		cloudManager.delete(photos: deletedPhotos) { cloudResult in
 			
 			// TODO: error handling
-			switch result {
+			switch cloudResult {
 			case .success:
 				
+				// Only truly delete the photolocally
+				// once we know the cloud got the delete
 				self.photoDataSource.delete(photos: deletedPhotos) { result in
 					switch result {
 					case .success:

@@ -46,6 +46,9 @@ class SearchViewController: UITableViewController {
 		super.viewWillAppear(animated)
 		
 		setTheme()
+		// Since this viewController overlays us,
+		// we need to call setTheme() on it as well
+		resultsViewController.setTheme()
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
