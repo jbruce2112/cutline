@@ -48,6 +48,12 @@ class SearchViewController: UITableViewController {
 		setTheme()
 	}
 	
+	override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+		
+		resultsViewController.searchController.isActive = true
+	}
+	
 	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 		

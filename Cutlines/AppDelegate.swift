@@ -110,4 +110,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			controller.navigationBar.setTheme()
 		}
 	}
+	
+	func application(_ application: UIApplication,
+	                 performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+		
+		completionHandler(quickAction(for: shortcutItem))
+	}
+	
+	private func quickAction(for shortcutItem: UIApplicationShortcutItem) -> Bool {
+		
+		let name = shortcutItem.type.components(separatedBy: ".").last!
+		if name == "Search" {
+			
+			tabBarController.selectedIndex = 1
+			return true
+		}
+		
+		return false
+	}
 }
