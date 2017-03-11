@@ -131,6 +131,12 @@ extension CollectionViewController: UICollectionViewDelegate {
 				return
 			}
 			
+			// Ask the collectionView for the cell at this
+			// index again to make sure it's still available
+			guard let cell = self.collectionView.cellForItem(at: indexPath) else {
+				return
+			}
+			
 			let imageView = cell.viewWithTag(100) as! UIImageView
 			imageView.image = thumbnail
 		}
