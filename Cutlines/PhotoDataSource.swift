@@ -80,21 +80,14 @@ class PhotoDataSource: NSObject {
 	
 	func fetch(withID id: String) -> Photo? {
 		
-		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
-		fetchRequest.predicate = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@", id)
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@", id)
+		return fetch(withPredicate: predicate, limit: 1).first
+	}
+	
+	func fetch(containing searchTerm: String) -> [Photo] {
 		
-		var result = [Photo]()
-		let viewContext = persistantContainer.viewContext
-		viewContext.performAndWait {
-			
-			do {
-				try result = viewContext.fetch(fetchRequest)
-			} catch {
-				Log("Error fetching local photos \(error)")
-			}
-		}
-		
-		return result.first
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.caption)) contains[c] %@", searchTerm)
+		return fetch(withPredicate: predicate, limit: nil)
 	}
 	
 	func addPhoto(_ photo: CloudPhoto, completion: @escaping (UpdateResult) -> Void) {
@@ -212,7 +205,7 @@ class PhotoDataSource: NSObject {
 	
 	private func fetch(withPredicate predicate: NSPredicate, limit: Int?) -> [Photo] {
 		
-		var localPhotos = [Photo]()
+		var photos = [Photo]()
 		
 		let fetchRequest: NSFetchRequest<Photo> = Photo.fetchRequest()
 		fetchRequest.predicate = predicate
@@ -225,13 +218,13 @@ class PhotoDataSource: NSObject {
 		viewContext.performAndWait {
 			
 			do {
-				try localPhotos = viewContext.fetch(fetchRequest)
+				try photos = viewContext.fetch(fetchRequest)
 			} catch {
 				Log("Error fetching photos \(error)")
 			}
 		}
 		
-		return localPhotos
+		return photos
 	}
 }
 

@@ -155,7 +155,7 @@ extension SearchViewController: SearchTermDelegate {
 		
 		lastSearchTerm = searchTerm
 		
-		if searchTerm.isEmpty {
+		if searchTerm.trimmingCharacters(in: .whitespaces).isEmpty {
 			return
 		}
 		

@@ -155,7 +155,7 @@ extension SearchResultsViewController: UISearchResultsUpdating {
 		let searchTerm = searchController.searchBar.text!.lowercased()
 		
 		// Get all photos containing the searchTerm
-		let photos = photoManager.photoDataSource.photos.filter { $0.caption!.lowercased().contains(searchTerm) }
+		let photos = photoManager.photoDataSource.fetch(containing: searchTerm)
 		
 		// Create search results out of all of them
 		results = photos.map { SearchResult(photo: $0, searchTerm: searchTerm) }
