@@ -116,6 +116,7 @@ class SearchViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
 		// Trigger a search using the selected term
+		searchBar.resignFirstResponder()
 		resultsViewController.searchController.isActive = true
 		resultsViewController.searchController.searchBar.text = recentSearches[indexPath.row]
 	}
