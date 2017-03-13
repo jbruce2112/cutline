@@ -22,7 +22,8 @@ class EditViewController: UIViewController {
 	@IBOutlet private var deleteButton: UIBarButtonItem!
 	@IBOutlet private var toolbar: UIToolbar!
 	
-	private var didDelete = false
+	private var canceled = false
+	private var deleted = false
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -41,8 +42,9 @@ class EditViewController: UIViewController {
 		
 		initialCaption = containerView.captionView.getCaption()
 		
-		navigationItem.rightBarButtonItem =
-			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
+		let flipButton = UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
+		let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+		navigationItem.setRightBarButtonItems([cancelButton, flipButton], animated: false)
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
@@ -81,7 +83,7 @@ class EditViewController: UIViewController {
 		// Update the Photo object with our changes
 		// and kick off a save before we leave the view
 		let caption = containerView.captionView.getCaption()
-		if !didDelete && caption != initialCaption {
+		if !deleted && !canceled && caption != initialCaption {
 			
 			photo.caption = caption
 			photo.lastUpdated = NSDate()
@@ -92,6 +94,13 @@ class EditViewController: UIViewController {
 		tabBarController?.tabBar.isHidden = false
 	}
 	
+	func cancel() {
+		
+		canceled = true
+		let _ = navigationController?.popViewController(animated: true)
+	}
+	
+	// MARK: Actions
 	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
 		
 		containerView.captionView.endEditing(true)
@@ -105,7 +114,7 @@ class EditViewController: UIViewController {
 		let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
 		let deleteAction = UIAlertAction(title: "Delete Caption", style: .destructive) { _ in
 		
-			self.didDelete = true
+			self.deleted = true
 			self.photoManager.delete(photo: self.photo, completion: nil)
 			let _ = self.navigationController?.popViewController(animated: true)
 		}

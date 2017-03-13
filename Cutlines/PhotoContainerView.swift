@@ -71,18 +71,6 @@ class PhotoContainerView: UIView {
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		
-		// We can nearly accomplish all the autolayout work in the storyboard,
-		// but the container's height constraints need to take the various toolbars into account.
-		// The constraints in the storyboard only set the relationship between the view and the container,
-		// and the view also extends under the toolbars. This can be disabled, but it looks better if the view
-		// extends underneath and then the container just constrains itself within the status bars.
-		//let tabBarHeight = tabbar.isHidden ? 0 : .frame.height
-		//let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
-		//let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
-		
-		//let barHeights = statusBarHeight + navBarHeight //+ tabBarHeight
-		
-		// The initial height constraint constant is 20 to allow for some padding
 		heightConstraint?.constant = heightConstraintConstant + 20
 		heightConstraintGTE?.constant = heightConstraintConstant + 20
 		
