@@ -14,12 +14,10 @@ class EditViewController: UIViewController {
 	var photo: Photo!
 	var photoManager: PhotoManager!
 	
-	private let polaroidView = PolaroidView()
-	private let captionView = CaptionView()
+	private let containerView = PhotoContainerView()
 	
 	private var initialCaption: String!
 	
-	@IBOutlet private var container: UIView!
 	@IBOutlet private var shareButton: UIBarButtonItem!
 	@IBOutlet private var deleteButton: UIBarButtonItem!
 	@IBOutlet private var toolbar: UIToolbar!
@@ -30,31 +28,21 @@ class EditViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		container.addSubview(captionView)
-		
-		captionView.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: 0.0)
+		view.addSubview(containerView)
 		
 		photoManager.image(for: photo) { image in
-			self.polaroidView.image = image
+			self.containerView.polaroidView.image = image
 		}
-		polaroidView.setNeedsLayout()
 		
 		// Don't clear the placeholder text
 		if !photo.caption!.isEmpty {
-			captionView.text = photo.caption
+			containerView.captionView.text = photo.caption
 		}
 		
-		initialCaption = captionView.getCaption()
-		
-		container.layer.borderWidth = 0.75
-		container.layer.borderColor = UIColor.gray.cgColor
-		
-		container.layer.shadowRadius = 10
-		container.layer.shadowColor = UIColor.gray.cgColor
-		container.layer.shadowOpacity = 0.6
+		initialCaption = containerView.captionView.getCaption()
 		
 		navigationItem.rightBarButtonItem =
-			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: self, action: #selector(flipContainer))
+			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
@@ -63,38 +51,18 @@ class EditViewController: UIViewController {
 	override func viewWillLayoutSubviews() {
 		super.viewWillLayoutSubviews()
 		
-		guard
-			let navController = navigationController else {
-				return
+		guard let navController = navigationController else {
+			return
 		}
 		
-		// We can nearly accomplish all the autolayout work in the storyboard,
-		// but the container's height constraints need to take the various toolbars into account.
-		// The constraints in the storyboard only set the relationship between the view and the container,
-		// and the view also extends under the toolbars. This can be disabled, but it looks better if the view
-		// extends underneath and then the container just constrains itself within the status bars.
 		let toolBarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
 		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
 		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
 		
 		let barHeights = statusBarHeight + navBarHeight + toolBarHeight
+		containerView.heightConstraintConstant = barHeights
 		
-		let heightConstraintLTE = view.constraints.first { $0.identifier == "containerHeightConstraintLTE" }
-		let heightConstraint = view.constraints.first { $0.identifier == "containerHeightConstraint" }
-		
-		// The initial height constraint constant is 20 to allow for some padding
-		heightConstraint?.constant = barHeights + 20
-		heightConstraintLTE?.constant = barHeights + 20
-		
-	}
-	
-	override func viewDidLayoutSubviews() {
-		super.viewDidLayoutSubviews()
-		
-		// Set container's subview frames to its bounds here
-		// to give autolayout a chance to finish sizing the container
-		polaroidView.frame = container.bounds
-		captionView.frame = container.bounds
+		containerView.setNeedsLayout()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -112,7 +80,7 @@ class EditViewController: UIViewController {
 		
 		// Update the Photo object with our changes
 		// and kick off a save before we leave the view
-		let caption = captionView.getCaption()
+		let caption = containerView.captionView.getCaption()
 		if !didDelete && caption != initialCaption {
 			
 			photo.caption = caption
@@ -124,25 +92,9 @@ class EditViewController: UIViewController {
 		tabBarController?.tabBar.isHidden = false
 	}
 	
-	func flipContainer() {
-		
-		// Set up the views as a tuple in case we want to
-		// flip this view again later on
-		var views: (frontView: UIView, backView: UIView)
-		
-		if polaroidView.superview != nil {
-			views = (frontView: polaroidView, backView: captionView)
-		} else {
-			views = (frontView: captionView, backView: polaroidView)
-		}
-		
-		UIView.transition(from: views.frontView, to: views.backView,
-		                  duration: 0.4, options: [.transitionFlipFromRight, .curveEaseOut], completion: nil)
-	}
-	
 	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
 		
-		captionView.endEditing(true)
+		containerView.captionView.endEditing(true)
 	}
 	
 	@IBAction func deleteItem() {
@@ -178,7 +130,7 @@ class EditViewController: UIViewController {
 	@IBAction func shareItem() {
 		
 		let shareController = UIActivityViewController(activityItems:
-			[captionView.getCaption(), polaroidView.image!], applicationActivities: nil)
+			[containerView.captionView.getCaption(), containerView.polaroidView.image!], applicationActivities: nil)
 		
 		if let presenter = shareController.popoverPresentationController {
 			

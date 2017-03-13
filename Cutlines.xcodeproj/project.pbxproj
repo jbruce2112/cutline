@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5233394E1E7747C8000224D4 /* PhotoContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5233394D1E7747C8000224D4 /* PhotoContainerView.swift */; };
 		523751F81E41744F00060607 /* Cutlines.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 523751F61E41744F00060607 /* Cutlines.xcdatamodeld */; };
 		523751FA1E4178A100060607 /* PhotoDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751F91E4178A100060607 /* PhotoDataSource.swift */; };
 		523751FC1E417C4900060607 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FB1E417C4900060607 /* ImageStore.swift */; };
@@ -76,6 +77,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5233394D1E7747C8000224D4 /* PhotoContainerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoContainerView.swift; sourceTree = "<group>"; };
 		523751F71E41744F00060607 /* Cutlines.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Cutlines.xcdatamodel; sourceTree = "<group>"; };
 		523751F91E4178A100060607 /* PhotoDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoDataSource.swift; sourceTree = "<group>"; };
 		523751FB1E417C4900060607 /* ImageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageStore.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				525E6D101E6E15D20060EB51 /* PolaroidView.swift */,
 				52AC6D101E5A74B800C63013 /* SearchResultCell.swift */,
 				523D26841E5A0512000507DA /* Theme.swift */,
+				5233394D1E7747C8000224D4 /* PhotoContainerView.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -456,6 +459,7 @@
 				523751FF1E41928700060607 /* CreateViewController.swift in Sources */,
 				52A03E641E40330500A275AD /* SearchViewController.swift in Sources */,
 				525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */,
+				5233394E1E7747C8000224D4 /* PhotoContainerView.swift in Sources */,
 				524530621E61C82D00305843 /* PhotoManager.swift in Sources */,
 				523D26831E59FBF9000507DA /* Key.swift in Sources */,
 				52A03E661E403CDC00A275AD /* EditViewController.swift in Sources */,

@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -95,7 +94,7 @@
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
-                                        <rect key="frame" x="0.0" y="201" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="200" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -117,7 +116,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
-                                        <rect key="frame" x="0.0" y="245" width="375" height="44"/>
+                                        <rect key="frame" x="0.0" y="244" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
@@ -310,14 +309,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="tlF-T1-Nm5">
-                                <rect key="frame" x="10" y="156" width="355" height="355"/>
-                                <color key="backgroundColor" red="1" green="0.99607843137254903" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
-                                <gestureRecognizers/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="height" multiplier="1:1" id="5qI-kB-mXt"/>
-                                </constraints>
-                            </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yqy-mk-Ih0">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
@@ -341,13 +332,7 @@
                         <constraints>
                             <constraint firstItem="Yqy-mk-Ih0" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="AY4-eX-KJe"/>
                             <constraint firstItem="tA0-js-zhG" firstAttribute="top" secondItem="Yqy-mk-Ih0" secondAttribute="bottom" id="Ebc-Fk-viv"/>
-                            <constraint firstAttribute="width" secondItem="tlF-T1-Nm5" secondAttribute="width" priority="750" constant="20" id="OXG-EC-ZRX"/>
-                            <constraint firstAttribute="height" relation="greaterThanOrEqual" secondItem="tlF-T1-Nm5" secondAttribute="height" constant="20" identifier="containerHeightConstraintLTE" id="RSg-8b-r2P"/>
-                            <constraint firstAttribute="width" relation="greaterThanOrEqual" secondItem="tlF-T1-Nm5" secondAttribute="width" constant="20" id="XkX-wn-6zd"/>
-                            <constraint firstAttribute="height" secondItem="tlF-T1-Nm5" secondAttribute="height" priority="750" constant="20" identifier="containerHeightConstraint" id="YNN-F7-yuP"/>
                             <constraint firstAttribute="trailing" secondItem="Yqy-mk-Ih0" secondAttribute="trailing" id="fjQ-4V-Kye"/>
-                            <constraint firstItem="tlF-T1-Nm5" firstAttribute="centerX" secondItem="gl7-TF-CYj" secondAttribute="centerX" id="nwE-Sc-zTz"/>
-                            <constraint firstItem="tlF-T1-Nm5" firstAttribute="centerY" secondItem="gl7-TF-CYj" secondAttribute="centerY" id="tb0-NJ-Neg"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="l6i-4f-kng" appends="YES" id="Qma-eI-KYq"/>
@@ -356,7 +341,6 @@
                     <toolbarItems/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="container" destination="tlF-T1-Nm5" id="aiE-ZH-lCx"/>
                         <outlet property="deleteButton" destination="cSj-Ak-P7k" id="2qz-LJ-ada"/>
                         <outlet property="shareButton" destination="riE-5e-ohj" id="cUC-SS-VdJ"/>
                         <outlet property="toolbar" destination="Yqy-mk-Ih0" id="gLK-Ug-h1S"/>
