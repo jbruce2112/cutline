@@ -47,19 +47,24 @@ class ImageStore {
 		}
 	}
 	
-	func image(forKey key: String) -> UIImage? {
+	func image(forKey key: String, completion: @escaping (UIImage?) -> Void) {
 		
 		if let exisitingImage = cache.object(forKey: key as NSString) {
-			return exisitingImage
+			completion(exisitingImage)
+			return
 		}
 		
-		let url = imageURL(forKey: key)
-		guard let imageFromDisk = UIImage(contentsOfFile: url.path) else {
-			return nil
+		DispatchQueue.global().async {
+			
+			let url = self.imageURL(forKey: key)
+			guard let imageFromDisk = UIImage(contentsOfFile: url.path) else {
+				completion(nil)
+				return
+			}
+			
+			self.cache.setObject(imageFromDisk, forKey: key as NSString)
+			completion(imageFromDisk)
 		}
-		
-		cache.setObject(imageFromDisk, forKey: key as NSString)
-		return imageFromDisk
 	}
 	
 	func thumbnail(forKey key: String, size: CGSize, completion: @escaping (UIImage?) -> Void) {
@@ -100,16 +105,20 @@ class ImageStore {
 		}
 	}
 	
-	func deleteImage(forKey key: String) {
+	func deleteImage(forKey key: String, completion: @escaping () -> Void) {
 		
-		cache.removeObject(forKey: key as NSString)
-		
-		let url = imageURL(forKey: key)
-		
-		do {
-			try FileManager.default.removeItem(at: url)
-		} catch {
-			Log("Error removing the image from disk: \(error)")
+		DispatchQueue.global().async {
+			
+			self.cache.removeObject(forKey: key as NSString)
+			
+			let url = self.imageURL(forKey: key)
+			
+			do {
+				try FileManager.default.removeItem(at: url)
+			} catch {
+				Log("Error removing the image from disk: \(error)")
+			}
+			completion()
 		}
 	}
 	

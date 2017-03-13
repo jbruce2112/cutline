@@ -34,7 +34,9 @@ class EditViewController: UIViewController {
 		
 		captionView.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: 0.0)
 		
-		polaroidView.image = photoManager.image(for: photo)
+		photoManager.image(for: photo) { image in
+			self.polaroidView.image = image
+		}
 		polaroidView.setNeedsLayout()
 		
 		// Don't clear the placeholder text

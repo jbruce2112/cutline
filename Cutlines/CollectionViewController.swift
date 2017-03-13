@@ -66,7 +66,7 @@ class CollectionViewController: UIViewController {
 	
 	func refresh() {
 		
-		photoDataSource.refresh { (result) in
+		photoDataSource.refresh { result in
 			
 			switch result {
 				
@@ -123,6 +123,9 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 extension CollectionViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		
+		let imageView = cell.viewWithTag(100) as! UIImageView
+		imageView.image = nil
 		
 		let photo = photoDataSource.photos[indexPath.row]
 		photoManager.thumbnail(for: photo, withSize: cell.frame.size) { fetchedThumbnail in

@@ -135,9 +135,10 @@ class PhotoManager {
 					switch localResult {
 					case .success:
 						
-						self.imageStore.deleteImage(forKey: photoID)
-						Log("Photo deleted locally")
-						completion?(.success)
+						self.imageStore.deleteImage(forKey: photoID) {
+							Log("Photo deleted locally")
+							completion?(.success)
+						}
 					case let .failure(error):
 						Log("Photo delete failed locally \(error)")
 						completion?(.failure(error))
@@ -150,13 +151,19 @@ class PhotoManager {
 		}
 	}
 	
-	func image(for photo: Photo) -> UIImage? {
+	func image(for photo: Photo, completion: @escaping (UIImage?) -> Void) {
 		
 		guard let photoID = photo.photoID else {
-			return nil
+			completion(nil)
+			return
 		}
 		
-		return imageStore.image(forKey: photoID)
+		imageStore.image(forKey: photoID) { image in
+			
+			DispatchQueue.main.async {
+				completion(image)
+			}
+		}
 	}
 	
 	func thumbnail(for photo: Photo, withSize size: CGSize, completion: @escaping (UIImage?) -> Void) {
@@ -350,9 +357,11 @@ extension PhotoManager: CloudChangeDelegate {
 			switch result {
 			case .success:
 				
-				self.imageStore.deleteImage(forKey: photoID)
-				Log("Deleted photo with id '\(photoID)'")
-				self.delegate?.didRemove()
+				self.imageStore.deleteImage(forKey: photoID) {
+					
+					Log("Deleted photo with id '\(photoID)'")
+					self.delegate?.didRemove()
+				}
 			case let .failure(error):
 				
 				Log("Error deleting photo \(error)")
