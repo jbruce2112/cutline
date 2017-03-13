@@ -24,7 +24,6 @@
 		525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525E6D101E6E15D20060EB51 /* PolaroidView.swift */; };
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
-		525F4D041E4AAA34004615FD /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 525F4D021E4AAA34004615FD /* MainInterface.storyboard */; };
 		525F4D081E4AAA34004615FD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 525F4CFE1E4AAA34004615FD /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5291E1481E6A01D700A0BBE1 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5291E1471E6A01D700A0BBE1 /* CloudKit.framework */; };
 		52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E331E4028FE00A275AD /* AppDelegate.swift */; };
@@ -91,7 +90,6 @@
 		525F4CF81E48294C004615FD /* SearchResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultsViewController.swift; sourceTree = "<group>"; };
 		525F4CFE1E4AAA34004615FD /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		525F4D001E4AAA34004615FD /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
-		525F4D031E4AAA34004615FD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		525F4D051E4AAA34004615FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		525F4D0D1E4AC49E004615FD /* Cutlines.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cutlines.entitlements; sourceTree = "<group>"; };
 		525F4D0E1E4AC575004615FD /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
@@ -151,7 +149,8 @@
 				52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */,
 			);
 			name = Controllers;
-			sourceTree = "<group>";
+			path = Cutlines/Controllers;
+			sourceTree = SOURCE_ROOT;
 		};
 		523752061E467DB400060607 /* View */ = {
 			isa = PBXGroup;
@@ -162,7 +161,7 @@
 				523D26841E5A0512000507DA /* Theme.swift */,
 				5233394D1E7747C8000224D4 /* PhotoContainerView.swift */,
 			);
-			name = View;
+			path = View;
 			sourceTree = "<group>";
 		};
 		523752071E467DD600060607 /* Model */ = {
@@ -175,7 +174,7 @@
 				523751F91E4178A100060607 /* PhotoDataSource.swift */,
 				524530611E61C82D00305843 /* PhotoManager.swift */,
 			);
-			name = Model;
+			path = Model;
 			sourceTree = "<group>";
 		};
 		525F4CFF1E4AAA34004615FD /* ShareExtension */ = {
@@ -183,7 +182,6 @@
 			children = (
 				525F4D0E1E4AC575004615FD /* ShareExtension.entitlements */,
 				525F4D001E4AAA34004615FD /* ShareViewController.swift */,
-				525F4D021E4AAA34004615FD /* MainInterface.storyboard */,
 				525F4D051E4AAA34004615FD /* Info.plist */,
 			);
 			path = ShareExtension;
@@ -383,7 +381,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				525F4D041E4AAA34004615FD /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,14 +500,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		525F4D021E4AAA34004615FD /* MainInterface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				525F4D031E4AAA34004615FD /* Base */,
-			);
-			name = MainInterface.storyboard;
-			sourceTree = "<group>";
-		};
 		52A03E371E4028FE00A275AD /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
