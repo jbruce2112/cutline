@@ -12,40 +12,34 @@ import Photos
 class CreateViewController: UIViewController {
 
 	// MARK: Properties
+	var image: UIImage!
 	var imageURL: URL!
 	var photoManager: PhotoManager!
 	
+	private var containerView = PhotoContainerView()
 	private var canceled = false
 	
-	@IBOutlet var imageView: UIImageView!
-	@IBOutlet var captionView: CaptionView!
-
 	// MARK: Functions
-	override func viewWillAppear(_ animated: Bool) {
-		super.viewWillAppear(animated)
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		
-		navigationItem.rightBarButtonItem =
-			UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+		view.addSubview(containerView)
+		
+		containerView.polaroidView.image = image
+		
+		let flipButton = UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
+		let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
+		
+		navigationItem.setRightBarButtonItems([cancelButton, flipButton], animated: false)
 		
 		navigationItem.title = "Create"
 		
-		captionView.layer.borderWidth = 1
-		captionView.layer.borderColor = UIColor.black.cgColor
-		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
-		
-		// Let the captionView fill 80% of the available height of its parent
-		let topConstraint = view.constraints.first { $0.identifier == "captionViewTopConstraint" }
-		topConstraint!.constant = view.bounds.height * 0.1
-		let bottomConstraint = view.constraints.first { $0.identifier == "captionViewBottomConstraint" }
-		bottomConstraint!.constant = view.bounds.height * 0.1
-		
-		// And fill 80% of its parent's width
-		let leadingConstraint = view.constraints.first { $0.identifier == "captionViewLeadingConstraint" }
-		leadingConstraint!.constant = view.bounds.width * 0.1
-		let trailingConstraint = view.constraints.first { $0.identifier == "captionViewTrailingConstraint" }
-		trailingConstraint!.constant = view.bounds.width * 0.1
+	}
+	
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
 		
 		setTheme()
 	}
@@ -58,17 +52,33 @@ class CreateViewController: UIViewController {
 		}
 	}
 	
-	// MARK: Actions
-	@IBAction func cancel() {
+	override func viewWillLayoutSubviews() {
+		super.viewWillLayoutSubviews()
+		
+		guard let navController = navigationController, let tabController = tabBarController else {
+			return
+		}
+		
+		let tabBarHeight = tabController.tabBar.isHidden ? 0 : tabController.tabBar.frame.height
+		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
+		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
+		
+		let barHeights = statusBarHeight + navBarHeight + tabBarHeight
+		containerView.heightConstraintConstant = barHeights
+		
+		containerView.setNeedsLayout()
+	}
+	
+	func cancel() {
 		
 		canceled = true
-		
 		let _ = navigationController?.popViewController(animated: true)
 	}
 	
+	// MARK: Actions
 	@IBAction func backgroundTapped(_ sender: UITapGestureRecognizer) {
 		
-		captionView.endEditing(true)
+		containerView.captionView.endEditing(true)
 	}
 	
 	private func save() {
@@ -80,13 +90,12 @@ class CreateViewController: UIViewController {
 		}
 		
 		guard
-			let image = imageView.image,
 			let asset = results.firstObject else  {
 				
 				Log("Error fetching asset URL \(imageURL.absoluteString)")
 				return
 			}
 		
-		photoManager.add(image: image, caption: captionView.getCaption(), dateTaken: asset.creationDate!, qos: nil, completion: nil)
+		photoManager.add(image: image, caption: containerView.captionView.getCaption(), dateTaken: asset.creationDate!, qos: nil, completion: nil)
 	}
 }

@@ -161,13 +161,11 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 			let createViewController =
 				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
 			
-			createViewController.loadViewIfNeeded()
-			
 			createViewController.photoManager = self.photoManager
 			createViewController.imageURL = url
-			createViewController.imageView.image = image
+			createViewController.image = image
 			
-			self.show(createViewController, sender: self)
+			self.navigationController?.pushViewController(createViewController, animated: true)
 		}
 	}
 }
