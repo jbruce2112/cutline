@@ -15,23 +15,19 @@ class ImageStore {
 	private let cache = NSCache<NSString, UIImage>()
 	private let thumbCache = NSCache<NSString, UIImage>()
 	
-	private let imageDirURL: URL = {
-		
-		return appGroupURL.appendingPathComponent("images")
-	}()
+	private let imageDirURL: URL
+	private let thumbDirURL: URL
 	
-	private let thumbDirURL: URL = {
+	init(imageDirURL: URL? = nil, thumbDirURL: URL? = nil) {
 		
-		return FileManager.default.urls(for: .cachesDirectory,
-		                                in: .userDomainMask).first!.appendingPathComponent("thumbnails")
-	}()
-	
-	init() {
+		self.imageDirURL = imageDirURL ?? appGroupURL.appendingPathComponent("images")
+		self.thumbDirURL = thumbDirURL ?? FileManager.default.urls(for: .cachesDirectory,
+			                                in: .userDomainMask).first!.appendingPathComponent("thumbnails")
 		
-		try! FileManager.default.createDirectory(at: imageDirURL,
+		try! FileManager.default.createDirectory(at: self.imageDirURL,
 		                                         withIntermediateDirectories: true, attributes: nil)
 		
-		try! FileManager.default.createDirectory(at: thumbDirURL,
+		try! FileManager.default.createDirectory(at: self.thumbDirURL,
 		                                         withIntermediateDirectories: true, attributes: nil)
 	}
 	

@@ -22,20 +22,21 @@ class PhotoDataSource: NSObject {
 	
 	private let entityName = "Photo"
 	
-	private let persistantContainer: NSPersistentContainer = {
+	private let persistantContainer: NSPersistentContainer
+	
+	init(storeURL: URL? = nil) {
 		
-		let persistantStoreURL = appGroupURL.appendingPathComponent("PhotoStore.sqlite")
+		let persistantStoreURL = storeURL ?? appGroupURL.appendingPathComponent("PhotoStore.sqlite")
 		
-		let container = NSPersistentContainer(name: "Cutlines")
-		container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: persistantStoreURL)]
-		container.loadPersistentStores { (_, error) in
+		persistantContainer = NSPersistentContainer(name: "Cutlines")
+		persistantContainer.persistentStoreDescriptions = [NSPersistentStoreDescription(url: persistantStoreURL)]
+		persistantContainer.loadPersistentStores { (_, error) in
 			
 			if let error = error {
 				Log("Error setting up Core Data \(error)")
 			}
 		}
-		return container
-	}()
+	}
 	
 	// MARK: Functions
 	func refresh(completion: @escaping (UpdateResult) -> Void) {
@@ -153,7 +154,9 @@ class PhotoDataSource: NSObject {
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
 			
-			guard let photo = self.fetch(withID: id) else {
+			let fetchPred = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@", id)
+			
+			guard let photo = self.fetch(withPredicate: fetchPred, limit: 1).first else {
 				Log("Photo not deleted from CoreData because we couldn't find it")
 				// Still successful even if we didn't have the photo
 				completion(.success(nil))
