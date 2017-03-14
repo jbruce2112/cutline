@@ -1,5 +1,5 @@
 //
-//  PhotoDataSource.swift
+//  PhotoStore.swift
 //  Cutlines
 //
 //  Created by John Bruce on 1/31/17.
@@ -15,7 +15,7 @@ enum UpdateResult {
 	case failure(Error)
 }
 
-class PhotoDataSource: NSObject {
+class PhotoStore: NSObject {
 	
 	// MARK: Properties
 	var photos = [Photo]()
@@ -81,7 +81,7 @@ class PhotoDataSource: NSObject {
 	
 	func fetch(withID id: String) -> Photo? {
 		
-		let predicate = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@ AND \(#keyPath(Photo.markedDeleted)) == NO", id)
+		let predicate = NSPredicate(format: "\(#keyPath(Photo.id)) == %@ AND \(#keyPath(Photo.markedDeleted)) == NO", id)
 		return fetch(withPredicate: predicate, limit: 1).first
 	}
 	
@@ -91,9 +91,9 @@ class PhotoDataSource: NSObject {
 		return fetch(withPredicate: predicate, limit: nil)
 	}
 	
-	func addPhoto(_ photo: CloudPhoto, completion: @escaping (UpdateResult) -> Void) {
+	func add(_ photo: CloudPhoto, completion: @escaping (UpdateResult) -> Void) {
 		
-		addPhoto(id: photo.photoID!, caption: photo.caption!, dateTaken: photo.dateTaken! as Date) { result in
+		add(id: photo.id, caption: photo.caption!, dateTaken: photo.dateTaken as Date) { result in
 		
 			switch result {
 				
@@ -122,7 +122,7 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
-	func addPhoto(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
+	func add(id: String, caption: String, dateTaken: Date, completion: @escaping (UpdateResult) -> Void) {
 		
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
@@ -131,7 +131,7 @@ class PhotoDataSource: NSObject {
 			
 			let entityDescription = NSEntityDescription.entity(forEntityName: self.entityName, in: viewContext)
 			let photo = NSManagedObject(entity: entityDescription!, insertInto: viewContext) as! Photo
-			photo.photoID = id
+			photo.id = id
 			photo.caption = caption
 			photo.dateTaken = dateTaken as NSDate
 			photo.dateAdded = NSDate()
@@ -149,12 +149,12 @@ class PhotoDataSource: NSObject {
 		}
 	}
 	
-	func delete(photoWithID id: String, completion: @escaping (UpdateResult) -> Void) {
+	func delete(withID id: String, completion: @escaping (UpdateResult) -> Void) {
 		
 		let viewContext = persistantContainer.viewContext
 		viewContext.perform {
 			
-			let fetchPred = NSPredicate(format: "\(#keyPath(Photo.photoID)) == %@", id)
+			let fetchPred = NSPredicate(format: "\(#keyPath(Photo.id)) == %@", id)
 			
 			guard let photo = self.fetch(withPredicate: fetchPred, limit: 1).first else {
 				Log("Photo not deleted from CoreData because we couldn't find it")
@@ -228,19 +228,5 @@ class PhotoDataSource: NSObject {
 		}
 		
 		return photos
-	}
-}
-
-// MARK: UICollectionViewDataSource conformance
-extension PhotoDataSource: UICollectionViewDataSource {
-	
-	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-		
-		return photos.count
-	}
-	
-	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-		
-		return collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
 	}
 }

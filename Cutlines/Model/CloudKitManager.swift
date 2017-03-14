@@ -145,7 +145,7 @@ class CloudKitManager {
 			
 			// Look up the original photo by the recordName
 			let recordName = record.recordID.recordName
-			let savedPair = pairs.first { $0.photo.photoID == recordName }
+			let savedPair = pairs.first { $0.photo.id == recordName }
 			
 			// Set the CKRecord on the photo
 			savedPair?.photo.ckRecord = CloudPhoto.systemData(fromRecord: record)
@@ -214,7 +214,7 @@ class CloudKitManager {
 			} else {
 				
 				let recordName = record.recordID.recordName
-				let updatedPhoto = photos.first { $0.photoID == recordName }
+				let updatedPhoto = photos.first { $0.id == recordName }
 				
 				// Set the updated CKRecord on the photo
 				updatedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)

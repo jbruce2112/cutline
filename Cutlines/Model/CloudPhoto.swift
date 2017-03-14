@@ -20,7 +20,7 @@ typealias PhotoPair = (photo: Photo, url: URL)
 class CloudPhoto {
 	
 	// MARK: Properties
-	var photoID: String!
+	var id: String!
 	var lastUpdated: NSDate!
 	var dateTaken: NSDate!
 	var dateAdded: NSDate!
@@ -35,7 +35,7 @@ class CloudPhoto {
 	static let dateTakenKey = "dateTaken"
 	static let imageKey = "image"
 	static let lastUpdatedKey = "lastUpdated"
-	static let photoIDKey = "photoID"
+	static let idKey = "id"
 	
 	init() {
 	}
@@ -46,7 +46,7 @@ class CloudPhoto {
 		dateAdded = pair.photo.dateAdded!
 		dateTaken = pair.photo.dateTaken!
 		lastUpdated = pair.photo.lastUpdated!
-		photoID = pair.photo.photoID!
+		id = pair.photo.id!
 		ckRecord = pair.photo.ckRecord
 		imageAsset = CKAsset(fileURL: pair.url)
 	}
@@ -57,11 +57,11 @@ class CloudPhoto {
 		dateAdded = record[CloudPhoto.dateAddedKey] as! NSDate
 		dateTaken = record[CloudPhoto.dateTakenKey] as! NSDate
 		lastUpdated = record[CloudPhoto.lastUpdatedKey] as! NSDate
-		photoID = record[CloudPhoto.photoIDKey] as! String
+		id = record[CloudPhoto.idKey] as! String
 		ckRecord = CloudPhoto.systemData(fromRecord: record)
 		
 		// sanity check
-		assert(record.recordID.recordName == photoID)
+		assert(record.recordID.recordName == id)
 		
 		guard let asset = record[CloudPhoto.imageKey] as? CKAsset else {
 			Log("Unable to get CKAsset from record")
@@ -104,15 +104,15 @@ class CloudPhoto {
 		
 		// We enforce a unique constraint with our photoID in CloudKit
 		// by always creating a record from a CKRecordID with a recordName of photoID
-		let recordID = CKRecordID(recordName: photo.photoID!, zoneID: zoneID)
+		let recordID = CKRecordID(recordName: photo.id, zoneID: zoneID)
 		let record = CKRecord(recordType: "Photo", recordID: recordID)
 		
-		record[CloudPhoto.captionKey] = photo.caption as NSString?
+		record[CloudPhoto.captionKey] = photo.caption as NSString
 		record[CloudPhoto.dateAddedKey] = photo.dateAdded
 		record[CloudPhoto.dateTakenKey] = photo.dateTaken
 		record[CloudPhoto.imageKey] = photo.imageAsset
 		record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
-		record[CloudPhoto.photoIDKey] = photo.photoID as NSString?
+		record[CloudPhoto.idKey] = photo.id as NSString
 		
 		return record
 	}

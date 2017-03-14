@@ -31,7 +31,7 @@ class CutlinesTests: XCTestCase {
 		
 		photoManager = PhotoManager()
 		photoManager.cloudManager = MocCloudKitManager()
-		photoManager.photoDataSource = PhotoDataSource(storeURL: photoStoreURL)
+		photoManager.photoStore = PhotoStore(storeURL: photoStoreURL)
 		photoManager.imageStore = ImageStore(imageDirURL: imageStoreURL, thumbDirURL: thumbStoreURL)
     }
     
@@ -45,27 +45,29 @@ class CutlinesTests: XCTestCase {
     
     func testPhotoAdd() {
 		
-		XCTAssertEqual(photoManager.photoDataSource.photos.count, 0)
-		var count = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).count
+		XCTAssertEqual(photoManager.photoStore.photos.count, 0)
+		var count = photoManager.photoStore.fetchOnlyLocal(limit: nil).count
 		XCTAssertEqual(count, 0)
 		
 		let square = image(withColor: .green, size: CGSize(width: 10, height: 10))
 		addPhoto(image: square, caption: "My green square", expecting: .success)
 		
-		count = photoManager.photoDataSource.fetchModified(limit: nil).count
+		count = photoManager.photoStore.fetchModified(limit: nil).count
 		XCTAssertEqual(count, 0)
 		
-		count = photoManager.photoDataSource.fetchDeleted(limit: nil).count
+		count = photoManager.photoStore.fetchDeleted(limit: nil).count
 		XCTAssertEqual(count, 0)
 		
-		let photo = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).first!
-		let fetchedPhoto = photoManager.photoDataSource.fetch(withID: photo.photoID!)
-		XCTAssertEqual(photo.photoID!, fetchedPhoto?.photoID)
+		let photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first!
+		let fetchedPhoto = photoManager.photoStore.fetch(withID: photo.id!)
+		XCTAssertEqual(photo.id!, fetchedPhoto?.id)
+		
+		refreshPhotos(assertCount: 1)
     }
 	
 	func testPhotoSearch() {
 		
-		var count = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).count
+		var count = photoManager.photoStore.fetchOnlyLocal(limit: nil).count
 		XCTAssertEqual(count, 0)
 		
 		var square = image(withColor: .red, size: CGSize(width: 10, height: 10))
@@ -74,17 +76,19 @@ class CutlinesTests: XCTestCase {
 		square = image(withColor: .blue, size: CGSize(width: 10, height: 10))
 		addPhoto(image: square, caption: "My blue square", expecting: .success)
 		
-		count = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).count
+		count = photoManager.photoStore.fetchOnlyLocal(limit: nil).count
 		XCTAssertEqual(count, 2)
 		
-		count = photoManager.photoDataSource.fetch(containing: "square").count
+		count = photoManager.photoStore.fetch(containing: "square").count
 		XCTAssertEqual(count, 2)
 		
-		count = photoManager.photoDataSource.fetch(containing: "blahblah").count
+		count = photoManager.photoStore.fetch(containing: "blahblah").count
 		XCTAssertEqual(count, 0)
 		
-		count = photoManager.photoDataSource.fetch(containing: " RED ").count
+		count = photoManager.photoStore.fetch(containing: " RED ").count
 		XCTAssertEqual(count, 1)
+		
+		refreshPhotos(assertCount: 2)
 	}
 	
 	func testPhotoUpdate() {
@@ -93,39 +97,42 @@ class CutlinesTests: XCTestCase {
 		let caption = "My orange square"
 		addPhoto(image: square, caption: caption, expecting: .success)
 		
-		let photo = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).first!
+		let photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first!
 		XCTAssertEqual(photo.caption!, caption)
 		XCTAssertEqual(photo.dirty, false)
+		refreshPhotos(assertCount: 1)
 		
 		photo.caption = "Update 1"
 		updatePhoto(photo: photo, expecting: .success)
 		XCTAssertEqual(photo.dirty, false)
+		refreshPhotos(assertCount: 1)
 		
-		var modifiedPhotos = photoManager.photoDataSource.fetchModified(limit: nil)
+		var modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 0)
 		
-		// Swap out the CloudManager with one that will fail
-		photoManager.cloudManager = FailCloudKitManager()
+		// Set the cloudManager to fail on the next call
+		setCloudFailureMode(fail: true)
 		let failResult = PhotoUpdateResult.failure(NSError(domain: "", code: 0, userInfo: nil))
 		
 		photo.caption = "Update 2"
 		updatePhoto(photo: photo, expecting: failResult)
 		XCTAssertEqual(photo.dirty, true)
 		
-		modifiedPhotos = photoManager.photoDataSource.fetchModified(limit: nil)
+		modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 1)
 		XCTAssertEqual(modifiedPhotos.first!.caption!, "Update 2")
+		refreshPhotos(assertCount: 1)
 		
-		// Replace it with the original
-		photoManager.cloudManager = MocCloudKitManager()
+		setCloudFailureMode(fail: false)
 		
 		updatePhoto(photo: photo, expecting: .success)
 		
 		// Make sure it's no longer dirty
 		XCTAssertEqual(photo.dirty, false)
 		
-		modifiedPhotos = photoManager.photoDataSource.fetchModified(limit: nil)
+		modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 0)
+		refreshPhotos(assertCount: 1)
 	}
 	
 	func testPhotoDelete() {
@@ -134,27 +141,30 @@ class CutlinesTests: XCTestCase {
 		let caption = "My yellow square"
 		addPhoto(image: square, caption: caption, expecting: .success)
 		
-		var photo = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).first
+		var photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
 		XCTAssertNotNil(photo)
 		XCTAssertEqual(photo?.caption!, caption)
 		XCTAssertEqual(photo?.markedDeleted, false)
+		refreshPhotos(assertCount: 1)
 		
 		deletePhoto(photo: photo!, expecting: .success)
 		
-		var count = photoManager.photoDataSource.fetchDeleted(limit: nil).count
+		var count = photoManager.photoStore.fetchDeleted(limit: nil).count
 		XCTAssertEqual(count, 0)
+		refreshPhotos(assertCount: 0)
 		
 		// Re-add the photo
 		addPhoto(image: square, caption: caption, expecting: .success)
 		
 		// Grab it again
-		photo = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).first
+		photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
 		XCTAssertNotNil(photo)
 		XCTAssertEqual(photo!.caption!, caption)
 		XCTAssertEqual(photo!.markedDeleted, false)
+		refreshPhotos(assertCount: 1)
 		
-		// Swap out the CloudManager with one that will fail
-		photoManager.cloudManager = FailCloudKitManager()
+		// fail the next cloud call
+		setCloudFailureMode(fail: true)
 		let failResult = PhotoUpdateResult.failure(NSError(domain: "", code: 0, userInfo: nil))
 		
 		deletePhoto(photo: photo!, expecting: failResult)
@@ -162,20 +172,23 @@ class CutlinesTests: XCTestCase {
 		XCTAssertEqual(photo!.markedDeleted, true)
 		
 		// Make sure we still have it
-		photo = photoManager.photoDataSource.fetchDeleted(limit: nil).first
+		photo = photoManager.photoStore.fetchDeleted(limit: nil).first
 		XCTAssertNotNil(photo)
 		XCTAssertEqual(photo!.caption!, caption)
 		
-		// Add the original cloudmanager back
-		photoManager.cloudManager = MocCloudKitManager()
+		// It should be filtered out from our view when refreshing
+		refreshPhotos(assertCount: 0)
+		
+		setCloudFailureMode(fail: false)
 		
 		deletePhoto(photo: photo!, expecting: .success)
 		
 		// Make sure its gone now
-		count = photoManager.photoDataSource.fetchDeleted(limit: nil).count
+		count = photoManager.photoStore.fetchDeleted(limit: nil).count
 		XCTAssertEqual(count, 0)
-		count = photoManager.photoDataSource.fetchOnlyLocal(limit: nil).count
+		count = photoManager.photoStore.fetchOnlyLocal(limit: nil).count
 		XCTAssertEqual(count, 0)
+		refreshPhotos(assertCount: 0)
 	}
 	
 	private func addPhoto(image: UIImage, caption: String, expecting expectedResult: PhotoUpdateResult) {
@@ -232,6 +245,30 @@ class CutlinesTests: XCTestCase {
 		}
 	}
 	
+	private func refreshPhotos(assertCount count: Int) {
+		
+		var refreshCount = 0
+		let addExpectation = expectation(description: "PhotoRefresh")
+		
+		photoManager.photoStore.refresh { result in
+			
+			switch result {
+			case .success:
+				refreshCount = self.photoManager.photoStore.photos.count
+			case .failure:
+				refreshCount = 0
+			}
+			
+			addExpectation.fulfill()
+		}
+		
+		waitForExpectations(timeout: 2) { error in
+			
+			XCTAssertNil(error)
+			XCTAssertEqual(count, refreshCount)
+		}
+	}
+	
 	private func image(withColor color: UIColor, size: CGSize) -> UIImage {
 		
 		let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -242,6 +279,10 @@ class CutlinesTests: XCTestCase {
 		let image = UIGraphicsGetImageFromCurrentImageContext()
 		UIGraphicsEndImageContext()
 		return image!
+	}
+	
+	private func setCloudFailureMode(fail: Bool) {
+		(photoManager.cloudManager as! MocCloudKitManager).failureMode = fail
 	}
 	
 }

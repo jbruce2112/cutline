@@ -25,7 +25,7 @@ class PhotoManager {
 	
 	// MARK: Properties
 	var cloudManager = CloudKitManager()
-	var photoDataSource = PhotoDataSource()
+	var photoStore = PhotoStore()
 	var imageStore = ImageStore()
 	
 	weak var delegate: PhotoChangeDelegate?
@@ -62,7 +62,7 @@ class PhotoManager {
 		let id = NSUUID().uuidString
 		imageStore.setImage(image, forKey: id)
 		
-		photoDataSource.addPhoto(id: id, caption: caption, dateTaken: dateTaken) { result in
+		photoStore.add(id: id, caption: caption, dateTaken: dateTaken) { result in
 			
 			switch result {
 			case let .success(photo):
@@ -79,7 +79,7 @@ class PhotoManager {
 					switch cloudResult {
 					case .success:
 						// Save the CKRecord that the photo now has
-						self.photoDataSource.save()
+						self.photoStore.save()
 						completion?(.success)
 					case let .failure(error):
 						completion?(.failure(error))
@@ -94,7 +94,7 @@ class PhotoManager {
 	func update(photo: Photo, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		photo.dirty = true
-		photoDataSource.save()
+		photoStore.save()
 		Log("photo marked dirty")
 		
 		cloudManager.pushModified(photos: [photo]) { cloudResult in
@@ -104,7 +104,7 @@ class PhotoManager {
 			case .success:
 				
 				photo.dirty = false
-				self.photoDataSource.save()
+				self.photoStore.save()
 				Log("photo un-marked dirty")
 				completion?(.success)
 			case let .failure(error):
@@ -119,7 +119,7 @@ class PhotoManager {
 		// attempt the cloud call, so we can filter it out
 		// of our collection view right away
 		photo.markedDeleted = true
-		photoDataSource.save()
+		photoStore.save()
 		
 		self.delegate?.didRemove()
 		
@@ -129,8 +129,8 @@ class PhotoManager {
 			switch cloudResult {
 			case .success:
 				
-				let photoID = photo.photoID!
-				self.photoDataSource.delete(photoWithID: photoID) { localResult in
+				let photoID = photo.id!
+				self.photoStore.delete(withID: photoID) { localResult in
 					
 					switch localResult {
 					case .success:
@@ -153,7 +153,7 @@ class PhotoManager {
 	
 	func image(for photo: Photo, completion: @escaping (UIImage?) -> Void) {
 		
-		guard let photoID = photo.photoID else {
+		guard let photoID = photo.id else {
 			completion(nil)
 			return
 		}
@@ -168,7 +168,7 @@ class PhotoManager {
 	
 	func thumbnail(for photo: Photo, withSize size: CGSize, completion: @escaping (UIImage?) -> Void) {
 		
-		guard let photoID = photo.photoID else {
+		guard let photoID = photo.id else {
 			
 			DispatchQueue.main.async {
 				completion(nil)
@@ -187,7 +187,7 @@ class PhotoManager {
 	// MARK: Private functions
 	private func pushNewLocalPhotos(batchSize: Int = 5) {
 		
-		let localPhotos = photoDataSource.fetchOnlyLocal(limit: batchSize)
+		let localPhotos = photoStore.fetchOnlyLocal(limit: batchSize)
 		
 		if localPhotos.isEmpty {
 			return
@@ -195,7 +195,7 @@ class PhotoManager {
 		
 		let photoPairs = localPhotos.map {
 			
-			(photo: $0, url: imageStore.imageURL(forKey: $0.photoID!))
+			(photo: $0, url: imageStore.imageURL(forKey: $0.id!))
 		}
 		
 		cloudManager.pushNew(pairs: photoPairs, qos: nil) { result in
@@ -205,7 +205,7 @@ class PhotoManager {
 			case .success:
 				
 				// Save the CKRecords that were added to the photos
-				self.photoDataSource.save()
+				self.photoStore.save()
 				
 				// Push another batch
 				self.pushNewLocalPhotos(batchSize: batchSize)
@@ -218,7 +218,7 @@ class PhotoManager {
 	
 	private func pushModifiedPhotos(batchSize: Int = 5) {
 		
-		let modifiedPhotos = photoDataSource.fetchModified(limit: batchSize)
+		let modifiedPhotos = photoStore.fetchModified(limit: batchSize)
 		
 		if modifiedPhotos.isEmpty {
 			return
@@ -232,7 +232,7 @@ class PhotoManager {
 				
 				// Mark un-dirty and save the updated CKRecords added to the photos
 				modifiedPhotos.forEach { $0.dirty = false }
-				self.photoDataSource.save()
+				self.photoStore.save()
 				
 				// Push another batch
 				self.pushModifiedPhotos(batchSize: batchSize)
@@ -245,7 +245,7 @@ class PhotoManager {
 	
 	private func pushDeletedPhotos() {
 		
-		let deletedPhotos = photoDataSource.fetchDeleted(limit: nil)
+		let deletedPhotos = photoStore.fetchDeleted(limit: nil)
 		
 		if deletedPhotos.isEmpty {
 			return
@@ -259,7 +259,7 @@ class PhotoManager {
 				
 				// Only truly delete the photolocally
 				// once we know the cloud got the delete
-				self.photoDataSource.delete(photos: deletedPhotos) { result in
+				self.photoStore.delete(photos: deletedPhotos) { result in
 					switch result {
 					case .success:
 						break
@@ -279,19 +279,19 @@ extension PhotoManager: CloudChangeDelegate {
 	
 	func didModify(photo: CloudPhoto) {
 		
-		let existingPhoto = photoDataSource.fetch(withID: photo.photoID!)
+		let existingPhoto = photoStore.fetch(withID: photo.id)
 		
 		if existingPhoto == nil {
 			
 			// We got a new photo from the cloud
-			self.photoDataSource.addPhoto(photo) { result in
+			self.photoStore.add(photo) { result in
 				
 				switch result {
 				case .success:
 					
 					DispatchQueue.global().async {
 						
-						self.imageStore.setImage(photo.image!, forKey: photo.photoID!)
+						self.imageStore.setImage(photo.image!, forKey: photo.id)
 						Log("New photo added with caption '\(photo.caption!)'")
 						self.delegate?.didAdd()
 					}
@@ -331,7 +331,7 @@ extension PhotoManager: CloudChangeDelegate {
 			existingPhoto!.caption = photo.caption
 			existingPhoto!.ckRecord = photo.ckRecord
 			
-			self.photoDataSource.save()
+			self.photoStore.save()
 			
 			Log("Existing photo updated with new caption '\((existingPhoto?.caption)!)'")
 		}
@@ -339,7 +339,7 @@ extension PhotoManager: CloudChangeDelegate {
 	
 	func didRemove(photoID: String) {
 		
-		let existingPhoto = photoDataSource.fetch(withID: photoID)
+		let existingPhoto = photoStore.fetch(withID: photoID)
 		
 		if existingPhoto == nil {
 			// Already gone
@@ -352,7 +352,7 @@ extension PhotoManager: CloudChangeDelegate {
 			return
 		}
 		
-		photoDataSource.delete(photoWithID: photoID) { result in
+		photoStore.delete(withID: photoID) { result in
 			
 			switch result {
 			case .success:

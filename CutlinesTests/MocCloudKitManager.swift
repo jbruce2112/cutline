@@ -14,37 +14,7 @@ import Foundation
 // and instantly calls the completion handler. For unit testing.
 class MocCloudKitManager: CloudKitManager {
 	
-	override init() {
-	}
-	
-	override func setup(completion: @escaping () -> Void) {
-		completion()
-	}
-	
-	override func setupNoSync(completion: @escaping () -> Void) {
-		completion()
-	}
-	
-	override func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
-		completion(.success)
-	}
-	
-	override func pushModified(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
-		completion(.success)
-	}
-	
-	override func delete(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
-		completion(.success)
-	}
-	
-	override func fetchChanges(completion: @escaping () -> Void) {
-		completion()
-	}
-}
-
-// FailCloudKitManager implementation no-ops all cloud calls
-// and instantly calls the completion handler with an error. For unit testing.
-class FailCloudKitManager: CloudKitManager {
+	var failureMode = false
 	
 	override init() {
 	}
@@ -58,15 +28,18 @@ class FailCloudKitManager: CloudKitManager {
 	}
 	
 	override func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
-		completion(failResult())
+		let result = failureMode ? failResult() : .success
+		completion(result)
 	}
 	
 	override func pushModified(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
-		completion(failResult())
+		let result = failureMode ? failResult() : .success
+		completion(result)
 	}
 	
 	override func delete(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
-		completion(failResult())
+		let result = failureMode ? failResult() : .success
+		completion(result)
 	}
 	
 	override func fetchChanges(completion: @escaping () -> Void) {

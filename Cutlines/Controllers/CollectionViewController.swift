@@ -12,7 +12,7 @@ class CollectionViewController: UIViewController {
 	
 	// MARK: Properties
 	var photoManager: PhotoManager!
-	fileprivate var photoDataSource: PhotoDataSource!
+	fileprivate var photoStore: PhotoStore!
 	
 	@IBOutlet fileprivate var collectionView: UICollectionView!
 	
@@ -20,10 +20,10 @@ class CollectionViewController: UIViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		photoDataSource = photoManager.photoDataSource
+		photoStore = photoManager.photoStore
 		
 		collectionView.delegate = self
-		collectionView.dataSource = photoDataSource
+		collectionView.dataSource = self
 		
 		photoManager.delegate = self
 	}
@@ -52,7 +52,7 @@ class CollectionViewController: UIViewController {
 					return
 			}
 			
-			let photo = self.photoDataSource.photos[selectedIndex.row]
+			let photo = self.photoStore.photos[selectedIndex.row]
 			let editViewController = segue.destination as! EditViewController
 			
 			editViewController.photo = photo
@@ -66,7 +66,7 @@ class CollectionViewController: UIViewController {
 	
 	func refresh() {
 		
-		photoDataSource.refresh { result in
+		photoStore.refresh { result in
 			
 			switch result {
 				
@@ -127,7 +127,7 @@ extension CollectionViewController: UICollectionViewDelegate {
 		let imageView = cell.viewWithTag(100) as! UIImageView
 		imageView.image = nil
 		
-		let photo = photoDataSource.photos[indexPath.row]
+		let photo = photoStore.photos[indexPath.row]
 		photoManager.thumbnail(for: photo, withSize: cell.frame.size) { fetchedThumbnail in
 			
 			guard let thumbnail = fetchedThumbnail else {
@@ -181,5 +181,19 @@ extension CollectionViewController: PhotoChangeDelegate {
 	func didRemove() {
 		
 		refresh()
+	}
+}
+
+// MARK: UICollectionViewDataSource conformance
+extension CollectionViewController: UICollectionViewDataSource {
+	
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		
+		return photoStore.photos.count
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		
+		return collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
 	}
 }
