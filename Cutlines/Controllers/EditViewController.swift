@@ -22,7 +22,6 @@ class EditViewController: UIViewController {
 	@IBOutlet private var deleteButton: UIBarButtonItem!
 	@IBOutlet private var toolbar: UIToolbar!
 	
-	private var canceled = false
 	private var deleted = false
 	
 	// MARK: Functions
@@ -42,9 +41,8 @@ class EditViewController: UIViewController {
 		
 		initialCaption = containerView.captionView.getCaption()
 		
-		let flipButton = UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
-		let cancelButton = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancel))
-		navigationItem.setRightBarButtonItems([cancelButton, flipButton], animated: false)
+		navigationItem.rightBarButtonItem =
+			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
@@ -83,7 +81,7 @@ class EditViewController: UIViewController {
 		// Update the Photo object with our changes
 		// and kick off a save before we leave the view
 		let caption = containerView.captionView.getCaption()
-		if !deleted && !canceled && caption != initialCaption {
+		if !deleted && caption != initialCaption {
 			
 			photo.caption = caption
 			photo.lastUpdated = NSDate()
@@ -92,12 +90,6 @@ class EditViewController: UIViewController {
 		
 		// Show the original tab bar again
 		tabBarController?.tabBar.isHidden = false
-	}
-	
-	func cancel() {
-		
-		canceled = true
-		let _ = navigationController?.popViewController(animated: true)
 	}
 	
 	// MARK: Actions
