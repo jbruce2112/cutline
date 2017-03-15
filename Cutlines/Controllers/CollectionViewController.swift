@@ -107,14 +107,18 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 		
 		let viewWidth = Double(collectionView.bounds.width)
 		
-		// Around 150 pts per cell. This grows with resolution pretty well.
+		// Calculate the cell size at runtime so we can make
+		// the cells as large as possible on all resolutions
+		// (i.e. no excessive padding)
+		// This results in the following layouts:
 		// iPhone 7 & 7 Plus Portrait - 4 cells, Landscape - 6 cells
 		// iPad 9.7 Portrait - 7 cells, Landscape - 8
-		// iPad 12.9 Portrait - 8 cells , Landscape - 10 cells, etc.
-		let cellsPerRow = ceil(viewWidth / 153) + 1
+		// iPad 12.9 Portrait - 8 cells , Landscape - 10 cells
+		let maxPtsPerCell: Double = 153
+		let cellsPerRow = ceil(viewWidth / maxPtsPerCell) + 1
 		
-		// Round the computed width down to the nearest 10th
-		let cellWidth = (floor(viewWidth / cellsPerRow) / 10) * 10 - cellSpacing
+		// Account for padding
+		let cellWidth = floor(viewWidth / cellsPerRow) - cellSpacing
 		return CGSize(width: cellWidth, height: cellWidth)
 	}
 }
