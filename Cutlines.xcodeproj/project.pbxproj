@@ -29,6 +29,7 @@
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
 		525F4D081E4AAA34004615FD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 525F4CFE1E4AAA34004615FD /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		527421E71E78FA8700EE1FA7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5214BA801E78F8FB00C07B5B /* MainInterface.storyboard */; };
+		527421E91E79FDA700EE1FA7 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527421E81E79FDA700EE1FA7 /* main.swift */; };
 		5291E1481E6A01D700A0BBE1 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5291E1471E6A01D700A0BBE1 /* CloudKit.framework */; };
 		52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E331E4028FE00A275AD /* AppDelegate.swift */; };
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
@@ -100,6 +101,7 @@
 		525F4D051E4AAA34004615FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		525F4D0D1E4AC49E004615FD /* Cutlines.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cutlines.entitlements; sourceTree = "<group>"; };
 		525F4D0E1E4AC575004615FD /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
+		527421E81E79FDA700EE1FA7 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		5291E1471E6A01D700A0BBE1 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		52A03E301E4028FE00A275AD /* Cutlines.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cutlines.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A03E331E4028FE00A275AD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				52A03E3A1E4028FE00A275AD /* Assets.xcassets */,
 				52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */,
 				52A03E3F1E4028FE00A275AD /* Info.plist */,
+				527421E81E79FDA700EE1FA7 /* main.swift */,
 			);
 			path = Cutlines;
 			sourceTree = "<group>";
@@ -483,6 +486,7 @@
 				52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */,
 				523751FC1E417C4900060607 /* ImageStore.swift in Sources */,
 				52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */,
+				527421E91E79FDA700EE1FA7 /* main.swift in Sources */,
 				525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */,
 				52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */,
 				523D26851E5A0512000507DA /* Theme.swift in Sources */,

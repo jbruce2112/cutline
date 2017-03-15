@@ -32,7 +32,6 @@ protocol CloudChangeDelegate: class {
 class CloudKitManager {
 	
 	// MARK: Properties
-	private let container: CKContainer
 	private let privateDB: CKDatabase
 		
 	let subscriptionID = "private-changes"
@@ -40,20 +39,30 @@ class CloudKitManager {
 	private let zoneName = "Photos"
 	
 	private var syncState: SyncState!
-	private var syncStateArchive: URL = {
+	private let syncStateArchive: URL = {
 		
 		let cacheDir = FileManager.default.urls(for: .cachesDirectory,
 		                                        in: .userDomainMask).first!
 		return cacheDir.appendingPathComponent("syncState.archive")
 	}()
 	
-	private var ready = false
+	private let queue = DispatchQueue(label: "cutlines.ckManagerQueue")
+	
+	private var _ready = false
+	private var ready: Bool {
+		get {
+			return queue.sync { _ready }
+		}
+		set {
+			queue.sync { _ready = newValue }
+		}
+	}
 	
 	weak var delegate: CloudChangeDelegate?
 	
 	init() {
 		
-		container = CKContainer(identifier: cloudContainerDomain)
+		let container = CKContainer(identifier: cloudContainerDomain)
 		privateDB = container.privateCloudDatabase
 		
 		syncState = loadSyncState()
@@ -465,6 +474,7 @@ class CloudKitManager {
 		case .userDeletedZone, .zoneNotFound, .changeTokenExpired:
 			
 			Log("Resetting syncState due to CKError: \(error.localizedDescription)")
+			ready = false
 			try? FileManager.default.removeItem(at: syncStateArchive)
 			syncState.reset()
 			setup(completion: nil)

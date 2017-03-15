@@ -7,10 +7,8 @@
 //
 
 import CloudKit
-import Photos
 import UIKit
 
-@UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	var window: UIWindow?
