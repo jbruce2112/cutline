@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		5214BA7E1E78DE5700C07B5B /* SyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5214BA7D1E78DE5700C07B5B /* SyncState.swift */; };
 		5214BA7F1E78E7D800C07B5B /* SyncState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5214BA7D1E78DE5700C07B5B /* SyncState.swift */; };
-		5214BA821E78F8FB00C07B5B /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5214BA801E78F8FB00C07B5B /* MainInterface.storyboard */; };
 		5233394E1E7747C8000224D4 /* PhotoContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5233394D1E7747C8000224D4 /* PhotoContainerView.swift */; };
 		523339541E777113000224D4 /* MocCloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523339531E777113000224D4 /* MocCloudKitManager.swift */; };
 		523751F81E41744F00060607 /* Cutlines.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 523751F61E41744F00060607 /* Cutlines.xcdatamodeld */; };
@@ -29,6 +28,7 @@
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
 		525F4D011E4AAA34004615FD /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4D001E4AAA34004615FD /* ShareViewController.swift */; };
 		525F4D081E4AAA34004615FD /* ShareExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 525F4CFE1E4AAA34004615FD /* ShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		527421E71E78FA8700EE1FA7 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5214BA801E78F8FB00C07B5B /* MainInterface.storyboard */; };
 		5291E1481E6A01D700A0BBE1 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5291E1471E6A01D700A0BBE1 /* CloudKit.framework */; };
 		52A03E341E4028FE00A275AD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E331E4028FE00A275AD /* AppDelegate.swift */; };
 		52A03E391E4028FE00A275AD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52A03E371E4028FE00A275AD /* Main.storyboard */; };
@@ -391,6 +391,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				527421E71E78FA8700EE1FA7 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,7 +400,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */,
-				5214BA821E78F8FB00C07B5B /* MainInterface.storyboard in Resources */,
 				52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */,
 				52A03E391E4028FE00A275AD /* Main.storyboard in Resources */,
 			);

@@ -84,6 +84,8 @@ class ShareViewController: SLComposeServiceViewController {
 					
 				case .success:
 					Log("Image added to photomanager from extension successfully")
+					// Save the record zone state in our cache so we don't bother creating it next time
+					self.photoManager.cloudManager.saveSyncState()
 				case let .failure(error):
 					Log("Failed to add image to photomanager from extension \(error)")
 				}

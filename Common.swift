@@ -8,8 +8,9 @@
 
 import Foundation
 
-let appGroupDomain = "group.\(Bundle.main.bundleIdentifier!)"
-let cloudContainerDomain = "iCloud.\(Bundle.main.bundleIdentifier!)"
+let containerBundleID = "com.jbruce32.Cutlines"
+let appGroupDomain = "group.\(containerBundleID)"
+let cloudContainerDomain = "iCloud.\(containerBundleID)"
 
 let appGroupDefaults: UserDefaults = {
 	
