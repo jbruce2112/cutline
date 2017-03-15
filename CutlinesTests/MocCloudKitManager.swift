@@ -19,12 +19,12 @@ class MocCloudKitManager: CloudKitManager {
 	override init() {
 	}
 	
-	override func setup(completion: @escaping () -> Void) {
-		completion()
+	override func setup(completion: (() -> Void)?) {
+		completion?()
 	}
 	
-	override func setupNoSync(completion: @escaping () -> Void) {
-		completion()
+	override func setupNoSync(completion: (() -> Void)?) {
+		completion?()
 	}
 	
 	override func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {

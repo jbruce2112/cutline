@@ -113,7 +113,6 @@ class PhotoStore: NSObject {
 				} catch {
 					
 					completion(.failure(error))
-					Log("Error saving context \(error)")
 				}
 				
 			case let .failure(error):
@@ -143,6 +142,7 @@ class PhotoStore: NSObject {
 				try viewContext.save()
 				completion(.success(photo))
 			} catch {
+				Log("Error saving context \(error)")
 				viewContext.rollback()
 				completion(.failure(error))
 			}

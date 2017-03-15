@@ -13,13 +13,13 @@ import UIKit
 enum CloudPushResult {
 	
 	case success
-	case failure(CKError)
+	case failure(Error)
 }
 
 enum CloudRecordResult {
 	
 	case success([String: CKRecord])
-	case failure(CKError)
+	case failure(Error)
 }
 
 // MARK: CloudChangeDelegate
@@ -27,35 +27,6 @@ protocol CloudChangeDelegate: class {
 	
 	func didModify(photo: CloudPhoto)
 	func didRemove(photoID: String)
-}
-
-private class SyncState: NSObject, NSCoding {
-	
-	// MARK: Properties (persisted)
-	fileprivate var dbChangeToken: CKServerChangeToken?
-	fileprivate var zoneChangeToken: CKServerChangeToken?
-	fileprivate var recordZone: CKRecordZone?
-	fileprivate var subscribedForChanges = false
-	
-	override init() {
-		super.init()
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		
-		subscribedForChanges = aDecoder.decodeBool(forKey: "subscribedForChanges")
-		zoneChangeToken = aDecoder.decodeObject(forKey: "zoneChangeToken") as? CKServerChangeToken
-		dbChangeToken = aDecoder.decodeObject(forKey: "dbChangeToken") as? CKServerChangeToken
-		recordZone = aDecoder.decodeObject(forKey: "recordZone") as? CKRecordZone
-	}
-	
-	func encode(with aCoder: NSCoder) {
-		
-		aCoder.encode(recordZone, forKey: "recordZone")
-		aCoder.encode(dbChangeToken, forKey: "dbChangeToken")
-		aCoder.encode(zoneChangeToken, forKey: "zoneChangeToken")
-		aCoder.encode(subscribedForChanges, forKey: "subscribedForChanges")
-	}
 }
 
 class CloudKitManager {
@@ -69,16 +40,18 @@ class CloudKitManager {
 	private let zoneName = "Photos"
 	
 	private var syncState: SyncState!
-	private var syncStateArchive: String
+	private var syncStateArchive: URL = {
+		
+		let cacheDir = FileManager.default.urls(for: .cachesDirectory,
+		                                        in: .userDomainMask).first!
+		return cacheDir.appendingPathComponent("syncState.archive")
+	}()
 	
 	private var ready = false
 	
 	weak var delegate: CloudChangeDelegate?
 	
 	init() {
-		
-		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-		syncStateArchive = cacheDir.appendingPathComponent("syncState.archive").path
 		
 		container = CKContainer(identifier: cloudContainerDomain)
 		privateDB = container.privateCloudDatabase
@@ -87,7 +60,7 @@ class CloudKitManager {
 	}
 	
 	// MARK: Functions
-	func setup(completion: @escaping () -> Void) {
+	func setup(completion: (() -> Void)?) {
 		
 		createCustomZone {
 			
@@ -96,26 +69,26 @@ class CloudKitManager {
 			
 			self.registerForSubscription {
 				
-				completion()
+				completion?()
 			}
 		}
 	}
 	
 	// Setup for users of this class who don't need syncing/notifications
-	func setupNoSync(completion: @escaping () -> Void) {
+	func setupNoSync(completion: (() -> Void)?) {
 		
 		createCustomZone {
 			
 			// We're ready to push once this is set
 			self.ready = self.syncState.recordZone != nil
 				
-			completion()
+			completion?()
 		}
 	}
 	
 	func saveSyncState() {
 		
-		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive)
+		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive.path)
 		Log("SyncState saved")
 	}
 	
@@ -158,7 +131,8 @@ class CloudKitManager {
 			if let error = error {
 				
 				Log("Error saving photos with batch size \(batchSize) - \(error)")
-				completion(.failure(error as! CKError))
+				self.handleError(error)
+				completion(.failure(error))
 			} else {
 				
 				if let saved = saved {
@@ -229,7 +203,8 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				completion(.failure(error as! CKError))
+				completion(.failure(error))
+				self.handleError(error)
 			} else {
 				completion(.success)
 			}
@@ -267,7 +242,8 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				completion(.failure(error as! CKError))
+				self.handleError(error)
+				completion(.failure(error))
 			} else {
 				
 				if let deleted = deleted {
@@ -289,6 +265,8 @@ class CloudKitManager {
 		// When our change token is nil, we'll fetch everything
 		let changeOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: syncState.dbChangeToken)
 		
+		changeOperation.previousServerChangeToken = self.syncState.dbChangeToken
+		
 		changeOperation.fetchAllChanges = true
 		changeOperation.recordZoneWithIDChangedBlock = { (recordZoneID) in
 			
@@ -306,6 +284,7 @@ class CloudKitManager {
 			
 			if let error = error {
 				Log("Got error in fetching changes \(error)")
+				self.handleError(error)
 				return
 			}
 			
@@ -325,7 +304,7 @@ class CloudKitManager {
 	// MARK: Private functions
 	private func loadSyncState() -> SyncState {
 		
-		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive) as? SyncState {
+		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive.path) as? SyncState {
 			Log("SyncState loaded from archive")
 			return syncState
 		} else {
@@ -385,6 +364,7 @@ class CloudKitManager {
 			
 			if let error = error {
 				Log("Got error fetching record changes \(error)")
+				self.handleError(error)
 				completion()
 				return
 			}
@@ -425,6 +405,7 @@ class CloudKitManager {
 			
 			if let error = error {
 				Log("Error subscriping for notifications \(error)")
+				self.handleError(error)
 			} else {
 				Log("Subscribed to changes")
 				self.syncState.subscribedForChanges = true
@@ -456,6 +437,7 @@ class CloudKitManager {
 			
 			if let error = error {
 				Log("Error creating recordZone \(error)")
+				self.handleError(error)
 			} else {
 				Log("Record zone successfully created")
 				guard let savedZone = savedRecods?.first else {
@@ -471,6 +453,24 @@ class CloudKitManager {
 		setNetworkBusy(true)
 		operation.qualityOfService = .utility
 		privateDB.add(operation)
+	}
+	
+	private func handleError(_ error: Error) {
+		
+		guard let ckError = error as? CKError else {
+			return
+		}
+		
+		switch ckError.code {
+		case .userDeletedZone, .zoneNotFound, .changeTokenExpired:
+			
+			Log("Resetting syncState due to CKError: \(error.localizedDescription)")
+			try? FileManager.default.removeItem(at: syncStateArchive)
+			syncState.reset()
+			setup(completion: nil)
+		default:
+			break
+		}
 	}
 	
 	// Manages the network activity icon in the status bar

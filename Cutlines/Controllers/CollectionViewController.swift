@@ -86,7 +86,7 @@ class CollectionViewController: UIViewController {
 	}
 	
 	// MARK: Actions
-	@IBAction func addCutline() {
+	@IBAction func add() {
 		
 		let imagePicker = UIImagePickerController()
 		

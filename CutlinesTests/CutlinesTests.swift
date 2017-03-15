@@ -191,6 +191,34 @@ class CutlinesTests: XCTestCase {
 		refreshPhotos(assertCount: 0)
 	}
 	
+	func testDuplicateAdd() {
+		
+		let square = image(withColor: .red, size: CGSize(width: 10, height: 10))
+		addPhoto(image: square, caption: "My red square", expecting: .success)
+		
+		let photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first!
+		
+		let addExpectation = expectation(description: "PhotoAdd")
+		
+		var failed = false
+		photoManager.photoStore.add(id: photo.id!, caption: "Duplicate photo", dateTaken: Date()) { result in
+			
+			switch result {
+			case .failure:
+				failed = true
+			default:
+				break
+			}
+			addExpectation.fulfill()
+		}
+		
+		waitForExpectations(timeout: 2) { error in
+			
+			XCTAssertNil(error)
+			XCTAssertTrue(failed)
+		}
+	}
+	
 	private func addPhoto(image: UIImage, caption: String, expecting expectedResult: PhotoUpdateResult) {
 		
 		var updateResult: PhotoUpdateResult!

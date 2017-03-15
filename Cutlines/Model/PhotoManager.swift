@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CloudKit
 import UIKit
 
 enum PhotoUpdateResult {
@@ -200,7 +201,6 @@ class PhotoManager {
 		
 		cloudManager.pushNew(pairs: photoPairs, qos: nil) { result in
 			
-			// TODO: error handling
 			switch result {
 			case .success:
 				
@@ -211,7 +211,15 @@ class PhotoManager {
 				self.pushNewLocalPhotos(batchSize: batchSize)
 				
 			case let .failure(error):
-				Log("Not pushing any more photos due to error \(error)")
+				
+				if let ckError = error as? CKError, ckError.code == .limitExceeded, batchSize > 1 {
+					
+					let newBatchSize = batchSize / 2
+					Log("Retrying push with new batch size \(newBatchSize)")
+					self.pushNewLocalPhotos(batchSize: newBatchSize)
+				} else {
+					Log("Not pushing any more photos due to error \(error)")
+				}
 			}
 		}
 	}
@@ -326,10 +334,13 @@ extension PhotoManager: CloudChangeDelegate {
 				}
 			}
 			
-			// We got an update for an existing photo, save the changes
-			existingPhoto!.lastUpdated = photo.lastUpdated
-			existingPhoto!.caption = photo.caption
-			existingPhoto!.ckRecord = photo.ckRecord
+			DispatchQueue.main.sync {
+				
+				// We got an update for an existing photo, save the changes
+				existingPhoto!.lastUpdated = photo.lastUpdated
+				existingPhoto!.caption = photo.caption
+				existingPhoto!.ckRecord = photo.ckRecord
+			}
 			
 			self.photoStore.save()
 			
