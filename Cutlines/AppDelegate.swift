@@ -35,6 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// required for cloud communication, syncing and storage
 		photoManager.setup()
 		
+		// Handle updating the network indicator in the status bar
+		photoManager.cloudManager.networkStatusDelegate = self
+		
 		// Listen for push events
 		application.registerForRemoteNotifications()
 		
@@ -125,5 +128,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		}
 		
 		return false
+	}
+}
+
+extension AppDelegate: NetworkStatusDelegate {
+	
+	func statusChanged(busy: Bool) {
+		
+		DispatchQueue.main.async {
+			
+			UIApplication.shared.isNetworkActivityIndicatorVisible = busy
+		}
 	}
 }

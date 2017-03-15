@@ -29,6 +29,12 @@ protocol CloudChangeDelegate: class {
 	func didRemove(photoID: String)
 }
 
+// MARK: NetworkStatusDelegate
+protocol NetworkStatusDelegate: class {
+	
+	func statusChanged(busy: Bool)
+}
+
 class CloudKitManager {
 	
 	// MARK: Properties
@@ -59,6 +65,7 @@ class CloudKitManager {
 	}
 	
 	weak var delegate: CloudChangeDelegate?
+	weak var networkStatusDelegate: NetworkStatusDelegate?
 	
 	init() {
 		
@@ -487,35 +494,22 @@ class CloudKitManager {
 	// by maintaining a count of callers passing busy true/false
 	private func setNetworkBusy(_ busy: Bool) {
 		
-	#if TARGET_EXTENSION
-		// The UIApplication.shared API isn't availabe for extensions
-		return
-	#else
-			
-		// Ensure we're on the main thread
-		if !Thread.isMainThread {
-			
-			DispatchQueue.main.async {
-				
-				self.setNetworkBusy(busy)
-			}
-			return
-		}
-		
 		// Static variables need to be attached to a type
-		struct BusyCallers {
+		struct ActiveOperations {
 			static var num = 0
 		}
 		
-		if busy {
-			BusyCallers.num += 1
-		} else {
-			BusyCallers.num -= 1
+		queue.async {
+			
+			if busy {
+				ActiveOperations.num += 1
+			} else {
+				ActiveOperations.num -= 1
+			}
+			
+			assert(ActiveOperations.num >= 0)
+			
+			self.networkStatusDelegate?.statusChanged(busy: ActiveOperations.num > 0)
 		}
-		
-		assert(BusyCallers.num >= 0)
-		
-		UIApplication.shared.isNetworkActivityIndicatorVisible = BusyCallers.num > 0
-	#endif
 	}
 }
