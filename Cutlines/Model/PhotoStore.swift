@@ -18,7 +18,17 @@ enum UpdateResult {
 class PhotoStore: NSObject {
 	
 	// MARK: Properties
-	var photos = [Photo]()
+	private var _photos = [Photo]()
+	var photos: [Photo] {
+		get {
+			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+			return _photos
+		}
+		set {
+			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+			_photos = newValue
+		}
+	}
 	
 	private let entityName = "Photo"
 	
@@ -93,7 +103,7 @@ class PhotoStore: NSObject {
 	
 	func add(_ photo: CloudPhoto, completion: @escaping (UpdateResult) -> Void) {
 		
-		add(id: photo.id, caption: photo.caption!, dateTaken: photo.dateTaken as Date) { result in
+		add(id: photo.id, caption: photo.caption, dateTaken: photo.dateTaken as Date) { result in
 		
 			switch result {
 				

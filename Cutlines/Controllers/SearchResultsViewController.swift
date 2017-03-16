@@ -101,6 +101,7 @@ class SearchResultsViewController: UITableViewController {
 		
 		let result = results[indexPath.row]
 		
+		cell.resultImage = nil
 		cell.resultText = result.displayString
 		
 		photoManager.thumbnail(for: result.photo, withSize: cell.frame.size) { thumbnail in

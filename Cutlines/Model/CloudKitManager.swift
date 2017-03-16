@@ -114,6 +114,7 @@ class CloudKitManager {
 		if !ready || pairs.isEmpty {
 			return
 		}
+		
 		for pair in pairs {
 			Log("Pushing NEW photo with caption \(pair.photo.caption!)")
 		}
@@ -134,28 +135,34 @@ class CloudKitManager {
 			
 			// Look up the original photo by the recordName
 			let recordName = record.recordID.recordName
-			let savedPair = pairs.first { $0.photo.id == recordName }
 			
-			// Set the CKRecord on the photo
-			savedPair?.photo.ckRecord = CloudPhoto.systemData(fromRecord: record)
+			// Set the record on the main queue
+			DispatchQueue.main.sync {
+				
+				let savedPair = pairs.first { $0.photo.id == recordName }
+				savedPair?.photo.ckRecord = CloudPhoto.systemData(fromRecord: record)
+			}
 		}
 		
 		operation.modifyRecordsCompletionBlock = { (saved, deleted, error) in
 			
 			self.setNetworkBusy(false)
 			
-			if let error = error {
+			DispatchQueue.main.async {
 				
-				Log("Error saving photos with batch size \(batchSize) - \(error)")
-				self.handleError(error)
-				completion(.failure(error))
-			} else {
-				
-				if let saved = saved {
-					Log("Uploaded \(saved.count) photos to the cloud")
+				if let error = error {
+					
+					Log("Error saving photos with batch size \(batchSize) - \(error)")
+					self.handleError(error)
+					completion(.failure(error))
+				} else {
+					
+					if let saved = saved {
+						Log("Uploaded \(saved.count) photos to the cloud")
+					}
+					
+					completion(.success)
 				}
-				
-				completion(.success)
 			}
 		}
 		
@@ -204,10 +211,13 @@ class CloudKitManager {
 			} else {
 				
 				let recordName = record.recordID.recordName
-				let updatedPhoto = photos.first { $0.id == recordName }
 				
-				// Set the updated CKRecord on the photo
-				updatedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)
+				// Update the updated record on the main queue
+				DispatchQueue.main.sync {
+					
+					let updatedPhoto = photos.first { $0.id == recordName }
+					updatedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)
+				}
 				
 				Log("Updated photo with new caption " +
 						"'\(record["caption"] as! NSString)' and change tag \(record.recordChangeTag!)")
@@ -218,11 +228,14 @@ class CloudKitManager {
 			
 			self.setNetworkBusy(false)
 			
-			if let error = error {
-				completion(.failure(error))
-				self.handleError(error)
-			} else {
-				completion(.success)
+			DispatchQueue.main.sync {
+				
+				if let error = error {
+					completion(.failure(error))
+					self.handleError(error)
+				} else {
+					completion(.success)
+				}
 			}
 		}
 		
@@ -257,15 +270,16 @@ class CloudKitManager {
 			
 			self.setNetworkBusy(false)
 			
-			if let error = error {
-				self.handleError(error)
-				completion(.failure(error))
-			} else {
+			DispatchQueue.main.async {
 				
-				if let deleted = deleted {
-					Log("\(deleted.count) photos were deleted in the cloud")
+				if let error = error {
+					self.handleError(error)
+					completion(.failure(error))
+				} else {
+					
+					Log("\(deleted?.count) photos were deleted in the cloud")
+					completion(.success)
 				}
-				completion(.success)
 			}
 		}
 		
@@ -278,11 +292,9 @@ class CloudKitManager {
 		
 		var changedZoneIDs = [CKRecordZoneID]()
 		
-		// When our change token is nil, we'll fetch everything
 		let changeOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: syncState.dbChangeToken)
 		
 		changeOperation.previousServerChangeToken = self.syncState.dbChangeToken
-		
 		changeOperation.fetchAllChanges = true
 		changeOperation.recordZoneWithIDChangedBlock = { (recordZoneID) in
 			
@@ -358,15 +370,21 @@ class CloudKitManager {
 				return
 			}
 			
-			Log("Fetched photo with caption '\(result.caption!)' and change tag \(record.recordChangeTag!)")
-			self.delegate?.didModify(photo: result)
+			Log("Fetched photo with caption '\(result.caption)' and change tag \(record.recordChangeTag!)")
+			
+			DispatchQueue.main.sync {
+				self.delegate?.didModify(photo: result)
+			}
 		}
 		
 		operation.recordWithIDWasDeletedBlock = { (recordID, _) in
 		
 			let photoID = recordID.recordName
 			Log("Fetched delete for photo with ID \(photoID)")
-			self.delegate?.didRemove(photoID: photoID)
+			
+			DispatchQueue.main.sync {
+				self.delegate?.didRemove(photoID: photoID)
+			}
 		}
 		
 		operation.recordZoneChangeTokensUpdatedBlock = { (recordZoneID, newChangeToken, lastTokenData) in

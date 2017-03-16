@@ -43,9 +43,12 @@ class PhotoManager {
 			// changes of our own
 			self.cloudManager.fetchChanges {
 				
-				self.pushDeletedPhotos()
-				self.pushModifiedPhotos()
-				self.pushNewLocalPhotos()
+				DispatchQueue.main.async {
+					
+					self.pushDeletedPhotos()
+					self.pushModifiedPhotos()
+					self.pushNewLocalPhotos()
+				}
 			}
 		}
 	}
@@ -76,7 +79,8 @@ class PhotoManager {
 				
 				self.cloudManager.pushNew(pairs: [photoPair], qos: qos) { cloudResult in
 					
-					// TODO: error handling
+					dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+					
 					switch cloudResult {
 					case .success:
 						// Save the CKRecord that the photo now has
@@ -94,13 +98,16 @@ class PhotoManager {
 	
 	func update(photo: Photo, completion: ((PhotoUpdateResult) -> Void)?) {
 		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+		
 		photo.dirty = true
 		photoStore.save()
 		Log("photo marked dirty")
 		
 		cloudManager.pushModified(photos: [photo]) { cloudResult in
 			
-			// TODO: error handling
+			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+			
 			switch cloudResult {
 			case .success:
 				
@@ -116,6 +123,8 @@ class PhotoManager {
 	
 	func delete(photo: Photo, completion: ((PhotoUpdateResult) -> Void)?) {
 		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+		
 		// Mark this photo deleted locally before we
 		// attempt the cloud call, so we can filter it out
 		// of our collection view right away
@@ -126,7 +135,8 @@ class PhotoManager {
 		
 		self.cloudManager.delete(photos: [photo]) { cloudResult in
 			
-			// TODO: error handling
+			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+			
 			switch cloudResult {
 			case .success:
 				
@@ -188,6 +198,8 @@ class PhotoManager {
 	// MARK: Private functions
 	private func pushNewLocalPhotos(batchSize: Int = 5) {
 		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+		
 		let localPhotos = photoStore.fetchOnlyLocal(limit: batchSize)
 		
 		if localPhotos.isEmpty {
@@ -200,6 +212,8 @@ class PhotoManager {
 		}
 		
 		cloudManager.pushNew(pairs: photoPairs, qos: nil) { result in
+			
+			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 			
 			switch result {
 			case .success:
@@ -226,6 +240,8 @@ class PhotoManager {
 	
 	private func pushModifiedPhotos(batchSize: Int = 5) {
 		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+		
 		let modifiedPhotos = photoStore.fetchModified(limit: batchSize)
 		
 		if modifiedPhotos.isEmpty {
@@ -234,7 +250,8 @@ class PhotoManager {
 		
 		cloudManager.pushModified(photos: modifiedPhotos) { result in
 			
-			// TODO: error handling
+			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+			
 			switch result {
 			case .success:
 				
@@ -253,6 +270,8 @@ class PhotoManager {
 	
 	private func pushDeletedPhotos() {
 		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+		
 		let deletedPhotos = photoStore.fetchDeleted(limit: nil)
 		
 		if deletedPhotos.isEmpty {
@@ -261,18 +280,17 @@ class PhotoManager {
 		
 		cloudManager.delete(photos: deletedPhotos) { cloudResult in
 			
-			// TODO: error handling
 			switch cloudResult {
 			case .success:
 				
-				// Only truly delete the photolocally
+				// Only truly delete the photo locally
 				// once we know the cloud got the delete
 				self.photoStore.delete(photos: deletedPhotos) { result in
 					switch result {
 					case .success:
 						break
 					case let .failure(error):
-						Log("Error deleting photos from dataSource \(error)")
+						Log("Error deleting photos from photoStore \(error)")
 					}
 				}
 			case let .failure(error):
@@ -287,6 +305,8 @@ extension PhotoManager: CloudChangeDelegate {
 	
 	func didModify(photo: CloudPhoto) {
 		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+		
 		let existingPhoto = photoStore.fetch(withID: photo.id)
 		
 		if existingPhoto == nil {
@@ -300,7 +320,7 @@ extension PhotoManager: CloudChangeDelegate {
 					DispatchQueue.global().async {
 						
 						self.imageStore.setImage(photo.image!, forKey: photo.id)
-						Log("New photo added with caption '\(photo.caption!)'")
+						Log("New photo added with caption '\(photo.caption)'")
 						self.delegate?.didAdd()
 					}
 				case let .failure(error):
@@ -328,19 +348,16 @@ extension PhotoManager: CloudChangeDelegate {
 					// for changes after adding a new photo. CloudKit does not provide
 					// a serverChangeToken after we push changes (adds or deletes),
 					// so we just have to no-op this. Since we're in this scenerio
-					// because we asked for changes, out token should be up to date now.
+					// because we asked for changes, our token should be up to date now.
 					Log("Got an update for a change we already have")
 					return
 				}
 			}
 			
-			DispatchQueue.main.sync {
-				
-				// We got an update for an existing photo, save the changes
-				existingPhoto!.lastUpdated = photo.lastUpdated
-				existingPhoto!.caption = photo.caption
-				existingPhoto!.ckRecord = photo.ckRecord
-			}
+			// We got an update for an existing photo, save the changes
+			existingPhoto!.lastUpdated = photo.lastUpdated
+			existingPhoto!.caption = photo.caption
+			existingPhoto!.ckRecord = photo.ckRecord
 			
 			self.photoStore.save()
 			
@@ -349,6 +366,8 @@ extension PhotoManager: CloudChangeDelegate {
 	}
 	
 	func didRemove(photoID: String) {
+		
+		dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 		
 		let existingPhoto = photoStore.fetch(withID: photoID)
 		

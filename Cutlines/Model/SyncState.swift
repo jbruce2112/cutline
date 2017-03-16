@@ -17,7 +17,7 @@ class SyncState: NSObject, NSCoding {
 	private var _recordZone: CKRecordZone?
 	private var _subscribedForChanges = false
 	
-	private let queue = DispatchQueue(label: "SyncStateQueue")
+	private let queue = DispatchQueue(label: "cutlines.syncStateQueue")
 	
 	override init() {
 		super.init()

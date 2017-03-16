@@ -17,15 +17,15 @@ typealias PhotoPair = (photo: Photo, url: URL)
 // a Photo (NSObjectModel) type and a CKRecord.
 // This allows the model to represent Photos
 // without needing to allocate an empty CoreData object.
-class CloudPhoto {
+struct CloudPhoto {
 	
 	// MARK: Properties
-	var id: String!
-	var lastUpdated: NSDate!
-	var dateTaken: NSDate!
-	var dateAdded: NSDate!
+	var id: String
+	var lastUpdated: NSDate
+	var dateTaken: NSDate
+	var dateAdded: NSDate
 	var ckRecord: NSData?
-	var caption: String!
+	var caption: String
 	
 	var image: UIImage?
 	var imageAsset: CKAsset?
@@ -36,10 +36,7 @@ class CloudPhoto {
 	static let imageKey = "image"
 	static let lastUpdatedKey = "lastUpdated"
 	static let idKey = "id"
-	
-	init() {
-	}
-	
+		
 	init(fromPair pair: PhotoPair) {
 		
 		caption = pair.photo.caption!
