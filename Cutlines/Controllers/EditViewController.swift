@@ -18,9 +18,11 @@ class EditViewController: UIViewController {
 	
 	private var initialCaption: String!
 	
+	weak var previewer: UIViewController?
+	@IBOutlet var toolbar: UIToolbar!
+	
 	@IBOutlet private var shareButton: UIBarButtonItem!
 	@IBOutlet private var deleteButton: UIBarButtonItem!
-	@IBOutlet private var toolbar: UIToolbar!
 	
 	private var deleted = false
 	
@@ -99,6 +101,15 @@ class EditViewController: UIViewController {
 	}
 	
 	@IBAction func deleteItem() {
+		deleteItem(nil)
+	}
+	
+	@IBAction func shareItem() {
+		shareItem(nil)
+	}
+	
+	// MARK: Private functions
+	fileprivate func deleteItem(_ previewController: UIViewController?) {
 		
 		let alertController = UIAlertController(title: nil,
 								message: "This caption will be deleted from Cutlines on all your devices.", preferredStyle: .actionSheet)
@@ -125,10 +136,11 @@ class EditViewController: UIViewController {
 			presenter.sourceRect = deleteButtonView.bounds
 		}
 		
-		present(alertController, animated: true, completion: nil)
+		let presentingController = previewController ?? self
+		presentingController.present(alertController, animated: true, completion: nil)
 	}
 	
-	@IBAction func shareItem() {
+	fileprivate func shareItem(_ previewController: UIViewController?) {
 		
 		let shareController = UIActivityViewController(activityItems:
 			[containerView.captionView.getCaption(), containerView.polaroidView.image!], applicationActivities: nil)
@@ -143,6 +155,34 @@ class EditViewController: UIViewController {
 			presenter.sourceRect = shareButtonView.bounds
 		}
 		
-		present(shareController, animated: true)
+		let presentingController = previewController ?? self
+		presentingController.present(shareController, animated: true)
+	}
+}
+
+// MARK: UIPreviewActionItems for 3D touch
+extension EditViewController {
+	
+	override var previewActionItems: [UIPreviewActionItem] {
+		
+		let shareAction = UIPreviewAction(title: "Share", style: .default) { [weak self] _, _ in
+			
+			guard let _self = self else {
+				return
+			}
+			
+			_self.shareItem(_self.previewer)
+		}
+		
+		let deleteAction = UIPreviewAction(title: "Delete", style: .destructive) { [weak self] _, _ in
+			
+			guard let _self = self else {
+				return
+			}
+			
+			_self.deleteItem(_self.previewer)
+		}
+		
+		return [shareAction, deleteAction]
 	}
 }

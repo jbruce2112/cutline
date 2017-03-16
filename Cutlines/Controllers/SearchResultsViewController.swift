@@ -172,7 +172,10 @@ extension SearchResultsViewController: UIViewControllerPreviewingDelegate {
 	
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
 		
-		presentingViewController?.navigationController?.pushViewController(viewControllerToCommit, animated: true)
+		let editController = viewControllerToCommit as! EditViewController
+		editController.toolbar.isHidden = false
+		
+		presentingViewController?.navigationController?.pushViewController(editController, animated: true)
 	}
 	
 	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
@@ -187,6 +190,12 @@ extension SearchResultsViewController: UIViewControllerPreviewingDelegate {
 		let photo = results[selectedIndexPath.row].photo
 		editController.photo = photo
 		editController.photoManager = photoManager
+		editController.previewer = self
+		
+		// Make sure the toolbar is set
+		editController.loadViewIfNeeded()
+		
+		editController.toolbar.isHidden = true
 		
 		return editController
 	}

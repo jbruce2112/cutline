@@ -26,6 +26,8 @@ class CollectionViewController: UIViewController {
 		collectionView.dataSource = self
 		
 		photoManager.delegate = self
+		
+		registerForPreviewing(with: self, sourceView: collectionView)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -45,7 +47,7 @@ class CollectionViewController: UIViewController {
 		
 		switch segue.identifier! {
 		
-		case "showCutlineInfo":
+		case "showEdit":
 			guard
 				let cell = sender as? UICollectionViewCell,
 				let selectedIndex = self.collectionView.indexPath(for: cell) else {
@@ -199,5 +201,40 @@ extension CollectionViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		
 		return collectionView.dequeueReusableCell(withReuseIdentifier: "UICollectionViewCell", for: indexPath)
+	}
+}
+
+
+// MARK: - 3D Touch Support
+extension CollectionViewController: UIViewControllerPreviewingDelegate {
+	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+		
+		let editController = viewControllerToCommit as! EditViewController
+		editController.toolbar.isHidden = false
+		
+		navigationController?.pushViewController(editController, animated: true)
+	}
+	
+	func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+		
+		guard let selectedIndexPath = collectionView.indexPathForItem(at: location) else {
+			return nil
+		}
+		
+		let editController =
+			self.storyboard!.instantiateViewController(withIdentifier: "EditViewController") as! EditViewController
+		
+		let photo = photoStore.photos[selectedIndexPath.row]
+		editController.photo = photo
+		editController.photoManager = photoManager
+		editController.previewer = self
+		
+		// Make sure the toolbar is set
+		editController.loadViewIfNeeded()
+		
+		editController.toolbar.isHidden = true
+		
+		return editController
 	}
 }
