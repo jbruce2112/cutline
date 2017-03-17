@@ -27,7 +27,7 @@ struct CloudPhoto {
 	var ckRecord: NSData?
 	var caption: String
 	
-	var image: UIImage?
+	var image: Data?
 	var imageAsset: CKAsset?
 		
 	static let captionKey = "caption"
@@ -65,10 +65,11 @@ struct CloudPhoto {
 			return nil
 		}
 		
-		image = UIImage(contentsOfFile: asset.fileURL.path)
+		// The client converted this to a JPEG before uploading.
+		image = try? Data(contentsOf: asset.fileURL)
 		
 		if image == nil {
-			Log("Unable to get UIImage from Data")
+			Log("Unable to get JPEG from Data")
 			return nil
 		}
 	}

@@ -277,7 +277,8 @@ class CloudKitManager {
 					completion(.failure(error))
 				} else {
 					
-					Log("\(deleted?.count) photos were deleted in the cloud")
+					let deleteCount = deleted == nil ? 0 : deleted!.count
+					Log("\(deleteCount) photos were deleted in the cloud")
 					completion(.success)
 				}
 			}

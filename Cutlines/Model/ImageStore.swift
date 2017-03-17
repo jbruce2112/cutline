@@ -42,8 +42,22 @@ class ImageStore {
 		let url = imageURL(forKey: key)
 		
 		if let data = UIImageJPEGRepresentation(image, imageQuality) {
-			let _ = try? data.write(to: url, options: [.atomic])
+			try? data.write(to: url, options: [.atomic])
 		}
+	}
+	
+	func setImage(_ data: Data, forKey key: String) {
+		
+		guard let image = UIImage(data: data) else {
+			Log("Error creating UIImage from Data")
+			return
+		}
+		
+		cache.setObject(image, forKey: key as NSString)
+		
+		let url = imageURL(forKey: key)
+		
+		try? data.write(to: url, options: [.atomic])
 	}
 	
 	func image(forKey key: String, completion: @escaping (UIImage?) -> Void) {
