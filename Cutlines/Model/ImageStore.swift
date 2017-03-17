@@ -18,6 +18,9 @@ class ImageStore {
 	private let imageDirURL: URL
 	private let thumbDirURL: URL
 	
+	private let imageQuality: CGFloat = 0.9
+	private let thumbQuality: CGFloat = 0.6
+	
 	init(imageDirURL: URL? = nil, thumbDirURL: URL? = nil) {
 		
 		self.imageDirURL = imageDirURL ?? appGroupURL.appendingPathComponent("images")
@@ -38,7 +41,7 @@ class ImageStore {
 		
 		let url = imageURL(forKey: key)
 		
-		if let data = UIImageJPEGRepresentation(image, 1) {
+		if let data = UIImageJPEGRepresentation(image, imageQuality) {
 			let _ = try? data.write(to: url, options: [.atomic])
 		}
 	}
@@ -93,7 +96,7 @@ class ImageStore {
 			// Write the thumbnail to disk and add it to our cache
 			self.thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
 			
-			if let data = UIImageJPEGRepresentation(thumbnail, 0.7) {
+			if let data = UIImageJPEGRepresentation(thumbnail, self.thumbQuality) {
 				let _ = try? data.write(to: thumbnailURL, options: [.atomic])
 			}
 			
