@@ -20,7 +20,12 @@ class SearchViewController: UITableViewController {
 	
 	fileprivate let recentSearchTermLimit = 5
 	fileprivate var lastSearchTerm: String?
-	fileprivate var recentSearchesArchive: String!
+	
+	fileprivate let recentSearchesArchive: String = {
+		
+		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+		return cacheDir.appendingPathComponent("recentSearches.archive").path
+	}()
 	
 	// MARK: Functions
 	override func viewDidLoad() {
@@ -40,8 +45,6 @@ class SearchViewController: UITableViewController {
 		resultsViewController.searchController.delegate = self
 		resultsViewController.searchTermDelegate = self
 		
-		let cacheDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-		recentSearchesArchive = cacheDir.appendingPathComponent("recentSearches.archive").path		
 		recentSearches = loadRecent()
 	}
 	
