@@ -177,12 +177,12 @@
 			isa = PBXGroup;
 			children = (
 				52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */,
-				5214BA7D1E78DE5700C07B5B /* SyncState.swift */,
 				52F3920A1E68F983001EDC48 /* CloudPhoto.swift */,
 				523751FB1E417C4900060607 /* ImageStore.swift */,
 				523D26821E59FBF9000507DA /* Key.swift */,
 				524530611E61C82D00305843 /* PhotoManager.swift */,
 				523751F91E4178A100060607 /* PhotoStore.swift */,
+				5214BA7D1E78DE5700C07B5B /* SyncState.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";

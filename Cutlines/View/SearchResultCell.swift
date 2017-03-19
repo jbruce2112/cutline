@@ -61,9 +61,9 @@ class SearchResultCell: UITableViewCell {
 		constraints.append(resultLabel.centerYAnchor.constraint(equalTo: resultImageView.centerYAnchor))
 		constraints.append(resultLabel.leadingAnchor.constraint(equalTo: resultImageView.trailingAnchor, constant: 10))
 		
-		NSLayoutConstraint.activate(constraints)
-		
-		separatorInset = UIEdgeInsets(top: 0, left: contentView.frame.height, bottom: 0, right: 0)	}
+		NSLayoutConstraint.activate(constraints)		
+	}
+	
 	
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
