@@ -32,6 +32,9 @@ class SearchViewController: UITableViewController {
 		searchBar = resultsViewController.searchController.searchBar
 		tableView.tableHeaderView = searchBar
 		
+		// Don't show empty cells
+		tableView.tableFooterView = UIView()
+		
 		tableView.dataSource = self
 		
 		resultsViewController.searchController.delegate = self
@@ -75,6 +78,10 @@ class SearchViewController: UITableViewController {
 		tableView.backgroundView?.setTheme()
 	}
 	
+	override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+		tableView.reloadData()
+	}
+	
 	// MARK: UITableViewDataSource functions
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		
@@ -84,6 +91,16 @@ class SearchViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell", for: indexPath)
+		
+		// Modify the insets to match the tableView insets of the SearchResultViewController
+		let tableWidth = tableView.frame.width
+		// Using floor() since artifacts appear next the the cell's accessory if this isn't a whole number
+		let margin = floor(tableWidth > 1_000 ? tableWidth * 0.15 : tableWidth * 0.05)
+		
+		cell.layoutMargins.left = margin
+		cell.layoutMargins.right = margin
+		cell.separatorInset.left = margin
+		cell.separatorInset.right = margin
 		
 		cell.textLabel!.text = recentSearches[indexPath.row]
 		cell.setTheme()

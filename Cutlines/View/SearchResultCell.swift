@@ -43,14 +43,14 @@ class SearchResultCell: UITableViewCell {
 		var constraints = [NSLayoutConstraint]()
 		
 		// tie the image to the superviews leadind and top edges
-		constraints.append(resultImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 5))
-		constraints.append(resultImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 5))
+		constraints.append(resultImageView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor, constant: 5))
+		constraints.append(resultImageView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor, constant: 0))
 		
 		// make the image a square
 		constraints.append(resultImageView.widthAnchor.constraint(equalTo: resultImageView.heightAnchor))
 		
 		// pad the image from the superview's top and bottom edges
-		constraints.append(resultImageView.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor, constant: -10))
+		constraints.append(resultImageView.heightAnchor.constraint(lessThanOrEqualTo: layoutMarginsGuide.heightAnchor, constant: 0))
 		
 		// set a lower priority for this equality so the image grows as large as it can
 		let heightConstraint = resultImageView.heightAnchor.constraint(equalTo: contentView.heightAnchor)
@@ -63,8 +63,7 @@ class SearchResultCell: UITableViewCell {
 		
 		NSLayoutConstraint.activate(constraints)
 		
-		separatorInset = UIEdgeInsets(top: 0, left: contentView.frame.size.height, bottom: 0, right: 0)
-	}
+		separatorInset = UIEdgeInsets(top: 0, left: contentView.frame.height, bottom: 0, right: 0)	}
 	
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
@@ -74,6 +73,8 @@ class SearchResultCell: UITableViewCell {
 	
 	// MARK: Private functions
 	private func setup() {
+		
+		accessoryType = .disclosureIndicator
 		
 		// Using the default textLabel & imageView properties of UITableViewCell
 		// results in the cell incorrectly re-laying out its subview when the cell is touched

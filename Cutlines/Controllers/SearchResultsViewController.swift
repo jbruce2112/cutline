@@ -72,6 +72,8 @@ class SearchResultsViewController: UITableViewController {
 		super.viewDidLoad()
 		
 		registerForPreviewing(with: self, sourceView: tableView)
+		// Don't show empty cells
+		tableView.tableFooterView = UIView()
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
