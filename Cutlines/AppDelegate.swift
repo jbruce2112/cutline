@@ -17,7 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 	private var tabBarController: UITabBarController!
 	private var navigationControllers: [UINavigationController]!
+	
 	private var collectionViewController: CollectionViewController!
+	private var searchViewController: SearchViewController!
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
@@ -25,7 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
 		
 		collectionViewController = navigationControllers[0].viewControllers.first! as! CollectionViewController
-		let searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
+		searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
 		
 		// Inject the manager into the initial view controllers
 		collectionViewController.photoManager = photoManager
@@ -81,7 +83,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// and store enough application state information to restore your application to its
 		// current state in case it is terminated later. If your application supports 
 		// background execution, this method is called instead of applicationWillTerminate: when the user quits.
+		
 		photoManager.cloudManager.saveSyncState()
+		searchViewController.saveRecent()
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {

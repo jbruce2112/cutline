@@ -60,12 +60,6 @@ class SearchViewController: UITableViewController {
 		searchBar.becomeFirstResponder()
 	}
 	
-	override func viewWillDisappear(_ animated: Bool) {
-		super.viewWillDisappear(animated)
-		
-		saveRecent()
-	}
-	
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
 		
@@ -80,6 +74,12 @@ class SearchViewController: UITableViewController {
 	
 	override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
 		tableView.reloadData()
+	}
+	
+	func saveRecent() {
+		
+		NSKeyedArchiver.archiveRootObject(recentSearches, toFile: recentSearchesArchive)
+		Log("Recent searches saved")
 	}
 	
 	// MARK: UITableViewDataSource functions
@@ -151,12 +151,6 @@ class SearchViewController: UITableViewController {
 			Log("Unable to load previous search terms, starting new")
 			return [String]()
 		}
-	}
-	
-	private func saveRecent() {
-		
-		NSKeyedArchiver.archiveRootObject(recentSearches, toFile: recentSearchesArchive)
-		Log("Recent searches saved")
 	}
 }
 
