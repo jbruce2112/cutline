@@ -48,23 +48,26 @@ class EditViewController: UIViewController {
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
-	}
-	
-	override func viewWillLayoutSubviews() {
-		super.viewWillLayoutSubviews()
 		
-		guard let navController = navigationController else {
-			return
-		}
+		// Grow the containerView as large as the topLayoutGuide and toolbar permits
 		
-		let toolBarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
-		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
-		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
+		// containter.top = topLayoutGuide.bottom + 10
+		let topEQ = containerView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: 10)
 		
-		let barHeights = statusBarHeight + navBarHeight + toolBarHeight
-		containerView.heightConstraintConstant = barHeights
+		// toolbar.top = container.bottom + 10
+		let bottomEQ = toolbar.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
 		
-		containerView.setNeedsLayout()
+		topEQ.priority = UILayoutPriorityDefaultHigh
+		bottomEQ.priority = UILayoutPriorityDefaultHigh
+		
+		topEQ.isActive = true
+		bottomEQ.isActive = true
+		
+		// container.top >= topLayoutGuide.bottom + 10
+		containerView.topAnchor.constraint(greaterThanOrEqualTo: topLayoutGuide.bottomAnchor, constant: 10).isActive = true
+		
+		// toolbar.top >= container.bottom + 10
+		toolbar.topAnchor.constraint(greaterThanOrEqualTo: containerView.bottomAnchor, constant: 10).isActive = true
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {

@@ -281,6 +281,9 @@
                         <subviews>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Yqy-mk-Ih0">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="AbS-Sd-Dtp"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="zTR-Mw-f1i"/>
                                     <barButtonItem systemItem="action" id="riE-5e-ohj">
@@ -300,9 +303,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="Yqy-mk-Ih0" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="AY4-eX-KJe"/>
-                            <constraint firstItem="tA0-js-zhG" firstAttribute="top" secondItem="Yqy-mk-Ih0" secondAttribute="bottom" id="Ebc-Fk-viv"/>
-                            <constraint firstAttribute="trailing" secondItem="Yqy-mk-Ih0" secondAttribute="trailing" id="fjQ-4V-Kye"/>
+                            <constraint firstItem="tA0-js-zhG" firstAttribute="top" secondItem="Yqy-mk-Ih0" secondAttribute="bottom" id="1Ra-rN-0d1"/>
+                            <constraint firstAttribute="trailing" secondItem="Yqy-mk-Ih0" secondAttribute="trailing" id="92f-CD-76r"/>
+                            <constraint firstItem="Yqy-mk-Ih0" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="T9o-VM-fnE"/>
                         </constraints>
                         <connections>
                             <outletCollection property="gestureRecognizers" destination="l6i-4f-kng" appends="YES" id="Qma-eI-KYq"/>

@@ -13,10 +13,7 @@ class PhotoContainerView: UIView {
 	var captionView = CaptionView()
 	var polaroidView = PolaroidView()
 	
-	var heightConstraintConstant: CGFloat = 0
-	
-	private var heightConstraint: NSLayoutConstraint?
-	private var heightConstraintGTE: NSLayoutConstraint?
+	private var constraintsSet = false
 	
 	override init(frame: CGRect) {
 		super.init(frame: frame)
@@ -33,46 +30,41 @@ class PhotoContainerView: UIView {
 	override func updateConstraints() {
 		super.updateConstraints()
 		
+		// We only need to set these once
+		if constraintsSet {
+			return
+		}
+		
 		guard let superview = superview else {
 			return
 		}
 		
 		var constraints = [NSLayoutConstraint]()
 		
-		// width = containter.width + 20 @750
+		// width = self.width + 20 @750
 		let widthConstraint = superview.widthAnchor.constraint(equalTo: widthAnchor, constant: 20)
 		widthConstraint.priority = UILayoutPriorityDefaultHigh
 		constraints.append(widthConstraint)
 		
-		// height >= containter.height + 20
-		heightConstraintGTE = superview.heightAnchor.constraint(greaterThanOrEqualTo: heightAnchor, constant: 20)
-		constraints.append(heightConstraintGTE!)
-		
-		// width >= containter.width + 20
+		// superview.width >= self.width + 20
 		constraints.append(superview.widthAnchor.constraint(greaterThanOrEqualTo: widthAnchor, constant: 20))
 		
-		// height = containter.height + 20 @750
-		heightConstraint = superview.heightAnchor.constraint(equalTo: heightAnchor, constant: 20)
-		heightConstraint!.priority = UILayoutPriorityDefaultHigh
-		constraints.append(heightConstraint!)
-		
-		// centerX = containter.centerX
+		// superview.centerX = self.centerXAnchor
 		constraints.append(superview.centerXAnchor.constraint(equalTo: centerXAnchor))
 		
-		// centerY = containter.centerY
+		// superview.centerY = self.centerYAnchor
 		constraints.append(superview.centerYAnchor.constraint(equalTo: centerYAnchor))
 		
 		// aspect 1:1
 		constraints.append(widthAnchor.constraint(equalTo: heightAnchor))
 		
 		NSLayoutConstraint.activate(constraints)
+		
+		constraintsSet = true
 	}
 
 	override func layoutSubviews() {
 		super.layoutSubviews()
-		
-		heightConstraint?.constant = heightConstraintConstant + 20
-		heightConstraintGTE?.constant = heightConstraintConstant + 20
 		
 		polaroidView.frame = bounds
 		captionView.frame = bounds

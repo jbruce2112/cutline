@@ -36,6 +36,26 @@ class CreateViewController: UIViewController {
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
+		
+		// Grow the containerView as large as the top and bottom layout guides permit
+		
+		// containter.top = topLayoutGuide.bottom + 10
+		let topEQ = containerView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: 10)
+		
+		// bottomLayoutGuide.top = container.bottom + 10
+		let bottomEQ = bottomLayoutGuide.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
+		
+		topEQ.priority = UILayoutPriorityDefaultHigh
+		bottomEQ.priority = UILayoutPriorityDefaultHigh
+		
+		topEQ.isActive = true
+		bottomEQ.isActive = true
+		
+		// container.top >= topLayoutGuide.bottom + 10
+		containerView.topAnchor.constraint(greaterThanOrEqualTo: topLayoutGuide.bottomAnchor, constant: 10).isActive = true
+		
+		// bottomLayoutGuide.top >= container.bottom + 10
+		bottomLayoutGuide.topAnchor.constraint(greaterThanOrEqualTo: containerView.bottomAnchor, constant: 10).isActive = true
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -50,23 +70,6 @@ class CreateViewController: UIViewController {
 		if !canceled {
 			save()
 		}
-	}
-	
-	override func viewWillLayoutSubviews() {
-		super.viewWillLayoutSubviews()
-		
-		guard let navController = navigationController, let tabController = tabBarController else {
-			return
-		}
-		
-		let tabBarHeight = tabController.tabBar.isHidden ? 0 : tabController.tabBar.frame.height
-		let navBarHeight = navController.navigationBar.isHidden ? 0 : navController.navigationBar.frame.height
-		let statusBarHeight = UIApplication.shared.isStatusBarHidden ? 0 : UIApplication.shared.statusBarFrame.height
-		
-		let barHeights = statusBarHeight + navBarHeight + tabBarHeight
-		containerView.heightConstraintConstant = barHeights
-		
-		containerView.setNeedsLayout()
 	}
 	
 	func cancel() {
