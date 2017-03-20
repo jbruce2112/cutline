@@ -60,7 +60,7 @@ extension UIView {
 			
 			theme.isNight = false
 			theme.backgroundColor = .white
-			theme.altBackgroundColor = UIColor(colorLiteralRed: 227.0 / 255.0, green: 227.0 / 255.0, blue: 227.0 / 255.0, alpha: 1.0)
+			theme.altBackgroundColor = UIColor(colorLiteralRed: 239.0 / 255.0, green: 239.0 / 255.0, blue: 244.0 / 255.0, alpha: 1.0)
 			theme.textColor = .black
 			theme.accentColor = .blue
 			theme.barStyle = .default
