@@ -222,6 +222,7 @@
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="wg2-pb-si9">
                                                     <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                                                    <color key="tintColor" red="0.93752187490463257" green="0.9368053674697876" blue="0.95681345462799072" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 </imageView>
                                             </subviews>
                                         </view>
@@ -435,6 +436,6 @@
         <image name="settingsFilled" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="76m-BG-po3"/>
+        <segue reference="zGq-Es-g0b"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -155,7 +155,7 @@ extension CollectionViewController: UICollectionViewDelegate {
 // MARK: ImagePickerControllerDelegate conformance
 extension CollectionViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
 		
 		// get picked image from the info dictionary
 		let image = info[UIImagePickerControllerOriginalImage] as? UIImage
