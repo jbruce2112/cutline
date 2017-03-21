@@ -12,3 +12,6 @@ Features:
 - Supports all iOS device sizes & orientations
 
 Cutlines requires iOS 10.0 or later
+
+
+[Privacy Policy](privacy)
