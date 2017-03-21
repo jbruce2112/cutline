@@ -12,6 +12,7 @@ class SettingsViewController: UITableViewController {
 	
 	@IBOutlet private var versionLabel: UILabel!
 	@IBOutlet private var attributionTextView: UITextView!
+	@IBOutlet private var privacyLabel: UILabel!
 	
 	@IBOutlet private var cellSyncLabel: UILabel!
 	@IBOutlet private var darkModeLabel: UILabel!
@@ -68,6 +69,7 @@ class SettingsViewController: UITableViewController {
 		versionLabel.textColor = theme.textColor
 		attributionTextView.textColor = theme.textColor
 		attributionTextView.backgroundColor = foregroundColor
+		privacyLabel.textColor = theme.textColor
 		
 		cellSyncLabel.textColor = theme.textColor
 		darkModeLabel.textColor = theme.textColor
@@ -79,6 +81,18 @@ class SettingsViewController: UITableViewController {
 		// force the section headers to refresh
 		tableView.reloadSections(IndexSet(integer: 0), with: .none)
 		tableView.reloadSections(IndexSet(integer: 1), with: .none)
+	}
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		
+		switch segue.identifier! {
+		case "showPrivacy":
+			
+			let vc = segue.destination as! WebViewController
+			vc.url = Bundle.main.url(forResource: "privacy", withExtension: "html")			
+		default:
+			break
+		}
 	}
 	
 	private func getBuildDate() -> Date {

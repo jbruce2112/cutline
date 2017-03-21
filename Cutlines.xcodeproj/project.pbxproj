@@ -38,6 +38,8 @@
 		52A03E621E402F6000A275AD /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E611E402F6000A275AD /* CollectionViewController.swift */; };
 		52A03E641E40330500A275AD /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E631E40330500A275AD /* SearchViewController.swift */; };
 		52A03E661E403CDC00A275AD /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A03E651E403CDC00A275AD /* EditViewController.swift */; };
+		52AA359B1E80A24C008835C8 /* privacy.html in Resources */ = {isa = PBXBuildFile; fileRef = 52AA359A1E80A24C008835C8 /* privacy.html */; };
+		52AA359D1E80B022008835C8 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AA359C1E80B022008835C8 /* WebViewController.swift */; };
 		52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AC6D101E5A74B800C63013 /* SearchResultCell.swift */; };
 		52CB722F1E74604C00D3C7E5 /* CutlinesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CB722E1E74604C00D3C7E5 /* CutlinesTests.swift */; };
 		52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
@@ -112,6 +114,8 @@
 		52A03E611E402F6000A275AD /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		52A03E631E40330500A275AD /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		52A03E651E403CDC00A275AD /* EditViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
+		52AA359A1E80A24C008835C8 /* privacy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = privacy.html; sourceTree = "<group>"; };
+		52AA359C1E80B022008835C8 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		52AC6D101E5A74B800C63013 /* SearchResultCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		52CB722C1E74604C00D3C7E5 /* CutlinesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		52CB722E1E74604C00D3C7E5 /* CutlinesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlinesTests.swift; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 				525F4CF81E48294C004615FD /* SearchResultsViewController.swift */,
 				52A03E631E40330500A275AD /* SearchViewController.swift */,
 				52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */,
+				52AA359C1E80B022008835C8 /* WebViewController.swift */,
 			);
 			name = Controllers;
 			path = Cutlines/Controllers;
@@ -234,6 +239,7 @@
 				52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */,
 				52A03E3F1E4028FE00A275AD /* Info.plist */,
 				527421E81E79FDA700EE1FA7 /* main.swift */,
+				52AA359A1E80A24C008835C8 /* privacy.html */,
 			);
 			path = Cutlines;
 			sourceTree = "<group>";
@@ -403,6 +409,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52A03E3E1E4028FE00A275AD /* LaunchScreen.storyboard in Resources */,
+				52AA359B1E80A24C008835C8 /* privacy.html in Resources */,
 				52A03E3B1E4028FE00A275AD /* Assets.xcassets in Resources */,
 				52A03E391E4028FE00A275AD /* Main.storyboard in Resources */,
 			);
@@ -482,6 +489,7 @@
 				5214BA7E1E78DE5700C07B5B /* SyncState.swift in Sources */,
 				523752051E467C0200060607 /* CaptionView.swift in Sources */,
 				52F3920B1E68F983001EDC48 /* CloudPhoto.swift in Sources */,
+				52AA359D1E80B022008835C8 /* WebViewController.swift in Sources */,
 				523751F81E41744F00060607 /* Cutlines.xcdatamodeld in Sources */,
 				52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */,
 				523751FC1E417C4900060607 /* ImageStore.swift in Sources */,

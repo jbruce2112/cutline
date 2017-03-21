@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -14,7 +15,7 @@
         <scene sceneID="HYz-N6-VbB">
             <objects>
                 <tableViewController id="qd2-XQ-X6w" customClass="SettingsViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="TZR-0D-Nnw">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" separatorStyle="default" rowHeight="44" sectionHeaderHeight="18" sectionFooterHeight="18" id="TZR-0D-Nnw">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -144,6 +145,34 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" id="H3l-AW-nSK">
+                                        <rect key="frame" x="0.0" y="287.5" width="375" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="H3l-AW-nSK" id="jjB-Hc-PGn">
+                                            <rect key="frame" x="0.0" y="0.0" width="342" height="43"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i5K-g4-bqV">
+                                                    <rect key="frame" x="8" y="8" width="326" height="28"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="i5K-g4-bqV" secondAttribute="bottom" id="Woq-qo-gEN"/>
+                                                <constraint firstItem="i5K-g4-bqV" firstAttribute="leading" secondItem="jjB-Hc-PGn" secondAttribute="leadingMargin" id="fmI-9J-fMf"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="i5K-g4-bqV" secondAttribute="trailing" id="txg-nW-hz8"/>
+                                                <constraint firstItem="i5K-g4-bqV" firstAttribute="top" secondItem="jjB-Hc-PGn" secondAttribute="topMargin" id="xTc-3M-Oy6"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="fLb-OT-Pfe" kind="presentation" identifier="showPrivacy" id="8L3-xg-qh3">
+                                                <segue key="commit" inheritsFrom="parent" id="7SV-rm-xuk"/>
+                                                <segue key="preview" inheritsFrom="commit" id="Zpr-Ot-Mnv"/>
+                                            </segue>
+                                        </connections>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -158,12 +187,62 @@
                         <outlet property="cellSyncSwitch" destination="dtI-VI-jBT" id="7OK-4t-VaD"/>
                         <outlet property="darkModeLabel" destination="E4Y-QL-BVZ" id="rNH-Z6-3Xx"/>
                         <outlet property="darkModeSwitch" destination="UI7-ZY-cQj" id="9rs-Kt-nMZ"/>
+                        <outlet property="privacyLabel" destination="i5K-g4-bqV" id="A6Z-5E-Bgn"/>
                         <outlet property="versionLabel" destination="wdH-KF-iJv" id="iqo-KO-qCe"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hb6-FW-xlk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2908" y="1676"/>
+        </scene>
+        <!--Web View Controller-->
+        <scene sceneID="tVa-wu-TXq">
+            <objects>
+                <viewController id="fLb-OT-Pfe" customClass="WebViewController" customModule="Cutlines" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9O5-FQ-aKk"/>
+                        <viewControllerLayoutGuide type="bottom" id="AD5-fV-lfU"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="oSe-CA-SYw">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="37j-JO-T5z">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <items>
+                                    <navigationItem id="x1n-tr-kww">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="done" id="W6m-XX-Pcd">
+                                            <connections>
+                                                <action selector="done" destination="fLb-OT-Pfe" id="lkC-uo-ycZ"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CvJ-Oc-Aju">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="37j-JO-T5z" firstAttribute="top" secondItem="9O5-FQ-aKk" secondAttribute="bottom" id="7wQ-yF-sWy"/>
+                            <constraint firstAttribute="trailing" secondItem="CvJ-Oc-Aju" secondAttribute="trailing" id="PHh-AM-2Q1"/>
+                            <constraint firstItem="CvJ-Oc-Aju" firstAttribute="top" secondItem="37j-JO-T5z" secondAttribute="bottom" id="Qfs-aY-J6H"/>
+                            <constraint firstItem="AD5-fV-lfU" firstAttribute="top" secondItem="CvJ-Oc-Aju" secondAttribute="bottom" id="WJS-TM-oRq"/>
+                            <constraint firstItem="CvJ-Oc-Aju" firstAttribute="leading" secondItem="oSe-CA-SYw" secondAttribute="leading" id="kb1-gT-V8A"/>
+                            <constraint firstAttribute="trailing" secondItem="37j-JO-T5z" secondAttribute="trailing" id="tqt-iI-Vnr"/>
+                            <constraint firstItem="37j-JO-T5z" firstAttribute="leading" secondItem="oSe-CA-SYw" secondAttribute="leading" id="wsK-U1-2JS"/>
+                        </constraints>
+                    </view>
+                    <toolbarItems/>
+                    <connections>
+                        <outlet property="webView" destination="CvJ-Oc-Aju" id="6c5-MX-99B"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vWx-9R-txJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3674" y="1810"/>
         </scene>
         <!--Create View Controller-->
         <scene sceneID="ZRT-uO-hWK">
@@ -437,5 +516,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="zGq-Es-g0b"/>
+        <segue reference="8L3-xg-qh3"/>
     </inferredMetricsTieBreakers>
 </document>
