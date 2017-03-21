@@ -6,9 +6,9 @@ Cutlines is an application for iPhone and iPad that allows you to add captions t
 
 Features:
 - iCloud sync 
-- Supports all iPhone and iPad device sizes
 - Share extension for adding captions from external applications
 - 3D touch support
 - Search captions by keyword
+- Supports all iOS device sizes & orientations
 
 Cutlines requires iOS 10.0 or later
