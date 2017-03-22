@@ -8,34 +8,7 @@
 
 import UIKit
 
-struct SearchResult {
-	
-	let photo: Photo!
-	let searchTerm: String!
-	
-	let displayString: String!
-	
-	// TODO: comment
-	init(photo: Photo, searchTerm: String) {
-		
-		self.photo = photo
-		self.searchTerm = searchTerm
-		
-		let captionNoNewline = photo.caption!.replacingOccurrences(of: "\n", with: " ")
-		let captionLowercased = captionNoNewline.lowercased()
-		
-		let matchStartIndex = captionLowercased.range(of: searchTerm)!.lowerBound
-		
-		var displayStart = captionLowercased.startIndex
-		
-		let leadingPaddingChars = 20
-		if captionLowercased.distance(from: captionLowercased.startIndex, to: matchStartIndex) > leadingPaddingChars {
-			displayStart = captionLowercased.index(matchStartIndex, offsetBy: -1 * leadingPaddingChars / 2)
-		}
-		
-		displayString = captionNoNewline.substring(from: displayStart)
-	}
-}
+typealias SearchResult = (photo: Photo, searchTerm: String)
 
 protocol SearchTermDelegate: class {
 	
@@ -104,7 +77,7 @@ class SearchResultsViewController: UITableViewController {
 		let result = results[indexPath.row]
 		
 		cell.resultImage = nil
-		cell.resultText = result.displayString
+		cell.result = result
 		
 		photoManager.thumbnail(for: result.photo, withSize: cell.frame.size) { thumbnail in
 			

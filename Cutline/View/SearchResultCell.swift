@@ -11,7 +11,7 @@ import UIKit
 class SearchResultCell: UITableViewCell {
 	
 	// MARK: Properties
-	var resultText: String?
+	var result: SearchResult!
 	var resultImage: UIImage?
 	
 	private let resultLabel = UILabel()
@@ -32,7 +32,6 @@ class SearchResultCell: UITableViewCell {
 	override func layoutSubviews() {
 		super.layoutSubviews()
 		
-		resultLabel.text = resultText
 		resultImageView.image = resultImage
 		
 		resultImageView.clipsToBounds = true
@@ -60,10 +59,52 @@ class SearchResultCell: UITableViewCell {
 		// Center the label vertically and give it some padding between the image
 		constraints.append(resultLabel.centerYAnchor.constraint(equalTo: resultImageView.centerYAnchor))
 		constraints.append(resultLabel.leadingAnchor.constraint(equalTo: resultImageView.trailingAnchor, constant: 10))
+		constraints.append(resultLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10))
 		
-		NSLayoutConstraint.activate(constraints)		
+		NSLayoutConstraint.activate(constraints)
+		
+		resultLabel.text = getLabelText()
 	}
 	
+	private func getLabelText() -> String {
+		
+		let captionNoNewline = result.photo.caption!.replacingOccurrences(of: "\n", with: " ")
+		let captionLowercased = captionNoNewline.lowercased()
+		
+		let matchStartIndex = captionLowercased.range(of: result.searchTerm)!.lowerBound
+		
+		var displayStart = captionLowercased.startIndex
+		
+		let displayString = captionNoNewline.substring(from: displayStart)
+		
+		// See if we would end up truncating the string if it was displayed
+		let labelWidth = resultLabel.frame.size.width
+		let displaySize = displayString.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 17.0)])
+		
+		if displaySize.width < labelWidth || labelWidth == 0 {
+			return displayString
+		}
+		
+		// The string will be truncated when displayed.
+		// Determine if the searchTerm's position in the string
+		// is far enough in that we need to truncate the leading
+		// characters in order for the term itself to be viewable.
+		
+		let leadingPaddingChars = 10
+		
+		if captionLowercased.distance(from: captionLowercased.startIndex, to: matchStartIndex) > leadingPaddingChars {
+			
+			// We need to truncate the beginning
+			displayStart = captionLowercased.index(matchStartIndex, offsetBy: -1 * leadingPaddingChars)
+			return "...\(captionNoNewline.substring(from: displayStart))"
+		} else {
+			
+			// The searchTerm is near the beginning, and the label
+			// will truncate the trailing characters for us
+			return displayString
+		}
+		
+	}
 	
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)

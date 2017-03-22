@@ -563,6 +563,7 @@
 				DEVELOPMENT_TEAM = UVXX33WP85;
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.Cutline.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -579,6 +580,7 @@
 				DEVELOPMENT_TEAM = UVXX33WP85;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				INFOPLIST_FILE = ShareExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.Cutline.ShareExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
