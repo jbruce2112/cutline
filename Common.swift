@@ -1,6 +1,6 @@
 //
 //  Common.swift
-//  Cutlines
+//  Cutline
 //
 //  Created by John on 2/12/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
@@ -8,7 +8,7 @@
 
 import Foundation
 
-let containerBundleID = "com.jbruce32.Cutlines"
+let containerBundleID = "com.bruce32.Cutline"
 let appGroupDomain = "group.\(containerBundleID)"
 let cloudContainerDomain = "iCloud.\(containerBundleID)"
 
