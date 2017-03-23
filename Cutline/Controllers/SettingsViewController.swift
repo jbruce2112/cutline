@@ -11,7 +11,7 @@ import UIKit
 class SettingsViewController: UITableViewController {
 	
 	@IBOutlet private var versionLabel: UILabel!
-	@IBOutlet private var attributionTextView: UITextView!
+	@IBOutlet private var attributionLabel: UILabel!
 	@IBOutlet private var privacyLabel: UILabel!
 	
 	@IBOutlet private var cellSyncLabel: UILabel!
@@ -20,10 +20,15 @@ class SettingsViewController: UITableViewController {
 	@IBOutlet private var cellSyncSwitch: UISwitch!
 	@IBOutlet private var darkModeSwitch: UISwitch!
 	
+	private let iconsURL = "https://icons8.com"
+	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		versionLabel.text = getVersion()
+		
+		let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
+		attributionLabel.addGestureRecognizer(gestureRecognizer)
 		
 		let linkTitle = "Icons8"
 		let text = "Icon pack by \(linkTitle)" as NSString
@@ -31,12 +36,9 @@ class SettingsViewController: UITableViewController {
 		
 		// Create an AttributedString with the Icons8 URL with the standard system font
 		let attribution = NSMutableAttributedString(string: text as String)
-		attribution.addAttribute(NSLinkAttributeName, value: "https://icons8.com", range: linkTitleRange)
+		attribution.addAttribute(NSLinkAttributeName, value: iconsURL, range: linkTitleRange)
 		attribution.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 17.0), range: NSRange(location: 0, length: text.length))
-		attributionTextView.attributedText = attribution
-		
-		// Align the leading edge with the versionLabel
-		attributionTextView.textContainer.lineFragmentPadding = 0
+		attributionLabel.attributedText = attribution
 		
 		// load preferences
 		cellSyncSwitch.isOn = appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
@@ -67,8 +69,8 @@ class SettingsViewController: UITableViewController {
 		view.backgroundColor = backgroundColor
 		
 		versionLabel.textColor = theme.textColor
-		attributionTextView.textColor = theme.textColor
-		attributionTextView.backgroundColor = foregroundColor
+		attributionLabel.textColor = theme.textColor
+		attributionLabel.backgroundColor = foregroundColor
 		privacyLabel.textColor = theme.textColor
 		
 		cellSyncLabel.textColor = theme.textColor
@@ -92,6 +94,28 @@ class SettingsViewController: UITableViewController {
 			vc.url = Bundle.main.url(forResource: "privacy", withExtension: "html")			
 		default:
 			break
+		}
+	}
+	
+	func tapped(recognizer: UITapGestureRecognizer) {
+		
+		if recognizer.state == UIGestureRecognizerState.ended {
+			
+			let tapLocation = recognizer.location(in: self.tableView)
+			if let tapIndexPath = self.tableView.indexPathForRow(at: tapLocation) {
+				
+				guard let cell = tableView.cellForRow(at: tapIndexPath) else {
+					return
+				}
+				
+				// Attribution cell's tag is 100
+				if cell.tag == 100 {
+					
+					// Open the icons URL in the browser
+					UIApplication.shared.open(URL(string: iconsURL)!,
+					                          options: [:], completionHandler: nil)
+				}
+			}
 		}
 	}
 	

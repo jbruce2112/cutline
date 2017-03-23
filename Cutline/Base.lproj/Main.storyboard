@@ -93,11 +93,11 @@
                             </tableViewSection>
                             <tableViewSection headerTitle="About" id="eKX-Rb-eMw">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="DoK-Qa-1Ie">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" id="DoK-Qa-1Ie">
                                         <rect key="frame" x="0.0" y="199.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" userInteractionEnabled="NO" contentMode="center" tableViewCell="DoK-Qa-1Ie" id="KNb-9C-BlP">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Version" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wdH-KF-iJv">
@@ -114,34 +114,30 @@
                                                 <constraint firstItem="wdH-KF-iJv" firstAttribute="top" secondItem="KNb-9C-BlP" secondAttribute="topMargin" id="rYT-rT-cbx"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <accessibility key="accessibilityConfiguration">
+                                            <accessibilityTraits key="traits" notEnabled="YES"/>
+                                        </accessibility>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
+                                    <tableViewCell clipsSubviews="YES" tag="100" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
                                         <rect key="frame" x="0.0" y="243.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ocl-3H-RIK">
+                                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Attribution" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eCO-iF-fNc" userLabel="Attribution Label">
                                                     <rect key="frame" x="8" y="8" width="359" height="27"/>
-                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                    <attributedString key="attributedText">
-                                                        <fragment content="Attribution">
-                                                            <attributes>
-                                                                <font key="NSFont" size="17" name=".SFNSText"/>
-                                                                <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                            </attributes>
-                                                        </fragment>
-                                                    </attributedString>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                    <dataDetectorType key="dataDetectorTypes" link="YES"/>
-                                                </textView>
+                                                    <gestureRecognizers/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="ocl-3H-RIK" firstAttribute="leading" secondItem="ncr-gE-bnu" secondAttribute="leadingMargin" id="Hsi-av-JWA"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="ocl-3H-RIK" secondAttribute="bottom" id="V6u-mf-nHd"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="ocl-3H-RIK" secondAttribute="trailing" id="XdZ-ez-ezm"/>
-                                                <constraint firstItem="ocl-3H-RIK" firstAttribute="top" secondItem="ncr-gE-bnu" secondAttribute="topMargin" id="bU5-p1-OeY"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="eCO-iF-fNc" secondAttribute="trailing" id="5b0-JX-XkS"/>
+                                                <constraint firstItem="eCO-iF-fNc" firstAttribute="top" secondItem="ncr-gE-bnu" secondAttribute="topMargin" id="740-i5-OrT"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="eCO-iF-fNc" secondAttribute="bottom" id="Xea-nN-ObN"/>
+                                                <constraint firstItem="eCO-iF-fNc" firstAttribute="leading" secondItem="ncr-gE-bnu" secondAttribute="leadingMargin" id="Yui-mS-OV8"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -182,7 +178,7 @@
                         </connections>
                     </tableView>
                     <connections>
-                        <outlet property="attributionTextView" destination="ocl-3H-RIK" id="fv1-2a-H7d"/>
+                        <outlet property="attributionLabel" destination="eCO-iF-fNc" id="c9u-vC-tQi"/>
                         <outlet property="cellSyncLabel" destination="IH7-iT-bU1" id="WCQ-Xb-MqO"/>
                         <outlet property="cellSyncSwitch" destination="dtI-VI-jBT" id="7OK-4t-VaD"/>
                         <outlet property="darkModeLabel" destination="E4Y-QL-BVZ" id="rNH-Z6-3Xx"/>
