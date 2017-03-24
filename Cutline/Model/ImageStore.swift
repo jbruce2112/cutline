@@ -143,11 +143,23 @@ class ImageStore {
 			
 			let url = self.imageURL(forKey: key)
 			
-			do {
-				try FileManager.default.removeItem(at: url)
-			} catch {
-				log("Error removing the image from disk: \(error)")
+			let fileManager = FileManager.default
+			try? fileManager.removeItem(at: url)
+			
+			// Delete all thumbnails for this key as well
+			let thumbPrefix = "\(key)_"
+			if let thumbnails = try? fileManager.contentsOfDirectory(atPath: self.thumbDirURL.path) {
+				
+				for thumbnail in thumbnails {
+					
+					if thumbnail.hasPrefix(thumbPrefix) {
+						
+						let fullPath = self.thumbDirURL.appendingPathComponent(thumbnail)
+						try? fileManager.removeItem(atPath: fullPath.path)
+					}
+				}
 			}
+			
 			completion()
 		}
 	}

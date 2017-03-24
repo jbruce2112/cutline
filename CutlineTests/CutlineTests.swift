@@ -48,6 +48,8 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(photoManager.photoStore.photos.count, 0)
 		var count = photoManager.photoStore.fetchOnlyLocal(limit: nil).count
 		XCTAssertEqual(count, 0)
+		XCTAssertEqual(imageDirFileCount(), 0)
+		XCTAssertEqual(thumbDirFileCount(), 0)
 		
 		let square = image(withColor: .green, size: CGSize(width: 10, height: 10))
 		addPhoto(image: square, caption: "My green square", expecting: .success)
@@ -63,6 +65,18 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(photo.id!, fetchedPhoto?.id)
 		
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
+		
+		createThumbnail(forPhoto: photo, withSize: CGSize(width: 100, height: 100))
+		XCTAssertEqual(thumbDirFileCount(), 1)
+		createThumbnail(forPhoto: photo, withSize: CGSize(width: 150, height: 150))
+		XCTAssertEqual(thumbDirFileCount(), 2)
+		// Shouldn't create a duplicate of an existing size
+		createThumbnail(forPhoto: photo, withSize: CGSize(width: 100, height: 100))
+		XCTAssertEqual(thumbDirFileCount(), 2)
+		
+		// Ensure this is unchanged
+		XCTAssertEqual(imageDirFileCount(), 1)
     }
 	
 	func testPhotoSearch() {
@@ -101,11 +115,13 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(photo.caption!, caption)
 		XCTAssertEqual(photo.dirty, false)
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
 		
 		photo.caption = "Update 1"
 		updatePhoto(photo: photo, expecting: .success)
 		XCTAssertEqual(photo.dirty, false)
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
 		
 		var modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 0)
@@ -122,6 +138,7 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(modifiedPhotos.count, 1)
 		XCTAssertEqual(modifiedPhotos.first!.caption!, "Update 2")
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
 		
 		setCloudFailureMode(fail: false)
 		
@@ -133,6 +150,7 @@ class CutlineTests: XCTestCase {
 		modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 0)
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
 	}
 	
 	func testPhotoDelete() {
@@ -141,27 +159,40 @@ class CutlineTests: XCTestCase {
 		let caption = "My yellow square"
 		addPhoto(image: square, caption: caption, expecting: .success)
 		
-		var photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
+		let photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
 		XCTAssertNotNil(photo)
 		XCTAssertEqual(photo?.caption!, caption)
 		XCTAssertEqual(photo?.markedDeleted, false)
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
+		
+		createThumbnail(forPhoto: photo!, withSize: CGSize(width: 100, height: 100))
+		XCTAssertEqual(thumbDirFileCount(), 1)
 		
 		deletePhoto(photo: photo!, expecting: .success)
 		
-		var count = photoManager.photoStore.fetchDeleted(limit: nil).count
-		XCTAssertEqual(count, 0)
+		XCTAssertEqual(photoManager.photoStore.fetchDeleted(limit: nil).count, 0)
 		refreshPhotos(assertCount: 0)
+		XCTAssertEqual(imageDirFileCount(), 0)
+		XCTAssertEqual(thumbDirFileCount(), 0)
+	}
+	
+	func testFailedDelete() {
 		
-		// Re-add the photo
+		let square = image(withColor: .purple, size: CGSize(width: 10, height: 10))
+		let caption = "My purple square"
 		addPhoto(image: square, caption: caption, expecting: .success)
 		
-		// Grab it again
-		photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
+		// Grab it
+		var photo = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
 		XCTAssertNotNil(photo)
 		XCTAssertEqual(photo!.caption!, caption)
 		XCTAssertEqual(photo!.markedDeleted, false)
 		refreshPhotos(assertCount: 1)
+		XCTAssertEqual(imageDirFileCount(), 1)
+		
+		createThumbnail(forPhoto: photo!, withSize: CGSize(width: 100, height: 100))
+		XCTAssertEqual(thumbDirFileCount(), 1)
 		
 		// fail the next cloud call
 		setCloudFailureMode(fail: true)
@@ -178,17 +209,52 @@ class CutlineTests: XCTestCase {
 		
 		// It should be filtered out from our view when refreshing
 		refreshPhotos(assertCount: 0)
+		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertEqual(thumbDirFileCount(), 1)
 		
 		setCloudFailureMode(fail: false)
 		
 		deletePhoto(photo: photo!, expecting: .success)
 		
 		// Make sure its gone now
-		count = photoManager.photoStore.fetchDeleted(limit: nil).count
-		XCTAssertEqual(count, 0)
-		count = photoManager.photoStore.fetchOnlyLocal(limit: nil).count
-		XCTAssertEqual(count, 0)
+		XCTAssertEqual(photoManager.photoStore.fetchDeleted(limit: nil).count, 0)
+		XCTAssertEqual(photoManager.photoStore.fetchOnlyLocal(limit: nil).count, 0)
 		refreshPhotos(assertCount: 0)
+		XCTAssertEqual(imageDirFileCount(), 0)
+		XCTAssertEqual(thumbDirFileCount(), 0)
+	}
+	
+	func testThumbnailDelete() {
+		
+		var newSquare = image(withColor: .green, size: CGSize(width: 10, height: 10))
+		addPhoto(image: newSquare, caption: "green square", expecting: .success)
+		
+		XCTAssertEqual(imageDirFileCount(), 1)
+		
+		let firstPhoto = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
+		createThumbnail(forPhoto: firstPhoto!, withSize: CGSize(width: 50, height: 50))
+		createThumbnail(forPhoto: firstPhoto!, withSize: CGSize(width: 75, height: 75))
+		XCTAssertEqual(thumbDirFileCount(), 2)
+		
+		newSquare = image(withColor: .orange, size: CGSize(width: 10, height: 10))
+		addPhoto(image: newSquare, caption: "orange square", expecting: .success)
+		
+		XCTAssertEqual(imageDirFileCount(), 2)
+		
+		let secondPhoto = photoManager.photoStore.fetchOnlyLocal(limit: nil).first { $0.caption == "orange square" }
+		
+		createThumbnail(forPhoto: secondPhoto!, withSize: CGSize(width: 50, height: 50))
+		createThumbnail(forPhoto: secondPhoto!, withSize: CGSize(width: 75, height: 75))
+		XCTAssertEqual(thumbDirFileCount(), 4)
+		
+		// Make sure we don't clear other thumbnails on delete
+		deletePhoto(photo: firstPhoto!, expecting: .success)
+		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertEqual(thumbDirFileCount(), 2)
+		
+		deletePhoto(photo: secondPhoto!, expecting: .success)
+		XCTAssertEqual(imageDirFileCount(), 0)
+		XCTAssertEqual(thumbDirFileCount(), 0)
 	}
 	
 	func testDuplicateAdd() {
@@ -297,6 +363,22 @@ class CutlineTests: XCTestCase {
 		}
 	}
 	
+	private func createThumbnail(forPhoto photo: Photo, withSize size: CGSize) {
+		
+		let addExpectation = expectation(description: "ThumbnailCreate")
+		
+		photoManager.thumbnail(for: photo, withSize: size) { thumbnail in
+			
+			XCTAssertNotNil(thumbnail)
+			addExpectation.fulfill()
+		}
+		
+		waitForExpectations(timeout: 2) { error in
+			
+			XCTAssertNil(error)
+		}
+	}
+	
 	private func image(withColor color: UIColor, size: CGSize) -> UIImage {
 		
 		let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -311,6 +393,16 @@ class CutlineTests: XCTestCase {
 	
 	private func setCloudFailureMode(fail: Bool) {
 		(photoManager.cloudManager as! MocCloudKitManager).failureMode = fail
+	}
+	
+	private func imageDirFileCount() -> Int {
+		
+		return try! FileManager.default.contentsOfDirectory(atPath: imageStoreURL.path).count
+	}
+	
+	private func thumbDirFileCount() -> Int {
+		
+		return try! FileManager.default.contentsOfDirectory(atPath: thumbStoreURL.path).count
 	}
 	
 }
