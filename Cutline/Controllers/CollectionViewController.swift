@@ -130,10 +130,19 @@ extension CollectionViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		
-		let imageView = cell.viewWithTag(100) as! UIImageView
-		imageView.image = nil
-		
 		let photo = photoStore.photos[indexPath.row]
+		
+		// First, check for a cached thumbnail so we can
+		// avoid the delay of resetting it asynchronously
+		// (this can cause the collectionView to flash during reload)
+		let imageView = cell.viewWithTag(100) as! UIImageView
+		imageView.image = photoManager.cachedThumbnail(for: photo, withSize: cell.frame.size)
+		
+		if imageView.image != nil {
+			return
+		}
+		
+		// No cached thumbnail yet - create one and set it async
 		photoManager.thumbnail(for: photo, withSize: cell.frame.size) { fetchedThumbnail in
 			
 			guard let thumbnail = fetchedThumbnail else {

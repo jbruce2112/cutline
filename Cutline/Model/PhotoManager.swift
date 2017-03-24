@@ -64,34 +64,35 @@ class PhotoManager {
 	func add(image: UIImage, caption: String, dateTaken: Date, qos: QualityOfService?, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		let id = NSUUID().uuidString
-		imageStore.setImage(image, forKey: id)
-		
-		photoStore.add(id: id, caption: caption, dateTaken: dateTaken) { result in
+		imageStore.setImage(image, forKey: id) {
 			
-			switch result {
-			case let .success(photo):
+			self.photoStore.add(id: id, caption: caption, dateTaken: dateTaken) { result in
 				
-				self.delegate?.didAdd()
-				
-				// Bind the Photo and Image for the add
-				let imageURL = self.imageStore.imageURL(forKey: id)
-				let photoPair = (photo: photo!, url: imageURL)
-				
-				self.cloudManager.pushNew(pairs: [photoPair], qos: qos) { cloudResult in
+				switch result {
+				case let .success(photo):
 					
-					dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+					self.delegate?.didAdd()
 					
-					switch cloudResult {
-					case .success:
-						// Save the CKRecord that the photo now has
-						self.photoStore.save()
-						completion?(.success)
-					case let .failure(error):
-						completion?(.failure(error))
+					// Bind the Photo and Image for the add
+					let imageURL = self.imageStore.imageURL(forKey: id)
+					let photoPair = (photo: photo!, url: imageURL)
+					
+					self.cloudManager.pushNew(pairs: [photoPair], qos: qos) { cloudResult in
+						
+						dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
+						
+						switch cloudResult {
+						case .success:
+							// Save the CKRecord that the photo now has
+							self.photoStore.save()
+							completion?(.success)
+						case let .failure(error):
+							completion?(.failure(error))
+						}
 					}
+				case let .failure(error):
+					log("Cutline save failed with error: \(error)")
 				}
-			case let .failure(error):
-				log("Cutline save failed with error: \(error)")
 			}
 		}
 	}
@@ -193,6 +194,15 @@ class PhotoManager {
 				completion(image)
 			}
 		}
+	}
+	
+	func cachedThumbnail(for photo: Photo, withSize size: CGSize) -> UIImage? {
+		
+		guard let photoID = photo.id else {
+			return nil
+		}
+		
+		return imageStore.cachedThumbnail(forKey: photoID, size: size)
 	}
 	
 	// MARK: Private functions
@@ -319,9 +329,11 @@ extension PhotoManager: CloudChangeDelegate {
 					
 					DispatchQueue.global().async {
 						
-						self.imageStore.setImage(photo.image!, forKey: photo.id)
-						log("New photo added with caption '\(photo.caption)'")
-						self.delegate?.didAdd()
+						self.imageStore.setImage(photo.image!, forKey: photo.id) {
+							
+							log("New photo added with caption '\(photo.caption)'")
+							self.delegate?.didAdd()
+						}
 					}
 				case let .failure(error):
 					

@@ -35,29 +35,40 @@ class ImageStore {
 	}
 	
 	// MARK: Functions
-	func setImage(_ image: UIImage, forKey key: String) {
+	func setImage(_ image: UIImage, forKey key: String, completion: @escaping () -> Void) {
 		
-		cache.setObject(image, forKey: key as NSString)
-		
-		let url = imageURL(forKey: key)
-		
-		if let data = UIImageJPEGRepresentation(image, imageQuality) {
-			try? data.write(to: url, options: [.atomic])
+		DispatchQueue.global().async {
+			
+			self.cache.setObject(image, forKey: key as NSString)
+			
+			let url = self.imageURL(forKey: key)
+			
+			if let data = UIImageJPEGRepresentation(image, self.imageQuality) {
+				try? data.write(to: url, options: [.atomic])
+			}
+			
+			completion()
 		}
 	}
 	
-	func setImage(_ data: Data, forKey key: String) {
+	func setImage(_ data: Data, forKey key: String, completion: @escaping () -> Void) {
 		
-		guard let image = UIImage(data: data) else {
-			log("Error creating UIImage from Data")
-			return
+		DispatchQueue.global().async {
+			
+			guard let image = UIImage(data: data) else {
+				log("Error creating UIImage from Data")
+				completion()
+				return
+			}
+			
+			self.cache.setObject(image, forKey: key as NSString)
+			
+			let url = self.imageURL(forKey: key)
+			
+			try? data.write(to: url, options: [.atomic])
+			
+			completion()
 		}
-		
-		cache.setObject(image, forKey: key as NSString)
-		
-		let url = imageURL(forKey: key)
-		
-		try? data.write(to: url, options: [.atomic])
 	}
 	
 	func image(forKey key: String, completion: @escaping (UIImage?) -> Void) {
@@ -83,7 +94,7 @@ class ImageStore {
 	func thumbnail(forKey key: String, size: CGSize, completion: @escaping (UIImage?) -> Void) {
 		
 		// Check the thumbnail cache first
-		let thumbKey = key + "_\(max(size.width, size.height))"
+		let thumbKey = self.thumbKey(key, forSize: size)
 		if let exisitingThumbnail = thumbCache.object(forKey: thumbKey as NSString) {
 			completion(exisitingThumbnail)
 			return
@@ -111,11 +122,17 @@ class ImageStore {
 			self.thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
 			
 			if let data = UIImageJPEGRepresentation(thumbnail, self.thumbQuality) {
-				let _ = try? data.write(to: thumbnailURL, options: [.atomic])
+				try? data.write(to: thumbnailURL, options: [.atomic])
 			}
 			
 			completion(thumbnail)
 		}
+	}
+	
+	func cachedThumbnail(forKey key: String, size: CGSize) -> UIImage? {
+		
+		let thumbKey = self.thumbKey(key, forSize: size)
+		return thumbCache.object(forKey: thumbKey as NSString)
 	}
 	
 	func deleteImage(forKey key: String, completion: @escaping () -> Void) {
@@ -142,6 +159,10 @@ class ImageStore {
 	// MARK: Private functions
 	private func thumbURL(forKey key: String) -> URL {
 		return thumbDirURL.appendingPathComponent(key)
+	}
+	
+	private func thumbKey(_ key: String, forSize size: CGSize) -> String {
+		return "\(key)_\(max(size.width, size.height))"
 	}
 	
 	private func createThumbnail(forKey key: String, size: CGSize) -> UIImage? {
