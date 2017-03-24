@@ -61,7 +61,7 @@ struct CloudPhoto {
 		assert(record.recordID.recordName == id)
 		
 		guard let asset = record[CloudPhoto.imageKey] as? CKAsset else {
-			Log("Unable to get CKAsset from record")
+			log("Unable to get CKAsset from record")
 			return nil
 		}
 		
@@ -69,7 +69,7 @@ struct CloudPhoto {
 		image = try? Data(contentsOf: asset.fileURL)
 		
 		if image == nil {
-			Log("Unable to get JPEG from Data")
+			log("Unable to get JPEG from Data")
 			return nil
 		}
 	}

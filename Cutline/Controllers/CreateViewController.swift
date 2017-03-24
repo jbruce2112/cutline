@@ -75,7 +75,7 @@ class CreateViewController: UIViewController {
 	func cancel() {
 		
 		canceled = true
-		let _ = navigationController?.popViewController(animated: true)
+		_ = navigationController?.popViewController(animated: true)
 	}
 	
 	// MARK: Actions
@@ -95,7 +95,7 @@ class CreateViewController: UIViewController {
 		guard
 			let asset = results.firstObject else  {
 				
-				Log("Error fetching asset URL \(imageURL.absoluteString)")
+				log("Error fetching asset URL \(imageURL.absoluteString)")
 				return
 			}
 		

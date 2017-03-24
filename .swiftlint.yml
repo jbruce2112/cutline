@@ -22,5 +22,5 @@ opt_in_rules:
 line_length: 150
 type_body_length: 400
 file_length: 750
-variable_name:
+identifier_name:
         min_length: 2

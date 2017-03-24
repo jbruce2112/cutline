@@ -49,7 +49,7 @@ class ImageStore {
 	func setImage(_ data: Data, forKey key: String) {
 		
 		guard let image = UIImage(data: data) else {
-			Log("Error creating UIImage from Data")
+			log("Error creating UIImage from Data")
 			return
 		}
 		
@@ -129,7 +129,7 @@ class ImageStore {
 			do {
 				try FileManager.default.removeItem(at: url)
 			} catch {
-				Log("Error removing the image from disk: \(error)")
+				log("Error removing the image from disk: \(error)")
 			}
 			completion()
 		}

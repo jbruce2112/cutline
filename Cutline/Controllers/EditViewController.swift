@@ -122,7 +122,7 @@ class EditViewController: UIViewController {
 		
 			self.deleted = true
 			self.photoManager.delete(photo: self.photo, completion: nil)
-			let _ = self.navigationController?.popViewController(animated: true)
+			_ = self.navigationController?.popViewController(animated: true)
 		}
 		
 		alertController.addAction(deleteAction)

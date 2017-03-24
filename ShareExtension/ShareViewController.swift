@@ -68,7 +68,7 @@ class ShareViewController: SLComposeServiceViewController {
 			
 			if image == nil {
 				
-				Log("Error loading image from imageURL \(imageURL.path)")
+				log("Error loading image from imageURL \(imageURL.path)")
 				
 				// Inform the host that we're done when exiting this function, so it un-blocks its UI.
 				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
@@ -83,11 +83,11 @@ class ShareViewController: SLComposeServiceViewController {
 				switch result {
 					
 				case .success:
-					Log("Image added to photomanager from extension successfully")
+					log("Image added to photomanager from extension successfully")
 					// Save the record zone state in our cache so we don't bother creating it next time
 					self.photoManager.cloudManager.saveSyncState()
 				case let .failure(error):
-					Log("Failed to add image to photomanager from extension \(error)")
+					log("Failed to add image to photomanager from extension \(error)")
 				}
 				
 				// Inform the host that we're done when exiting this function, so it un-blocks its UI.

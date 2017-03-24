@@ -33,7 +33,7 @@ let appGroupURL = {
 
 let captionPlaceholder = "Enter your caption"
 
-func Log(_ message: String) {
+func log(_ message: String) {
 	#if DEBUG
 		print(message)
 	#endif

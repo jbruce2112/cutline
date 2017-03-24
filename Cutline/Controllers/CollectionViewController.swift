@@ -75,7 +75,7 @@ class CollectionViewController: UIViewController {
 			case .success:
 				self.collectionView.reloadData()
 			case let .failure(error):
-				Log("Error refreshing data source \(error)")
+				log("Error refreshing data source \(error)")
 			}
 		}
 	}

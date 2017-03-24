@@ -16,12 +16,6 @@ enum CloudPushResult {
 	case failure(Error)
 }
 
-enum CloudRecordResult {
-	
-	case success([String: CKRecord])
-	case failure(Error)
-}
-
 // MARK: CloudChangeDelegate
 protocol CloudChangeDelegate: class {
 	
@@ -105,7 +99,7 @@ class CloudKitManager {
 	func saveSyncState() {
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive.path)
-		Log("SyncState saved")
+		log("SyncState saved")
 	}
 	
 	
@@ -116,7 +110,7 @@ class CloudKitManager {
 		}
 		
 		for pair in pairs {
-			Log("Pushing NEW photo with caption \(pair.photo.caption!)")
+			log("Pushing NEW photo with caption \(pair.photo.caption!)")
 		}
 		
 		let batchSize = pairs.count
@@ -130,7 +124,7 @@ class CloudKitManager {
 		operation.perRecordCompletionBlock = { (record, error) in
 			
 			if let error = error {
-				Log("Error saving photo \(error)")
+				log("Error saving photo \(error)")
 			}
 			
 			// Look up the original photo by the recordName
@@ -152,13 +146,13 @@ class CloudKitManager {
 				
 				if let error = error {
 					
-					Log("Error saving photos with batch size \(batchSize) - \(error)")
+					log("Error saving photos with batch size \(batchSize) - \(error)")
 					self.handleError(error)
 					completion(.failure(error))
 				} else {
 					
 					if let saved = saved {
-						Log("Uploaded \(saved.count) photos to the cloud")
+						log("Uploaded \(saved.count) photos to the cloud")
 					}
 					
 					completion(.success)
@@ -192,7 +186,7 @@ class CloudKitManager {
 			record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
 			
 			records.append(record)
-			Log("Pushing UPDATE for photo with caption \(photo.caption!)")
+			log("Pushing UPDATE for photo with caption \(photo.caption!)")
 		}
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
@@ -207,7 +201,7 @@ class CloudKitManager {
 			// Maybe we could copy this version somewhere else for recovery later.
 			if let error = error {
 				
-				Log("Error updating photo \(error)")
+				log("Error updating photo \(error)")
 			} else {
 				
 				let recordName = record.recordID.recordName
@@ -219,7 +213,7 @@ class CloudKitManager {
 					updatedPhoto?.ckRecord = CloudPhoto.systemData(fromRecord: record)
 				}
 				
-				Log("Updated photo with new caption " +
+				log("Updated photo with new caption " +
 						"'\(record["caption"] as! NSString)' and change tag \(record.recordChangeTag!)")
 			}
 		}
@@ -278,7 +272,7 @@ class CloudKitManager {
 				} else {
 					
 					let deleteCount = deleted == nil ? 0 : deleted!.count
-					Log("\(deleteCount) photos were deleted in the cloud")
+					log("\(deleteCount) photos were deleted in the cloud")
 					completion(.success)
 				}
 			}
@@ -312,7 +306,7 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				Log("Got error in fetching changes \(error)")
+				log("Got error in fetching changes \(error)")
 				self.handleError(error)
 				return
 			}
@@ -334,10 +328,10 @@ class CloudKitManager {
 	private func loadSyncState() -> SyncState {
 		
 		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive.path) as? SyncState {
-			Log("SyncState loaded from archive")
+			log("SyncState loaded from archive")
 			return syncState
 		} else {
-			Log("Unable to load previous SyncState, starting new")
+			log("Unable to load previous SyncState, starting new")
 			return SyncState()
 		}
 	}
@@ -367,11 +361,11 @@ class CloudKitManager {
 		operation.recordChangedBlock = { (record) in
 		
 			guard let result = CloudPhoto(fromRecord: record) else {
-				Log("Unable to get photo from record \(record.recordID.recordName)")
+				log("Unable to get photo from record \(record.recordID.recordName)")
 				return
 			}
 			
-			Log("Fetched photo with caption '\(result.caption)' and change tag \(record.recordChangeTag!)")
+			log("Fetched photo with caption '\(result.caption)' and change tag \(record.recordChangeTag!)")
 			
 			DispatchQueue.main.sync {
 				self.delegate?.didModify(photo: result)
@@ -381,7 +375,7 @@ class CloudKitManager {
 		operation.recordWithIDWasDeletedBlock = { (recordID, _) in
 		
 			let photoID = recordID.recordName
-			Log("Fetched delete for photo with ID \(photoID)")
+			log("Fetched delete for photo with ID \(photoID)")
 			
 			DispatchQueue.main.sync {
 				self.delegate?.didRemove(photoID: photoID)
@@ -398,7 +392,7 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				Log("Got error fetching record changes \(error)")
+				log("Got error fetching record changes \(error)")
 				self.handleError(error)
 				completion()
 				return
@@ -420,7 +414,7 @@ class CloudKitManager {
 		
 		if syncState.subscribedForChanges {
 			
-			Log("Already subscribed to changes")
+			log("Already subscribed to changes")
 			completion()
 			return
 		}
@@ -439,10 +433,10 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				Log("Error subscriping for notifications \(error)")
+				log("Error subscriping for notifications \(error)")
 				self.handleError(error)
 			} else {
-				Log("Subscribed to changes")
+				log("Subscribed to changes")
 				self.syncState.subscribedForChanges = true
 			}
 			
@@ -458,7 +452,7 @@ class CloudKitManager {
 		
 		if self.syncState.recordZone != nil {
 			
-			Log("Already have a custom zone")
+			log("Already have a custom zone")
 			completion()
 			return
 		}
@@ -471,10 +465,10 @@ class CloudKitManager {
 			self.setNetworkBusy(false)
 			
 			if let error = error {
-				Log("Error creating recordZone \(error)")
+				log("Error creating recordZone \(error)")
 				self.handleError(error)
 			} else {
-				Log("Record zone successfully created")
+				log("Record zone successfully created")
 				guard let savedZone = savedRecods?.first else {
 					return
 				}
@@ -499,7 +493,7 @@ class CloudKitManager {
 		switch ckError.code {
 		case .userDeletedZone, .zoneNotFound, .changeTokenExpired:
 			
-			Log("Resetting syncState due to CKError: \(error.localizedDescription)")
+			log("Resetting syncState due to CKError: \(error.localizedDescription)")
 			ready = false
 			try? FileManager.default.removeItem(at: syncStateArchive)
 			syncState.reset()

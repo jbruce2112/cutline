@@ -43,7 +43,7 @@ class PhotoStore: NSObject {
 		persistantContainer.loadPersistentStores { (_, error) in
 			
 			if let error = error {
-				Log("Error setting up Core Data \(error)")
+				log("Error setting up Core Data \(error)")
 			}
 		}
 	}
@@ -152,7 +152,7 @@ class PhotoStore: NSObject {
 				try viewContext.save()
 				completion(.success(photo))
 			} catch {
-				Log("Error saving context \(error)")
+				log("Error saving context \(error)")
 				viewContext.rollback()
 				completion(.failure(error))
 			}
@@ -167,7 +167,7 @@ class PhotoStore: NSObject {
 			let fetchPred = NSPredicate(format: "\(#keyPath(Photo.id)) == %@", id)
 			
 			guard let photo = self.fetch(withPredicate: fetchPred, limit: 1).first else {
-				Log("Photo not deleted from CoreData because we couldn't find it")
+				log("Photo not deleted from CoreData because we couldn't find it")
 				// Still successful even if we didn't have the photo
 				completion(.success(nil))
 				return
@@ -211,7 +211,7 @@ class PhotoStore: NSObject {
 				try viewContext.save()
 			} catch {
 				viewContext.rollback()
-				Log("Error saving context \(error)")
+				log("Error saving context \(error)")
 			}
 		}
 	}
@@ -233,7 +233,7 @@ class PhotoStore: NSObject {
 			do {
 				try photos = viewContext.fetch(fetchRequest)
 			} catch {
-				Log("Error fetching photos \(error)")
+				log("Error fetching photos \(error)")
 			}
 		}
 		
