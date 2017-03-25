@@ -303,7 +303,7 @@ class CutlineTests: XCTestCase {
 		var updateResult: PhotoUpdateResult!
 		let addExpectation = expectation(description: "PhotoAdd")
 		
-		photoManager.add(image: image, caption: caption, dateTaken: Date(), qos: nil) { result in
+		photoManager.add(image: image, caption: caption, dateTaken: Date()) { result in
 			
 			updateResult = result
 			addExpectation.fulfill()

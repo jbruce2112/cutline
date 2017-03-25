@@ -27,7 +27,7 @@ class MocCloudKitManager: CloudKitManager {
 		completion?()
 	}
 	
-	override func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
+	override func pushNew(pairs: [PhotoPair], longLived: Bool, completion: @escaping (CloudPushResult) -> Void) {
 		let result = failureMode ? failResult() : .success
 		completion(result)
 	}
