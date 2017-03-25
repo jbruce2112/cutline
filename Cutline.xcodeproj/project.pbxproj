@@ -172,10 +172,10 @@
 			isa = PBXGroup;
 			children = (
 				523752041E467C0200060607 /* CaptionView.swift */,
+				5233394D1E7747C8000224D4 /* PhotoContainerView.swift */,
 				525E6D101E6E15D20060EB51 /* PolaroidView.swift */,
 				52AC6D101E5A74B800C63013 /* SearchResultCell.swift */,
 				523D26841E5A0512000507DA /* Theme.swift */,
-				5233394D1E7747C8000224D4 /* PhotoContainerView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -230,18 +230,18 @@
 		52A03E321E4028FE00A275AD /* Cutline */ = {
 			isa = PBXGroup;
 			children = (
-				525F4D0D1E4AC49E004615FD /* Cutline.entitlements */,
 				52A03E331E4028FE00A275AD /* AppDelegate.swift */,
-				52A03E371E4028FE00A275AD /* Main.storyboard */,
-				523751F61E41744F00060607 /* Cutline.xcdatamodeld */,
-				523752061E467DB400060607 /* View */,
-				523751FD1E418C4C00060607 /* Controllers */,
-				523752071E467DD600060607 /* Model */,
 				52A03E3A1E4028FE00A275AD /* Assets.xcassets */,
-				52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */,
+				523751FD1E418C4C00060607 /* Controllers */,
+				525F4D0D1E4AC49E004615FD /* Cutline.entitlements */,
+				523751F61E41744F00060607 /* Cutline.xcdatamodeld */,
 				52A03E3F1E4028FE00A275AD /* Info.plist */,
+				52A03E3C1E4028FE00A275AD /* LaunchScreen.storyboard */,
+				52A03E371E4028FE00A275AD /* Main.storyboard */,
 				527421E81E79FDA700EE1FA7 /* main.swift */,
+				523752071E467DD600060607 /* Model */,
 				52AA359A1E80A24C008835C8 /* privacy.html */,
+				523752061E467DB400060607 /* View */,
 			);
 			path = Cutline;
 			sourceTree = "<group>";

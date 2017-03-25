@@ -66,6 +66,7 @@ class CutlineTests: XCTestCase {
 		
 		refreshPhotos(assertCount: 1)
 		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertNotNil(getImage(forPhoto: photo))
 		
 		createThumbnail(forPhoto: photo, withSize: CGSize(width: 100, height: 100))
 		XCTAssertEqual(thumbDirFileCount(), 1)
@@ -122,6 +123,7 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(photo.dirty, false)
 		refreshPhotos(assertCount: 1)
 		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertNotNil(getImage(forPhoto: photo))
 		
 		var modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 0)
@@ -151,6 +153,7 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(modifiedPhotos.count, 0)
 		refreshPhotos(assertCount: 1)
 		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertNotNil(getImage(forPhoto: photo))
 	}
 	
 	func testPhotoDelete() {
@@ -165,6 +168,7 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(photo?.markedDeleted, false)
 		refreshPhotos(assertCount: 1)
 		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertNotNil(getImage(forPhoto: photo!))
 		
 		createThumbnail(forPhoto: photo!, withSize: CGSize(width: 100, height: 100))
 		XCTAssertEqual(thumbDirFileCount(), 1)
@@ -175,6 +179,7 @@ class CutlineTests: XCTestCase {
 		refreshPhotos(assertCount: 0)
 		XCTAssertEqual(imageDirFileCount(), 0)
 		XCTAssertEqual(thumbDirFileCount(), 0)
+		XCTAssertNil(getImage(forPhoto: photo!))
 	}
 	
 	func testFailedDelete() {
@@ -190,6 +195,7 @@ class CutlineTests: XCTestCase {
 		XCTAssertEqual(photo!.markedDeleted, false)
 		refreshPhotos(assertCount: 1)
 		XCTAssertEqual(imageDirFileCount(), 1)
+		XCTAssertNotNil(getImage(forPhoto: photo!))
 		
 		createThumbnail(forPhoto: photo!, withSize: CGSize(width: 100, height: 100))
 		XCTAssertEqual(thumbDirFileCount(), 1)
@@ -211,6 +217,7 @@ class CutlineTests: XCTestCase {
 		refreshPhotos(assertCount: 0)
 		XCTAssertEqual(imageDirFileCount(), 1)
 		XCTAssertEqual(thumbDirFileCount(), 1)
+		XCTAssertNotNil(getImage(forPhoto: photo!))
 		
 		setCloudFailureMode(fail: false)
 		
@@ -222,6 +229,7 @@ class CutlineTests: XCTestCase {
 		refreshPhotos(assertCount: 0)
 		XCTAssertEqual(imageDirFileCount(), 0)
 		XCTAssertEqual(thumbDirFileCount(), 0)
+		XCTAssertNil(getImage(forPhoto: photo!))
 	}
 	
 	func testThumbnailDelete() {
@@ -234,7 +242,9 @@ class CutlineTests: XCTestCase {
 		let firstPhoto = photoManager.photoStore.fetchOnlyLocal(limit: nil).first
 		createThumbnail(forPhoto: firstPhoto!, withSize: CGSize(width: 50, height: 50))
 		createThumbnail(forPhoto: firstPhoto!, withSize: CGSize(width: 75, height: 75))
+		
 		XCTAssertEqual(thumbDirFileCount(), 2)
+		XCTAssertNotNil(getImage(forPhoto: firstPhoto!))
 		
 		newSquare = image(withColor: .orange, size: CGSize(width: 10, height: 10))
 		addPhoto(image: newSquare, caption: "orange square", expecting: .success)
@@ -246,6 +256,7 @@ class CutlineTests: XCTestCase {
 		createThumbnail(forPhoto: secondPhoto!, withSize: CGSize(width: 50, height: 50))
 		createThumbnail(forPhoto: secondPhoto!, withSize: CGSize(width: 75, height: 75))
 		XCTAssertEqual(thumbDirFileCount(), 4)
+		XCTAssertNotNil(getImage(forPhoto: secondPhoto!))
 		
 		// Make sure we don't clear other thumbnails on delete
 		deletePhoto(photo: firstPhoto!, expecting: .success)
@@ -255,6 +266,8 @@ class CutlineTests: XCTestCase {
 		deletePhoto(photo: secondPhoto!, expecting: .success)
 		XCTAssertEqual(imageDirFileCount(), 0)
 		XCTAssertEqual(thumbDirFileCount(), 0)
+		XCTAssertNil(getImage(forPhoto: firstPhoto!))
+		XCTAssertNil(getImage(forPhoto: secondPhoto!))
 	}
 	
 	func testDuplicateAdd() {
@@ -361,6 +374,25 @@ class CutlineTests: XCTestCase {
 			XCTAssertNil(error)
 			XCTAssertEqual(count, refreshCount)
 		}
+	}
+	
+	private func getImage(forPhoto photo: Photo) -> UIImage? {
+		
+		var image: UIImage?
+		let addExpectation = expectation(description: "GetImage")
+		
+		photoManager.image(for: photo) { resultImage in
+			
+			image = resultImage
+			addExpectation.fulfill()
+		}
+		
+		waitForExpectations(timeout: 2) { error in
+			
+			XCTAssertNil(error)
+		}
+		
+		return image
 	}
 	
 	private func createThumbnail(forPhoto photo: Photo, withSize size: CGSize) {
