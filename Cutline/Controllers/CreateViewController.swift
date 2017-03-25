@@ -99,6 +99,6 @@ class CreateViewController: UIViewController {
 				return
 			}
 		
-		photoManager.add(image: image, caption: containerView.captionView.getCaption(), dateTaken: asset.creationDate!, qos: nil, completion: nil)
+		photoManager.add(image: image, caption: containerView.captionView.getCaption(), dateTaken: asset.creationDate!, completion: nil)
 	}
 }

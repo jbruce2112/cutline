@@ -16,6 +16,11 @@ enum CloudPushResult {
 	case failure(Error)
 }
 
+enum CloudManagerError: Error {
+	
+	case notReady
+}
+
 // MARK: CloudChangeDelegate
 protocol CloudChangeDelegate: class {
 	
@@ -32,11 +37,13 @@ protocol NetworkStatusDelegate: class {
 class CloudKitManager {
 	
 	// MARK: Properties
-	private let privateDB: CKDatabase
 		
 	let subscriptionID = "private-changes"
 	
 	private let zoneName = "Photos"
+	
+	private let privateDB: CKDatabase
+	private let cloudContainer: CKContainer
 	
 	private var syncState: SyncState!
 	private let syncStateArchive: URL = {
@@ -63,8 +70,8 @@ class CloudKitManager {
 	
 	init() {
 		
-		let container = CKContainer(identifier: cloudContainerDomain)
-		privateDB = container.privateCloudDatabase
+		cloudContainer = CKContainer(identifier: cloudContainerDomain)
+		privateDB = cloudContainer.privateCloudDatabase
 		
 		syncState = loadSyncState()
 	}
@@ -103,9 +110,10 @@ class CloudKitManager {
 	}
 	
 	
-	func pushNew(pairs: [PhotoPair], qos: QualityOfService?, completion: @escaping (CloudPushResult) -> Void) {
+	func pushNew(pairs: [PhotoPair], longLived: Bool, completion: @escaping (CloudPushResult) -> Void) {
 		
 		if !ready || pairs.isEmpty {
+			completion(.failure(CloudManagerError.notReady))
 			return
 		}
 		
@@ -120,6 +128,16 @@ class CloudKitManager {
 		let records = pairs.map { CloudPhoto.createRecord(fromPair: $0, withZoneID: zoneID) }
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
+		
+		operation.isLongLived = longLived
+		operation.longLivedOperationWasPersistedBlock = { () in
+			
+			log("LongLivedOperationWasPersisted")
+			
+			DispatchQueue.main.async {
+				completion(.success)
+			}
+		}
 		
 		operation.perRecordCompletionBlock = { (record, error) in
 			
@@ -160,7 +178,7 @@ class CloudKitManager {
 			}
 		}
 		
-		operation.qualityOfService = qos ?? .utility
+		operation.qualityOfService = .utility
 		operation.allowsCellularAccess =
 			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
 		
@@ -171,6 +189,7 @@ class CloudKitManager {
 	func pushModified(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
 		
 		if !ready {
+			completion(.failure(CloudManagerError.notReady))
 			return
 		}
 		
@@ -241,6 +260,7 @@ class CloudKitManager {
 	func delete(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
 		
 		if !ready {
+			completion(.failure(CloudManagerError.notReady))
 			return
 		}
 		
@@ -308,6 +328,7 @@ class CloudKitManager {
 			if let error = error {
 				log("Got error in fetching changes \(error)")
 				self.handleError(error)
+				completion()
 				return
 			}
 			
@@ -322,7 +343,6 @@ class CloudKitManager {
 		setNetworkBusy(true)
 		privateDB.add(changeOperation)
 	}
-	
 		
 	// MARK: Private functions
 	private func loadSyncState() -> SyncState {
@@ -389,17 +409,19 @@ class CloudKitManager {
 		
 		operation.recordZoneFetchCompletionBlock = { (recordZoneID, newChangeToken, lastTokenData, _, error) in
 			
+			defer {
+				completion()
+			}
+			
 			self.setNetworkBusy(false)
 			
 			if let error = error {
 				log("Got error fetching record changes \(error)")
 				self.handleError(error)
-				completion()
 				return
 			}
 			
 			self.syncState.zoneChangeToken = newChangeToken
-			completion()
 		}
 		
 		operation.qualityOfService = .utility
@@ -430,6 +452,10 @@ class CloudKitManager {
 		                                               subscriptionIDsToDelete: [])
 		operation.modifySubscriptionsCompletionBlock = { (_, _, error) in
 			
+			defer {
+				completion()
+			}
+			
 			self.setNetworkBusy(false)
 			
 			if let error = error {
@@ -439,8 +465,6 @@ class CloudKitManager {
 				log("Subscribed to changes")
 				self.syncState.subscribedForChanges = true
 			}
-			
-			completion()
 		}
 		
 		setNetworkBusy(true)
@@ -462,6 +486,10 @@ class CloudKitManager {
 		
 		operation.modifyRecordZonesCompletionBlock = { (savedRecods, deletedRecordIDs, error) in
 			
+			defer {
+				completion()
+			}
+			
 			self.setNetworkBusy(false)
 			
 			if let error = error {
@@ -474,8 +502,6 @@ class CloudKitManager {
 				}
 				
 				self.syncState.recordZone = savedZone
-				
-				completion()
 			}
 		}
 		
@@ -491,15 +517,45 @@ class CloudKitManager {
 		}
 		
 		switch ckError.code {
+		case .partialFailure:
+			
+			// Get the errors of all failed records if it was a partialFailure
+			guard
+				let errorDict = ckError.userInfo[CKPartialErrorsByItemIDKey] as? NSDictionary,
+				let errors = errorDict.allValues as? [CKError] else {
+					return
+			}
+			
+			for error in errors {
+				
+				if handleCKError(code: error.code) {
+					// Stop processing errors if we reset the syncState
+					return
+				}
+			}
+			
+		default:
+			handleCKError(code: ckError.code)
+		}
+	}
+	
+	@discardableResult
+	private func handleCKError(code: CKError.Code) -> Bool {
+	
+		// Handle te CKErrorCode and return whether or not we reset the syncState
+		switch code {
+			
 		case .userDeletedZone, .zoneNotFound, .changeTokenExpired:
 			
-			log("Resetting syncState due to CKError: \(error.localizedDescription)")
+			log("Resetting syncState due to CKError: \(code)")
+			
 			ready = false
 			try? FileManager.default.removeItem(at: syncStateArchive)
 			syncState.reset()
 			setup(completion: nil)
+			return true
 		default:
-			break
+			return false
 		}
 	}
 	

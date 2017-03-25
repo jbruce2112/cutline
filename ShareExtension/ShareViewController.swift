@@ -78,7 +78,9 @@ class ShareViewController: SLComposeServiceViewController {
 		
 		photoManager.setupNoSync {
 			
-			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date(), qos: .userInteractive) { result in
+			// Set backgroundUpload = true so we return control to the host app
+			// as soon as we add the photo to our local store. The cloud upload will continue in the background
+			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date(), backgroundUpload: true) { result in
 				
 				switch result {
 					

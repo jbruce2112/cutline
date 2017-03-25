@@ -61,7 +61,7 @@ class PhotoManager {
 		}
 	}
 	
-	func add(image: UIImage, caption: String, dateTaken: Date, qos: QualityOfService?, completion: ((PhotoUpdateResult) -> Void)?) {
+	func add(image: UIImage, caption: String, dateTaken: Date, backgroundUpload: Bool = false, completion: ((PhotoUpdateResult) -> Void)?) {
 		
 		let id = NSUUID().uuidString
 		imageStore.setImage(image, forKey: id) {
@@ -77,14 +77,18 @@ class PhotoManager {
 					let imageURL = self.imageStore.imageURL(forKey: id)
 					let photoPair = (photo: photo!, url: imageURL)
 					
-					self.cloudManager.pushNew(pairs: [photoPair], qos: qos) { cloudResult in
+					self.cloudManager.pushNew(pairs: [photoPair], longLived: backgroundUpload) { cloudResult in
 						
 						dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 						
 						switch cloudResult {
 						case .success:
-							// Save the CKRecord that the photo now has
-							self.photoStore.save()
+							
+							if !backgroundUpload {
+								// Save the CKRecord that the photo now has
+								self.photoStore.save()
+							}
+							
 							completion?(.success)
 						case let .failure(error):
 							completion?(.failure(error))
@@ -221,7 +225,7 @@ class PhotoManager {
 			(photo: $0, url: imageStore.imageURL(forKey: $0.id!))
 		}
 		
-		cloudManager.pushNew(pairs: photoPairs, qos: nil) { result in
+		cloudManager.pushNew(pairs: photoPairs, longLived: false) { result in
 			
 			dispatchPrecondition(condition: .onQueue(DispatchQueue.main))
 			
