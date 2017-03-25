@@ -26,8 +26,6 @@ class CollectionViewController: UIViewController {
 		collectionView.dataSource = self
 		
 		photoManager.delegate = self
-		
-		registerForPreviewing(with: self, sourceView: collectionView)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -129,6 +127,8 @@ extension CollectionViewController: UICollectionViewDelegateFlowLayout {
 extension CollectionViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+		
+		registerForPreviewing(with: self, sourceView: cell)
 		
 		let photo = photoStore.photos[indexPath.row]
 		

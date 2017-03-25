@@ -44,7 +44,6 @@ class SearchResultsViewController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		registerForPreviewing(with: self, sourceView: tableView)
 		// Don't show empty cells
 		tableView.tableFooterView = UIView()
 	}
@@ -69,6 +68,8 @@ class SearchResultsViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
+		
+		registerForPreviewing(with: self, sourceView: cell)
 		
 		if !readyForSearch() {
 			return cell
