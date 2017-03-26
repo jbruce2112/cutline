@@ -21,11 +21,8 @@
           <h2>{{ site.description | default: site.github.project_tagline }}</h2>
         </header>
         <section id="downloads" class="clearfix">
-	  {% if site.github.is_project_page %}
+          <a href="https://apple.com" id="download-app-store" class="button"><img src="/assets/download_app_store.png" /></a>
           <a href="{{ site.github.repository_url }}" id="view-on-github" class="button"><span>View on GitHub</span></a>
-	  {% else %}
-          <a href="{{ site.github.owner_url }}" id="view-on-github" class="button"><span>View on GitHub</span></a>
-	  {% endif %}  
         </section> 
         <hr>
         <section id="main_content">
