@@ -50,6 +50,7 @@
 		52F3920D1E690E88001EDC48 /* PhotoStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751F91E4178A100060607 /* PhotoStore.swift */; };
 		52F3920E1E690E8C001EDC48 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FB1E417C4900060607 /* ImageStore.swift */; };
 		52F3920F1E690E8F001EDC48 /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
+		52F87D0E1E886A120065AA2F /* CutlineUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F87D0D1E886A120065AA2F /* CutlineUITests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,13 @@
 			remoteInfo = ShareExtension;
 		};
 		52CB72311E74604C00D3C7E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 52A03E2F1E4028FE00A275AD;
+			remoteInfo = Cutline;
+		};
+		52F87D101E886A120065AA2F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
 			proxyType = 1;
@@ -123,6 +131,9 @@
 		52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CloudKitManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SettingsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		52F3920A1E68F983001EDC48 /* CloudPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CloudPhoto.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		52F87D0B1E886A120065AA2F /* CutlineUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlineUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		52F87D0D1E886A120065AA2F /* CutlineUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlineUITests.swift; sourceTree = "<group>"; };
+		52F87D0F1E886A120065AA2F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +154,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		52CB72291E74604C00D3C7E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		52F87D081E886A120065AA2F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -210,6 +228,7 @@
 				52A03E321E4028FE00A275AD /* Cutline */,
 				525F4CFF1E4AAA34004615FD /* ShareExtension */,
 				52CB722D1E74604C00D3C7E5 /* CutlineTests */,
+				52F87D0C1E886A120065AA2F /* CutlineUITests */,
 				52A03E311E4028FE00A275AD /* Products */,
 				52D958E01E5FB73500D7B4EE /* Frameworks */,
 			);
@@ -221,6 +240,7 @@
 				52A03E301E4028FE00A275AD /* Cutline.app */,
 				525F4CFE1E4AAA34004615FD /* ShareExtension.appex */,
 				52CB722C1E74604C00D3C7E5 /* CutlineTests.xctest */,
+				52F87D0B1E886A120065AA2F /* CutlineUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -268,6 +288,15 @@
 				52AA359A1E80A24C008835C8 /* privacy.html */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		52F87D0C1E886A120065AA2F /* CutlineUITests */ = {
+			isa = PBXGroup;
+			children = (
+				52F87D0D1E886A120065AA2F /* CutlineUITests.swift */,
+				52F87D0F1E886A120065AA2F /* Info.plist */,
+			);
+			path = CutlineUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -329,6 +358,24 @@
 			productReference = 52CB722C1E74604C00D3C7E5 /* CutlineTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		52F87D0A1E886A120065AA2F /* CutlineUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 52F87D141E886A120065AA2F /* Build configuration list for PBXNativeTarget "CutlineUITests" */;
+			buildPhases = (
+				52F87D071E886A120065AA2F /* Sources */,
+				52F87D081E886A120065AA2F /* Frameworks */,
+				52F87D091E886A120065AA2F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				52F87D111E886A120065AA2F /* PBXTargetDependency */,
+			);
+			name = CutlineUITests;
+			productName = CutlineUITests;
+			productReference = 52F87D0B1E886A120065AA2F /* CutlineUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -381,6 +428,12 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 52A03E2F1E4028FE00A275AD;
 					};
+					52F87D0A1E886A120065AA2F = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = UVXX33WP85;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 52A03E2F1E4028FE00A275AD;
+					};
 				};
 			};
 			buildConfigurationList = 52A03E2B1E4028FE00A275AD /* Build configuration list for PBXProject "Cutline" */;
@@ -399,6 +452,7 @@
 				52A03E2F1E4028FE00A275AD /* Cutline */,
 				525F4CFD1E4AAA34004615FD /* ShareExtension */,
 				52CB722B1E74604C00D3C7E5 /* CutlineTests */,
+				52F87D0A1E886A120065AA2F /* CutlineUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -424,6 +478,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		52CB722A1E74604C00D3C7E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		52F87D091E886A120065AA2F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -518,6 +579,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		52F87D071E886A120065AA2F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52F87D0E1E886A120065AA2F /* CutlineUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -530,6 +599,11 @@
 			isa = PBXTargetDependency;
 			target = 52A03E2F1E4028FE00A275AD /* Cutline */;
 			targetProxy = 52CB72311E74604C00D3C7E5 /* PBXContainerItemProxy */;
+		};
+		52F87D111E886A120065AA2F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 52A03E2F1E4028FE00A275AD /* Cutline */;
+			targetProxy = 52F87D101E886A120065AA2F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -749,6 +823,32 @@
 			};
 			name = Release;
 		};
+		52F87D121E886A120065AA2F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = UVXX33WP85;
+				INFOPLIST_FILE = CutlineUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlineUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Cutline;
+			};
+			name = Debug;
+		};
+		52F87D131E886A120065AA2F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = UVXX33WP85;
+				INFOPLIST_FILE = CutlineUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlineUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Cutline;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -787,6 +887,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		52F87D141E886A120065AA2F /* Build configuration list for PBXNativeTarget "CutlineUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52F87D121E886A120065AA2F /* Debug */,
+				52F87D131E886A120065AA2F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 

@@ -20,8 +20,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	private var collectionViewController: CollectionViewController!
 	private var searchViewController: SearchViewController!
+	
+	#if DEBUG
+	private var testDirURL: URL!
+	#endif
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+		
+		#if DEBUG
+			if ProcessInfo.processInfo.arguments.contains("UI_TEST_MODE") {
+				initForUITesting()
+			}
+		#endif
 		
 		tabBarController = window!.rootViewController as! UITabBarController
 		navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
@@ -114,6 +124,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		
 		return false
 	}
+	
+	#if DEBUG
+	private func initForUITesting() {
+		
+		testDirURL = FileManager.default.urls(for: .cachesDirectory,
+		                                      in: .userDomainMask).first!.appendingPathComponent("ui_test")
+		
+		// Clear the prior app state
+		try? FileManager.default.removeItem(at: testDirURL)
+		
+		let imageDir = testDirURL.appendingPathComponent("images")
+		let thumbDir = testDirURL.appendingPathComponent("thumbnails")
+		let photoStoreURL = testDirURL.appendingPathComponent("PhotoStore_test.sqlite")
+		photoManager.imageStore = ImageStore(imageDirURL: imageDir, thumbDirURL: thumbDir)
+		photoManager.photoStore = PhotoStore(storeURL: photoStoreURL)
+	}
+	#endif
 }
 
 // MARK: NetworkStatusDelegate conformance
