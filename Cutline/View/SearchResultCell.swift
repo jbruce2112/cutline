@@ -8,6 +8,10 @@
 
 import UIKit
 
+/// SearchResultCell defines the layout
+/// of a search result table view cell.
+/// It also is responsible for the SearchResult
+/// parsing/display logic for the given cell.
 class SearchResultCell: UITableViewCell {
 	
 	// MARK: Properties
@@ -79,8 +83,7 @@ class SearchResultCell: UITableViewCell {
 		
 		// See if we would end up truncating the string if it was displayed
 		let labelWidth = resultLabel.frame.size.width
-		// TODO: don't hard code the font size
-		let displaySize = displayString.size(attributes: [NSFontAttributeName: UIFont.systemFont(ofSize: 17.0)])
+		let displaySize = displayString.size(attributes: [NSFontAttributeName: resultLabel.font])
 		
 		if displaySize.width < labelWidth || labelWidth == 0 {
 			return displayString

@@ -41,8 +41,8 @@ class SettingsViewController: UITableViewController {
 		attributionLabel.attributedText = attribution
 		
 		// load preferences
-		cellSyncSwitch.isOn = appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
-		darkModeSwitch.isOn = appGroupDefaults.bool(forKey: Key.nightMode.rawValue)
+		cellSyncSwitch.isOn = appGroupDefaults.bool(forKey: PrefKey.cellSync)
+		darkModeSwitch.isOn = appGroupDefaults.bool(forKey: PrefKey.nightMode)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -165,12 +165,12 @@ class SettingsViewController: UITableViewController {
 	// MARK: UI Actions
 	@IBAction private func toggleCellSync(sender: UISwitch) {
 		
-		appGroupDefaults.set(sender.isOn, forKey: Key.cellSync.rawValue)
+		appGroupDefaults.set(sender.isOn, forKey: PrefKey.cellSync)
 	}
 	
 	@IBAction private func toggleDarkMode(sender: UISwitch) {
 		
-		appGroupDefaults.set(sender.isOn, forKey: Key.nightMode.rawValue)
+		appGroupDefaults.set(sender.isOn, forKey: PrefKey.nightMode)
 		
 		// Set the theme in the delegate for the root controllers
 		let appDelegate = UIApplication.shared.delegate as! AppDelegate

@@ -8,6 +8,9 @@
 
 import UIKit
 
+/// PhotoContainerView combines a
+/// CaptionView and PolaroidView subviews
+/// on opposite sides of a single container view.
 class PhotoContainerView: UIView {
 	
 	var captionView = CaptionView()

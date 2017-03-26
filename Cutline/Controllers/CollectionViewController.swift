@@ -2,7 +2,7 @@
 //  CollectionViewController.swift
 //  Cutline
 //
-//  Created by John Bruce on 1/30/17.
+//  Created by John on 1/30/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 

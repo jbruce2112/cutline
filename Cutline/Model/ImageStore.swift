@@ -2,13 +2,15 @@
 //  ImageStore.swift
 //  Cutline
 //
-//  Created by John Bruce on 1/22/17.
+//  Created by John on 1/22/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 
 import ImageIO
 import UIKit
 
+/// ImageStore maintains a store of UIImages on disk.
+/// A separate image and thumbnail cache is used for speed.
 class ImageStore {
 	
 	// MARK: Properties
@@ -18,6 +20,7 @@ class ImageStore {
 	private let imageDirURL: URL
 	private let thumbDirURL: URL
 	
+	/// Arguments to UIImageJPEGRepresentation (scale of [0,1])
 	private let imageQuality: CGFloat = 0.9
 	private let thumbQuality: CGFloat = 0.6
 	
@@ -35,6 +38,8 @@ class ImageStore {
 	}
 	
 	// MARK: Functions
+	
+	/// Saves the passed UIImage to the imageStore.
 	func setImage(_ image: UIImage, forKey key: String, completion: @escaping () -> Void) {
 		
 		DispatchQueue.global().async {
@@ -51,6 +56,8 @@ class ImageStore {
 		}
 	}
 	
+	/// Saves the passed Data to the imageStore.
+	/// Useful if an image is already in a JPEG/PNG representation
 	func setImage(_ data: Data, forKey key: String, completion: @escaping () -> Void) {
 		
 		DispatchQueue.global().async {
@@ -71,6 +78,7 @@ class ImageStore {
 		}
 	}
 	
+	/// Returns an image for the key if one exists.
 	func image(forKey key: String, completion: @escaping (UIImage?) -> Void) {
 		
 		if let exisitingImage = cache.object(forKey: key as NSString) {
@@ -91,6 +99,8 @@ class ImageStore {
 		}
 	}
 	
+	/// Returns a thumbnail for this key and size.
+	/// If none exists, one is created and returned.
 	func thumbnail(forKey key: String, size: CGSize, completion: @escaping (UIImage?) -> Void) {
 		
 		// Check the thumbnail cache first
@@ -129,12 +139,14 @@ class ImageStore {
 		}
 	}
 	
+	/// Returns a cached thumbnail for this key and size, if one exists
 	func cachedThumbnail(forKey key: String, size: CGSize) -> UIImage? {
 		
 		let thumbKey = self.thumbKey(key, forSize: size)
 		return thumbCache.object(forKey: thumbKey as NSString)
 	}
 	
+	/// Deletes all images on disk for this key including any thumbnails
 	func deleteImage(forKey key: String, completion: @escaping () -> Void) {
 		
 		DispatchQueue.global().async {

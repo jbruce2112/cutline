@@ -10,12 +10,15 @@ import CloudKit
 import Foundation
 import UIKit
 
+/// Passed to the completion handler
+/// with the result of calls by this class
 enum CloudPushResult {
 	
 	case success
 	case failure(Error)
 }
 
+/// Custom errors emitted by CloudKitManager
 enum CloudManagerError: Error {
 	
 	case notReady
@@ -34,6 +37,10 @@ protocol NetworkStatusDelegate: class {
 	func statusChanged(busy: Bool)
 }
 
+/// CloudKitManager is responsible for all communication
+/// with the CloudKit endpoint. It manages database/container
+/// creation, client sync state, and error handling related
+/// to resetting sync state. This class is thread-safe.
 class CloudKitManager {
 	
 	// MARK: Properties
@@ -53,6 +60,7 @@ class CloudKitManager {
 		return cacheDir.appendingPathComponent("syncState.archive")
 	}()
 	
+	/// Queue that ensures thread safety - internal to this class
 	private let queue = DispatchQueue(label: "cutline.ckManagerQueue")
 	
 	private var _ready = false
@@ -65,7 +73,8 @@ class CloudKitManager {
 		}
 	}
 	
-	weak var delegate: CloudChangeDelegate?
+	///
+	weak var cloudChangeDelegate: CloudChangeDelegate?
 	weak var networkStatusDelegate: NetworkStatusDelegate?
 	
 	init() {
@@ -77,6 +86,8 @@ class CloudKitManager {
 	}
 	
 	// MARK: Functions
+	
+	/// Creates custom zones and registers for push notifications
 	func setup(completion: (() -> Void)?) {
 		
 		createCustomZone {
@@ -91,7 +102,7 @@ class CloudKitManager {
 		}
 	}
 	
-	// Setup for users of this class who don't need syncing/notifications
+	/// Setup for users of this class who don't need syncing/notifications
 	func setupNoSync(completion: (() -> Void)?) {
 		
 		createCustomZone {
@@ -103,6 +114,7 @@ class CloudKitManager {
 		}
 	}
 	
+	/// Saves the current SyncState to disk
 	func saveSyncState() {
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive.path)
@@ -110,6 +122,7 @@ class CloudKitManager {
 	}
 	
 	
+	///	Pushes a batch of photos
 	func pushNew(pairs: [PhotoPair], longLived: Bool, completion: @escaping (CloudPushResult) -> Void) {
 		
 		if !ready || pairs.isEmpty {
@@ -180,12 +193,13 @@ class CloudKitManager {
 		
 		operation.qualityOfService = .utility
 		operation.allowsCellularAccess =
-			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: PrefKey.cellSync)
 		
 		setNetworkBusy(true)
 		privateDB.add(operation)
 	}
 	
+	/// Pushes an array of existing photos with with updates
 	func pushModified(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
 		
 		if !ready {
@@ -257,6 +271,7 @@ class CloudKitManager {
 		self.privateDB.add(operation)
 	}
 	
+	/// Pushes an array of photos to delete
 	func delete(photos: [Photo], completion: @escaping (CloudPushResult) -> Void) {
 		
 		if !ready {
@@ -303,6 +318,7 @@ class CloudKitManager {
 		self.privateDB.add(operation)
 	}
 	
+	/// Fetches changes from the cloud for all zones
 	func fetchChanges(completion: @escaping () -> Void) {
 		
 		var changedZoneIDs = [CKRecordZoneID]()
@@ -338,13 +354,15 @@ class CloudKitManager {
 		
 		changeOperation.qualityOfService = .utility
 		changeOperation.allowsCellularAccess =
-			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: PrefKey.cellSync)
 		
 		setNetworkBusy(true)
 		privateDB.add(changeOperation)
 	}
 		
 	// MARK: Private functions
+	
+	/// Loads the syncState from disk (if any)
 	private func loadSyncState() -> SyncState {
 		
 		if let syncState = NSKeyedUnarchiver.unarchiveObject(withFile: syncStateArchive.path) as? SyncState {
@@ -356,6 +374,7 @@ class CloudKitManager {
 		}
 	}
 	
+	/// Fetches changes from the cloud for the specified zones
 	private func fetchChanges(fromZones changedZoneIDs: [CKRecordZoneID], completion: @escaping () -> Void) {
 		
 		if changedZoneIDs.isEmpty {
@@ -388,7 +407,7 @@ class CloudKitManager {
 			log("Fetched photo with caption '\(result.caption)' and change tag \(record.recordChangeTag!)")
 			
 			DispatchQueue.main.sync {
-				self.delegate?.didModify(photo: result)
+				self.cloudChangeDelegate?.didModify(photo: result)
 			}
 		}
 		
@@ -398,7 +417,7 @@ class CloudKitManager {
 			log("Fetched delete for photo with ID \(photoID)")
 			
 			DispatchQueue.main.sync {
-				self.delegate?.didRemove(photoID: photoID)
+				self.cloudChangeDelegate?.didRemove(photoID: photoID)
 			}
 		}
 		
@@ -426,12 +445,13 @@ class CloudKitManager {
 		
 		operation.qualityOfService = .utility
 		operation.allowsCellularAccess =
-			appGroupDefaults.bool(forKey: Key.cellSync.rawValue)
+			appGroupDefaults.bool(forKey: PrefKey.cellSync)
 		
 		setNetworkBusy(true)
 		privateDB.add(operation)
 	}
 	
+	/// registers for push notifications for updates to this database
 	private func registerForSubscription(completion: @escaping () -> Void) {
 		
 		if syncState.subscribedForChanges {
@@ -472,6 +492,7 @@ class CloudKitManager {
 		privateDB.add(operation)
 	}
 	
+	/// Creates the custom zone for this user that all records are stored in
 	private func createCustomZone(completion: @escaping () -> Void) {
 		
 		if self.syncState.recordZone != nil {
@@ -510,6 +531,7 @@ class CloudKitManager {
 		privateDB.add(operation)
 	}
 	
+	/// Parses the error and takes any necessary actions
 	private func handleError(_ error: Error) {
 		
 		guard let ckError = error as? CKError else {
@@ -539,6 +561,7 @@ class CloudKitManager {
 		}
 	}
 	
+	/// Handles any necessary actions for the passed CKError Code
 	@discardableResult
 	private func handleCKError(code: CKError.Code) -> Bool {
 	
@@ -559,8 +582,8 @@ class CloudKitManager {
 		}
 	}
 	
-	// Manages the network activity icon in the status bar
-	// by maintaining a count of callers passing busy true/false
+	/// Manages the network activity icon in the status bar
+	/// by maintaining a count of callers passing busy true/false
 	private func setNetworkBusy(_ busy: Bool) {
 		
 		// Static variables need to be attached to a type

@@ -2,12 +2,16 @@
 //  CaptionView.swift
 //  Cutline
 //
-//  Created by John Bruce on 2/4/17.
+//  Created by John on 2/4/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 
 import UIKit
 
+/// CaptionView is a specialization of UITextView
+/// that takes care of updating the various insets
+/// when the keyboard changes and screen rotates.
+/// It also manages the placeholder text for the view.
 class CaptionView: UITextView {
 	
 	override var text: String! {

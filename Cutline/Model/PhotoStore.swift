@@ -2,19 +2,25 @@
 //  PhotoStore.swift
 //  Cutline
 //
-//  Created by John Bruce on 1/31/17.
+//  Created by John on 1/31/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 
 import UIKit
 import CoreData
 
+/// Passed to the completion handler
+/// with the result of calls by this class
 enum UpdateResult {
 	
 	case success(Photo?)
 	case failure(Error)
 }
 
+/// PhotoStore is responsible for all CoreData-related tasks.
+/// It is also responsible for management of the the underlying
+/// CoreData store. All NSManagedObjects that are returned from
+/// this class are associated with the main NSObjectContext.
 class PhotoStore: NSObject {
 	
 	// MARK: Properties

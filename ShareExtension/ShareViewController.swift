@@ -2,7 +2,7 @@
 //  ShareViewController.swift
 //  ShareExtension
 //
-//  Created by John Bruce on 2/7/17.
+//  Created by John on 2/7/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 
@@ -25,7 +25,6 @@ class ShareViewController: SLComposeServiceViewController {
 	}
 
     override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
 		
 		guard
 			let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
@@ -56,7 +55,6 @@ class ShareViewController: SLComposeServiceViewController {
     }
 
     override func didSelectPost() {
-        // This is called after the user selects Post.
 		
 		// If the provider didn't give us a UIImage, read the contents of the URL we were given
 		if image == nil {
@@ -85,7 +83,9 @@ class ShareViewController: SLComposeServiceViewController {
 				switch result {
 					
 				case .success:
+					
 					log("Image added to photomanager from extension successfully")
+					
 					// Save the record zone state in our cache so we don't bother creating it next time
 					self.photoManager.cloudManager.saveSyncState()
 				case let .failure(error):
@@ -93,9 +93,7 @@ class ShareViewController: SLComposeServiceViewController {
 				}
 				
 				// Inform the host that we're done when exiting this function, so it un-blocks its UI.
-				//
-				// The extension seems to be deallocated after this,
-				// so we can't just call this outside this completion handler
+				// Note: The extension is deallocated after this, so we can't just call this outside this completion handler
 				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
 			}
 		}

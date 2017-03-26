@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+/// PolaroidView sets the style
+/// of a UIImageView to resemble a polaroid photo.
 class PolaroidView: UIView {
 	
 	var image: UIImage?

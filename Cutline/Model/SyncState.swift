@@ -9,6 +9,7 @@
 import CloudKit
 import Foundation
 
+/// SyncState is a thread safe object that holds all client sync state.
 class SyncState: NSObject, NSCoding {
 	
 	// MARK: private properties (persisted)
@@ -17,6 +18,7 @@ class SyncState: NSObject, NSCoding {
 	private var _recordZone: CKRecordZone?
 	private var _subscribedForChanges = false
 	
+	/// Queue that ensures thread safety - internal to this class
 	private let queue = DispatchQueue(label: "cutline.syncStateQueue")
 	
 	override init() {
@@ -41,6 +43,9 @@ class SyncState: NSObject, NSCoding {
 		}
 	}
 	
+	/// Resets internal state and causes
+	/// all events to be re-fetched from the cloud
+	/// on the next call to fetchChanges()
 	func reset() {
 		
 		queue.sync {
@@ -51,6 +56,7 @@ class SyncState: NSObject, NSCoding {
 		}
 	}
 	
+	/// Marker that represents the last time we got changes from the database
 	var dbChangeToken: CKServerChangeToken? {
 		get {
 			return queue.sync { _dbChangeToken }
@@ -60,6 +66,7 @@ class SyncState: NSObject, NSCoding {
 		}
 	}
 	
+	/// Marker that represents the last object that we synced for our zone
 	var zoneChangeToken: CKServerChangeToken? {
 		get {
 			return queue.sync { _zoneChangeToken }
@@ -69,6 +76,7 @@ class SyncState: NSObject, NSCoding {
 		}
 	}
 	
+	/// The record that represents the zone for all user objects
 	var recordZone: CKRecordZone? {
 		get {
 			return queue.sync { _recordZone }
@@ -78,6 +86,8 @@ class SyncState: NSObject, NSCoding {
 		}
 	}
 	
+	/// A bool that represents if this client has
+	/// registered for push events for this database
 	var subscribedForChanges: Bool {
 		get {
 			return queue.sync { _subscribedForChanges }

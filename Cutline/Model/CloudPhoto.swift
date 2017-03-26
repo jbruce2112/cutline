@@ -10,13 +10,13 @@ import CloudKit
 import Foundation
 import UIKit
 
-// Tuple to bind a Photo with an image URL
+/// Tuple to bind a Photo with an image URL
 typealias PhotoPair = (photo: Photo, url: URL)
 
-// A simple container type to bridge between
-// a Photo (NSObjectModel) type and a CKRecord.
-// This allows the model to represent Photos
-// without needing to allocate an empty CoreData object.
+/// A simple container type to bridge between
+/// a Photo (NSObjectModel) type and a CKRecord.
+/// This allows the model to represent Photos
+/// without needing to allocate an empty CoreData object.
 struct CloudPhoto {
 	
 	// MARK: Properties

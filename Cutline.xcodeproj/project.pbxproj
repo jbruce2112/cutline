@@ -16,13 +16,13 @@
 		523751FC1E417C4900060607 /* ImageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FB1E417C4900060607 /* ImageStore.swift */; };
 		523751FF1E41928700060607 /* CreateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523751FE1E41928700060607 /* CreateViewController.swift */; };
 		523752051E467C0200060607 /* CaptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523752041E467C0200060607 /* CaptionView.swift */; };
-		523D26831E59FBF9000507DA /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* Key.swift */; };
+		523D26831E59FBF9000507DA /* PrefKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* PrefKey.swift */; };
 		523D26851E5A0512000507DA /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26841E5A0512000507DA /* Theme.swift */; };
 		5244DE8A1E51323E00C9C9ED /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244DE891E51323E00C9C9ED /* Common.swift */; };
 		5244DE8B1E51323E00C9C9ED /* Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5244DE891E51323E00C9C9ED /* Common.swift */; };
 		524530621E61C82D00305843 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
 		52589E101E67B93600C8BA29 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 524530611E61C82D00305843 /* PhotoManager.swift */; };
-		52589E111E67BB7900C8BA29 /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* Key.swift */; };
+		52589E111E67BB7900C8BA29 /* PrefKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 523D26821E59FBF9000507DA /* PrefKey.swift */; };
 		52589E141E67BC4F00C8BA29 /* Cutline.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 523751F61E41744F00060607 /* Cutline.xcdatamodeld */; };
 		525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525E6D101E6E15D20060EB51 /* PolaroidView.swift */; };
 		525F4CF91E48294C004615FD /* SearchResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525F4CF81E48294C004615FD /* SearchResultsViewController.swift */; };
@@ -93,14 +93,14 @@
 		523751FB1E417C4900060607 /* ImageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ImageStore.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		523751FE1E41928700060607 /* CreateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CreateViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		523752041E467C0200060607 /* CaptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CaptionView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		523D26821E59FBF9000507DA /* Key.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Key.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		523D26821E59FBF9000507DA /* PrefKey.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PrefKey.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		523D26841E5A0512000507DA /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Theme.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		5244DE891E51323E00C9C9ED /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Common.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		5244DE891E51323E00C9C9ED /* Common.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = Common.swift; path = ../Common.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		524530611E61C82D00305843 /* PhotoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PhotoManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		525E6D101E6E15D20060EB51 /* PolaroidView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = PolaroidView.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		525F4CF81E48294C004615FD /* SearchResultsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SearchResultsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		525F4CFE1E4AAA34004615FD /* ShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		525F4D001E4AAA34004615FD /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
+		525F4D001E4AAA34004615FD /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ShareViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		525F4D051E4AAA34004615FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		525F4D0D1E4AC49E004615FD /* Cutline.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Cutline.entitlements; sourceTree = "<group>"; };
 		525F4D0E1E4AC575004615FD /* ShareExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShareExtension.entitlements; sourceTree = "<group>"; };
@@ -185,7 +185,7 @@
 				52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */,
 				52F3920A1E68F983001EDC48 /* CloudPhoto.swift */,
 				523751FB1E417C4900060607 /* ImageStore.swift */,
-				523D26821E59FBF9000507DA /* Key.swift */,
+				523D26821E59FBF9000507DA /* PrefKey.swift */,
 				524530611E61C82D00305843 /* PhotoManager.swift */,
 				523751F91E4178A100060607 /* PhotoStore.swift */,
 				5214BA7D1E78DE5700C07B5B /* SyncState.swift */,
@@ -207,7 +207,6 @@
 		52A03E271E4028FE00A275AD = {
 			isa = PBXGroup;
 			children = (
-				5244DE891E51323E00C9C9ED /* Common.swift */,
 				52A03E321E4028FE00A275AD /* Cutline */,
 				525F4CFF1E4AAA34004615FD /* ShareExtension */,
 				52CB722D1E74604C00D3C7E5 /* CutlineTests */,
@@ -229,17 +228,10 @@
 		52A03E321E4028FE00A275AD /* Cutline */ = {
 			isa = PBXGroup;
 			children = (
-				52A03E331E4028FE00A275AD /* AppDelegate.swift */,
-				52A03E3A1E4028FE00A275AD /* Assets.xcassets */,
 				523751FD1E418C4C00060607 /* Controllers */,
-				525F4D0D1E4AC49E004615FD /* Cutline.entitlements */,
-				523751F61E41744F00060607 /* Cutline.xcdatamodeld */,
-				52A03E3F1E4028FE00A275AD /* Info.plist */,
-				52A03E371E4028FE00A275AD /* Main.storyboard */,
-				527421E81E79FDA700EE1FA7 /* main.swift */,
 				523752071E467DD600060607 /* Model */,
-				52AA359A1E80A24C008835C8 /* privacy.html */,
 				523752061E467DB400060607 /* View */,
+				52E8921C1E873FF700120BD9 /* Supporting Files */,
 			);
 			path = Cutline;
 			sourceTree = "<group>";
@@ -260,6 +252,22 @@
 				5291E1471E6A01D700A0BBE1 /* CloudKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		52E8921C1E873FF700120BD9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				52A03E331E4028FE00A275AD /* AppDelegate.swift */,
+				52A03E3A1E4028FE00A275AD /* Assets.xcassets */,
+				5244DE891E51323E00C9C9ED /* Common.swift */,
+				525F4D0D1E4AC49E004615FD /* Cutline.entitlements */,
+				523751F61E41744F00060607 /* Cutline.xcdatamodeld */,
+				52A03E3F1E4028FE00A275AD /* Info.plist */,
+				52A03E371E4028FE00A275AD /* Main.storyboard */,
+				527421E81E79FDA700EE1FA7 /* main.swift */,
+				52AA359A1E80A24C008835C8 /* privacy.html */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -458,7 +466,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				52589E111E67BB7900C8BA29 /* Key.swift in Sources */,
+				52589E111E67BB7900C8BA29 /* PrefKey.swift in Sources */,
 				52F3920D1E690E88001EDC48 /* PhotoStore.swift in Sources */,
 				5214BA7F1E78E7D800C07B5B /* SyncState.swift in Sources */,
 				52F3920C1E68FB15001EDC48 /* CloudPhoto.swift in Sources */,
@@ -480,7 +488,7 @@
 				525E6D111E6E15D20060EB51 /* PolaroidView.swift in Sources */,
 				5233394E1E7747C8000224D4 /* PhotoContainerView.swift in Sources */,
 				524530621E61C82D00305843 /* PhotoManager.swift in Sources */,
-				523D26831E59FBF9000507DA /* Key.swift in Sources */,
+				523D26831E59FBF9000507DA /* PrefKey.swift in Sources */,
 				52A03E661E403CDC00A275AD /* EditViewController.swift in Sources */,
 				52AC6D111E5A74B800C63013 /* SearchResultCell.swift in Sources */,
 				52A03E621E402F6000A275AD /* CollectionViewController.swift in Sources */,

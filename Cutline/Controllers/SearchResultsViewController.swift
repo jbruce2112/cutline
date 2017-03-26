@@ -2,7 +2,7 @@
 //  SearchResultsViewController.swift
 //  Cutline
 //
-//  Created by John Bruce on 2/5/17.
+//  Created by John on 2/5/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
 //
 

@@ -8,7 +8,11 @@
 
 import UIKit
 
-@objc
+
+/// Theme contains all properties that define
+/// a UI theme for the application. Theme.swift
+/// contains a number of extensions for common UIKit
+/// types that set view properties using the current theme.
 class Theme: NSObject {
 	
 	var backgroundColor: UIColor!
@@ -21,12 +25,15 @@ class Theme: NSObject {
 
 extension UIViewController {
 	
-	@objc
+	/// Gets the current theme and sets
+	/// the properties on the controller's view.
+	/// Note: Since extensions cannot override
+	/// functions, view controllers need to
+	/// manually call setTheme() during their setup.
 	func setTheme() {
 		setTheme(view.theme())
 	}
 	
-	@objc
 	func setTheme(_ theme: Theme) {
 		view.setTheme(theme)
 	}
@@ -34,12 +41,10 @@ extension UIViewController {
 
 extension UIView {
 	
-	@objc
 	func setTheme() {
 		setTheme(theme())
 	}
 	
-	@objc
 	func setTheme(_ theme: Theme) {
 		backgroundColor = theme.backgroundColor
 	}
@@ -48,7 +53,7 @@ extension UIView {
 		
 		let theme = Theme()
 		
-		if appGroupDefaults.bool(forKey: Key.nightMode.rawValue) {
+		if appGroupDefaults.bool(forKey: PrefKey.nightMode) {
 			
 			theme.isNight = true
 			theme.backgroundColor = .black

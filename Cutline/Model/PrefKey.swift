@@ -1,5 +1,5 @@
 //
-//  Key.swift
+//  PrefKey.swift
 //  Cutline
 //
 //  Created by John on 2/19/17.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-enum Key: String {
+struct PrefKey {
 	
-	case cellSync = "CellSyncEnabled"
-	case nightMode = "NightModeEnabled"
+	static let cellSync = "CellSyncEnabled"
+	static let nightMode = "NightModeEnabled"
 }

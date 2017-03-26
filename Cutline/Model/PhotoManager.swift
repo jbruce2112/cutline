@@ -10,6 +10,8 @@ import Foundation
 import CloudKit
 import UIKit
 
+/// Passed to the completion handler
+/// with the result of calls by this class
 enum PhotoUpdateResult {
 	case success
 	case failure(Error)
@@ -22,6 +24,12 @@ protocol PhotoChangeDelegate: class {
 	func didRemove()
 }
 
+/// PhotoManager glues together the usage of
+/// PhotoStore, ImageStore, and ClouKitManager.
+/// Clients should typically only need to use this class,
+/// since it ensures that each component is correctly updated
+/// for the operation (add/update/delete).
+/// It is also responsible for pushing all changes to the cloud on startup.
 class PhotoManager {
 	
 	// MARK: Properties
@@ -34,7 +42,7 @@ class PhotoManager {
 	// MARK: Functions
 	func setup() {
 		
-		cloudManager.delegate = self
+		cloudManager.cloudChangeDelegate = self
 		
 		cloudManager.setup {
 			
