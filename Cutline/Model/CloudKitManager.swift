@@ -73,7 +73,6 @@ class CloudKitManager {
 		}
 	}
 	
-	///
 	weak var cloudChangeDelegate: CloudChangeDelegate?
 	weak var networkStatusDelegate: NetworkStatusDelegate?
 	

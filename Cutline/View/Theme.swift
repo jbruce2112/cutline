@@ -21,6 +21,7 @@ class Theme: NSObject {
 	var accentColor: UIColor!
 	var barStyle: UIBarStyle!
 	var isNight = false
+	var keyboard: UIKeyboardAppearance!
 }
 
 extension UIViewController {
@@ -61,6 +62,7 @@ extension UIView {
 			theme.textColor = tintColor
 			theme.accentColor = .white
 			theme.barStyle = .black
+			theme.keyboard = .dark
 		} else {
 			
 			theme.isNight = false
@@ -69,6 +71,7 @@ extension UIView {
 			theme.textColor = .black
 			theme.accentColor = .blue
 			theme.barStyle = .default
+			theme.keyboard = .default
 		}
 		
 		return theme

@@ -54,6 +54,12 @@ class SearchResultsViewController: UITableViewController {
 		setTheme()
 	}
 	
+	override func setTheme(_ theme: Theme) {
+		super.setTheme(theme)
+		
+		searchController.searchBar.keyboardAppearance = theme.keyboard
+	}
+	
 	// MARK: TableView delegate functions
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		

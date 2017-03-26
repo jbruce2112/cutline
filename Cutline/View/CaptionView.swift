@@ -35,30 +35,17 @@ class CaptionView: UITextView {
 		super.init(coder: coder)
 	}
 	
-	// Called on object after its loaded from archive (storyboard or nib)
+	/// Called on object after its loaded from archive (storyboard or nib)
 	override func awakeFromNib() {
 		super.awakeFromNib()
 		
 		setup()
 	}
 	
-	private func setup() {
+	override func setTheme(_ theme: Theme) {
+		// Don't set standard theme properties with super call
 		
-		text = captionPlaceholder
-		font = UIFont.preferredFont(forTextStyle: .body)
-		textContainerInset = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 8)
-		backgroundColor = .clear
-		
-		delegate = self
-		
-		// Register observers for on-screen keyboard display events
-		let notificationCenter = NotificationCenter.default
-		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
-		                               name: NSNotification.Name.UIKeyboardDidShow, object: nil)
-		notificationCenter.addObserver(self, selector: #selector(keyboardWillHide),
-		                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
-		                               name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+		keyboardAppearance = theme.keyboard
 	}
 	
 	// MARK: keyboard display handlers
@@ -99,6 +86,28 @@ class CaptionView: UITextView {
 		} else {
 			return text
 		}
+	}
+	
+	// MARK: Private functions
+	private func setup() {
+		
+		text = captionPlaceholder
+		font = UIFont.preferredFont(forTextStyle: .body)
+		textContainerInset = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 8)
+		backgroundColor = .clear
+		
+		setTheme()
+		
+		delegate = self
+		
+		// Register observers for on-screen keyboard display events
+		let notificationCenter = NotificationCenter.default
+		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
+		                               name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+		notificationCenter.addObserver(self, selector: #selector(keyboardWillHide),
+		                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
+		                               name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
 	}
 }
 
