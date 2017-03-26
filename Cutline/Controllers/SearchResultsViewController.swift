@@ -46,6 +46,8 @@ class SearchResultsViewController: UITableViewController {
 		
 		// Don't show empty cells
 		tableView.tableFooterView = UIView()
+		
+		registerForPreviewing(with: self, sourceView: tableView)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -74,8 +76,6 @@ class SearchResultsViewController: UITableViewController {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		
 		let cell = tableView.dequeueReusableCell(withIdentifier: "SearchResultCell", for: indexPath) as! SearchResultCell
-		
-		registerForPreviewing(with: self, sourceView: cell)
 		
 		if !readyForSearch() {
 			return cell
@@ -164,6 +164,10 @@ extension SearchResultsViewController: UIViewControllerPreviewingDelegate {
 		
 		guard let selectedIndexPath = tableView.indexPathForRow(at: location) else {
 			return nil
+		}
+		
+		if let cell = tableView.cellForRow(at: selectedIndexPath) {
+			previewingContext.sourceRect = cell.frame
 		}
 		
 		let editController = presentingViewController?.storyboard?.instantiateViewController(

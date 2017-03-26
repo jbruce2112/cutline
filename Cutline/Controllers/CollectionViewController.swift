@@ -26,6 +26,8 @@ class CollectionViewController: UIViewController {
 		collectionView.dataSource = self
 		
 		photoManager.delegate = self
+		
+		registerForPreviewing(with: self, sourceView: collectionView)
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -128,8 +130,6 @@ extension CollectionViewController: UICollectionViewDelegate {
 
 	func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 		
-		registerForPreviewing(with: self, sourceView: cell)
-		
 		let photo = photoStore.photos[indexPath.row]
 		
 		// First, check for a cached thumbnail so we can
@@ -229,6 +229,10 @@ extension CollectionViewController: UIViewControllerPreviewingDelegate {
 		
 		guard let selectedIndexPath = collectionView.indexPathForItem(at: location) else {
 			return nil
+		}
+		
+		if let cell = collectionView.cellForItem(at: selectedIndexPath) {
+			previewingContext.sourceRect = cell.frame
 		}
 		
 		let editController =
