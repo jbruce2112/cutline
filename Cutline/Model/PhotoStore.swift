@@ -85,7 +85,8 @@ class PhotoStore: NSObject {
 	
 	func fetchModified(limit: Int?) -> [Photo] {
 		
-		let predicate = NSPredicate(format: "\(#keyPath(Photo.dirty)) == YES AND \(#keyPath(Photo.markedDeleted)) == NO")
+		let format = "\(#keyPath(Photo.ckRecord)) != nil AND \(#keyPath(Photo.dirty)) == YES AND \(#keyPath(Photo.markedDeleted)) == NO"
+		let predicate = NSPredicate(format: format)
 		return fetch(withPredicate: predicate, limit: limit)
 	}
 	
