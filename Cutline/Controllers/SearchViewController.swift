@@ -175,7 +175,7 @@ extension SearchViewController: SearchTermDelegate {
 			// Cancel the save if we started another search by the time this ran
 			if self.lastSearchTerm != searchTerm {
 				
-				log("Last search term \(self.lastSearchTerm) doesn't match pending save \(searchTerm)")
+				log("Last search term \(self.lastSearchTerm ?? "nil") doesn't match pending save \(searchTerm)")
 				return
 			}
 			
