@@ -136,12 +136,11 @@ class SettingsViewController: UITableViewController {
 		
 		guard
 			let infoDict = Bundle.main.infoDictionary,
-			let build = infoDict[kCFBundleVersionKey as String] as? String,
 			let version = infoDict["CFBundleShortVersionString"] as? String else {
-				return "0.0.0"
+				return "0.0"
 		}
 		
-		return "\(version).\(build)"
+		return version
 	}
 	
 	private func getVersion() -> String {
