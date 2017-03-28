@@ -32,13 +32,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// Inject the manager into the initial view controllers
 		collectionViewController.photoManager = photoManager
 		searchViewController.photoManager = photoManager
+		
+		// Handle updating the network indicator in the status bar
+		photoManager.cloudManager.networkStatusDelegate = self
 				
 		// Tell the photo manager to set everything up
 		// required for cloud communication, syncing and storage
 		photoManager.setup()
-		
-		// Handle updating the network indicator in the status bar
-		photoManager.cloudManager.networkStatusDelegate = self
 		
 		// Listen for push events
 		application.registerForRemoteNotifications()
