@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import CloudKit
 @testable import Cutline
 
 class CutlineTests: XCTestCase {
@@ -135,6 +136,9 @@ class CutlineTests: XCTestCase {
 		photo.caption = "Update 2"
 		updatePhoto(photo: photo, expecting: failResult)
 		XCTAssertEqual(photo.dirty, true)
+		
+		// fake the photo being synced with the cloud
+		photo.ckRecord = CloudPhoto.systemData(fromRecord: CKRecord(recordType: "Photo"))
 		
 		modifiedPhotos = photoManager.photoStore.fetchModified(limit: nil)
 		XCTAssertEqual(modifiedPhotos.count, 1)
