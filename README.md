@@ -10,7 +10,7 @@ Features:
 - Share extension for adding captions from external applications
 - 3D touch support
 - Search captions by keyword
-- 100% Swift
+- Pure Swift
 
 ## License
 The code is licensed under the MIT license. The various icons are not. 
