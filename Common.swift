@@ -1,6 +1,6 @@
 //
 //  Common.swift
-//  Cutline
+//  Cutlines
 //
 //  Created by John on 2/12/17.
 //  Copyright © 2017 Bruce32. All rights reserved.
