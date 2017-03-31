@@ -13,18 +13,15 @@ import UIKit
 
 class ShareViewController: SLComposeServiceViewController {
 	
-	var imageURL: URL!
-	var image: UIImage!
-	
-	var photoManager = PhotoManager()
+	var image: UIImage?
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		placeholder = captionPlaceholder
 	}
-
-    override func isContentValid() -> Bool {
+	
+	override func isContentValid() -> Bool {
 		
 		guard
 			let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
@@ -41,53 +38,48 @@ class ShareViewController: SLComposeServiceViewController {
 			
 			itemProvider.loadItem(forTypeIdentifier: imageUTI, options: nil) { (item, _) in
 				
-				if let image = item as? UIImage {
+				switch item {
 					
+				case let image as UIImage:
 					self.image = image
-				} else if let url = item as? URL {
-					
-					self.imageURL = url
+				case let data as Data:
+					self.image = UIImage(data: data)
+				case let url as URL:
+					self.image = UIImage(contentsOfFile: url.path)
+				default:
+					break
 				}
 			}
 		}
 		
-		return imageURL != nil || image != nil
-    }
-
-    override func didSelectPost() {
+		return image != nil
+	}
+	
+	override func didSelectPost() {
 		
-		// If the provider didn't give us a UIImage, read the contents of the URL we were given
-		if image == nil {
+		guard let image = self.image else {
 			
-			// Note: The URL from the image is not an ALAsset URL, nor is it possible to
-			// reliably derive one from it, since the NSItemProvider may be from any image source.
-			// So, we just save the image contents to disk along with the caption and load them up when the app starts again.
-			image = UIImage(contentsOfFile: imageURL.path)
+			log("Unable to load image from extension")
 			
-			if image == nil {
-				
-				log("Error loading image from imageURL \(imageURL.path)")
-				
-				// Inform the host that we're done when exiting this function, so it un-blocks its UI.
-				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
-				return
-			}
+			// Inform the host that we're done when exiting this function, so it un-blocks its UI.
+			self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+			return
 		}
 		
+		let photoManager = PhotoManager()
 		photoManager.setupNoSync {
 			
 			// Set backgroundUpload = true so we return control to the host app
 			// as soon as we add the photo to our local store. The cloud upload will continue in the background
-			self.photoManager.add(image: self.image, caption: self.contentText, dateTaken: Date(), backgroundUpload: true) { result in
+			photoManager.add(image: image, caption: self.contentText, dateTaken: Date(), backgroundUpload: true) { result in
 				
 				switch result {
 					
 				case .success:
 					
-					log("Image added to photomanager from extension successfully")
-					
 					// Save the record zone state in our cache so we don't bother creating it next time
-					self.photoManager.cloudManager.saveSyncState()
+					photoManager.cloudManager.saveSyncState()
+					log("Image added to photomanager from extension successfully")
 				case let .failure(error):
 					log("Failed to add image to photomanager from extension \(error)")
 				}
@@ -97,5 +89,5 @@ class ShareViewController: SLComposeServiceViewController {
 				self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
 			}
 		}
-    }
+	}
 }
