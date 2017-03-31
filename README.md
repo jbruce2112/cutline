@@ -1,6 +1,7 @@
+# Cutlines
+
 [![Build Status](https://travis-ci.org/jbruce2112/cutlines.svg?branch=master)](https://travis-ci.org/jbruce2112/cutlines)
 
-# Cutlines
 
 Cutlines is a universal iOS application that allows you to add captions to photos from your device’s photo library.
 
@@ -10,7 +11,7 @@ Features:
 - Share extension for adding captions from external applications
 - 3D touch support
 - Search captions by keyword
-- 100% Swift
+- Pure Swift
 
 ## License
 The code is licensed under the MIT license. The various icons are not. 
