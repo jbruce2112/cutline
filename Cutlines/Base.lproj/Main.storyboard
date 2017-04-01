@@ -118,31 +118,39 @@
                                             <accessibilityTraits key="traits" notEnabled="YES"/>
                                         </accessibility>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" tag="100" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="JZ1-SB-twV">
                                         <rect key="frame" x="0.0" y="243.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="JZ1-SB-twV" id="ncr-gE-bnu">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eCO-iF-fNc" userLabel="Attribution Label">
-                                                    <rect key="frame" x="8" y="8" width="359" height="27"/>
-                                                    <gestureRecognizers/>
-                                                    <attributedString key="attributedText">
-                                                        <fragment content="Attribution">
-                                                            <attributes>
-                                                                <font key="NSFont" metaFont="system" size="17"/>
-                                                            </attributes>
-                                                        </fragment>
-                                                    </attributedString>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1dx-Kp-32e">
+                                                    <rect key="frame" x="8" y="8" width="359" height="27.5"/>
+                                                    <subviews>
+                                                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Icon pack by " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eCO-iF-fNc" userLabel="Icons Label">
+                                                            <rect key="frame" x="0.0" y="0.0" width="101.5" height="27.5"/>
+                                                            <gestureRecognizers/>
+                                                            <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="17"/>
+                                                            <nil key="textColor"/>
+                                                            <nil key="highlightedColor"/>
+                                                        </label>
+                                                        <button opaque="NO" contentMode="left" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l6I-6a-YDV">
+                                                            <rect key="frame" x="101.5" y="0.0" width="257.5" height="27.5"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                            <state key="normal" title="Icons8"/>
+                                                        </button>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstItem="l6I-6a-YDV" firstAttribute="leading" secondItem="eCO-iF-fNc" secondAttribute="trailing" id="zdf-uR-u2T"/>
+                                                    </constraints>
+                                                </stackView>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="trailingMargin" secondItem="eCO-iF-fNc" secondAttribute="trailing" id="5b0-JX-XkS"/>
-                                                <constraint firstItem="eCO-iF-fNc" firstAttribute="top" secondItem="ncr-gE-bnu" secondAttribute="topMargin" id="740-i5-OrT"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="eCO-iF-fNc" secondAttribute="bottom" id="Xea-nN-ObN"/>
-                                                <constraint firstItem="eCO-iF-fNc" firstAttribute="leading" secondItem="ncr-gE-bnu" secondAttribute="leadingMargin" id="Yui-mS-OV8"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="1dx-Kp-32e" secondAttribute="trailing" id="2Wm-J4-A0N"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="1dx-Kp-32e" secondAttribute="bottom" id="CfI-TM-mRl"/>
+                                                <constraint firstItem="1dx-Kp-32e" firstAttribute="leading" secondItem="ncr-gE-bnu" secondAttribute="leadingMargin" id="Iae-T4-9Tv"/>
+                                                <constraint firstItem="1dx-Kp-32e" firstAttribute="top" secondItem="ncr-gE-bnu" secondAttribute="topMargin" id="sA1-oL-7sa"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -188,6 +196,7 @@
                         <outlet property="cellSyncSwitch" destination="dtI-VI-jBT" id="7OK-4t-VaD"/>
                         <outlet property="darkModeLabel" destination="E4Y-QL-BVZ" id="rNH-Z6-3Xx"/>
                         <outlet property="darkModeSwitch" destination="UI7-ZY-cQj" id="9rs-Kt-nMZ"/>
+                        <outlet property="iconsButton" destination="l6I-6a-YDV" id="Cb2-DO-AZO"/>
                         <outlet property="privacyLabel" destination="i5K-g4-bqV" id="A6Z-5E-Bgn"/>
                         <outlet property="versionLabel" destination="wdH-KF-iJv" id="iqo-KO-qCe"/>
                     </connections>
