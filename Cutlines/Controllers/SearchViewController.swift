@@ -117,7 +117,7 @@ class SearchViewController: UITableViewController {
 		let view = UITableViewHeaderFooterView()
 		view.contentView.setTheme()
 		
-		let theme = view.contentView.theme()
+		let theme = Theme()
 		view.contentView.backgroundColor = theme.altBackgroundColor
 		
 		if theme.isNight {

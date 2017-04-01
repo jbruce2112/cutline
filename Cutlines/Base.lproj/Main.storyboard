@@ -191,12 +191,12 @@
                         </connections>
                     </tableView>
                     <connections>
-                        <outlet property="attributionLabel" destination="eCO-iF-fNc" id="c9u-vC-tQi"/>
                         <outlet property="cellSyncLabel" destination="IH7-iT-bU1" id="WCQ-Xb-MqO"/>
                         <outlet property="cellSyncSwitch" destination="dtI-VI-jBT" id="7OK-4t-VaD"/>
                         <outlet property="darkModeLabel" destination="E4Y-QL-BVZ" id="rNH-Z6-3Xx"/>
                         <outlet property="darkModeSwitch" destination="UI7-ZY-cQj" id="9rs-Kt-nMZ"/>
                         <outlet property="iconsButton" destination="l6I-6a-YDV" id="Cb2-DO-AZO"/>
+                        <outlet property="iconsLabel" destination="eCO-iF-fNc" id="Emo-Gl-znl"/>
                         <outlet property="privacyLabel" destination="i5K-g4-bqV" id="A6Z-5E-Bgn"/>
                         <outlet property="versionLabel" destination="wdH-KF-iJv" id="iqo-KO-qCe"/>
                     </connections>
