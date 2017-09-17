@@ -93,7 +93,7 @@ class PhotoContainerView: UIView {
 		
 		addSubview(captionView)
 		
-		backgroundColor = UIColor(colorLiteralRed: 255.0 / 255.0, green: 254.0 / 255.0, blue: 245.0 / 255.0, alpha: 1.0)
+		backgroundColor = UIColor(red: 255.0 / 255.0, green: 254.0 / 255.0, blue: 245.0 / 255.0, alpha: 1.0)
 		
 		polaroidView.setNeedsLayout()
 		
