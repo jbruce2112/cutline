@@ -137,7 +137,13 @@ class CloudKitManager {
 		
 		// Create a CKRecord for each photo
 		let zoneID = syncState.recordZone!.zoneID
-		let records = pairs.map { CloudPhoto.createRecord(fromPair: $0, withZoneID: zoneID) }
+		
+		var records = [CKRecord]()
+		for pair in pairs {
+			if let record = CloudPhoto.createRecord(fromPair: pair, withZoneID: zoneID) {
+				records.append(record)
+			}
+		}
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
 		
@@ -214,8 +220,8 @@ class CloudKitManager {
 			let record = CloudPhoto.systemRecord(fromData: photo.ckRecord!)
 			
 			// Set the only fields that we allow to be changed
-			record[CloudPhoto.captionKey] = photo.caption! as CKRecordValue?
-			record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
+			record[CloudPhoto.captionKey] = photo.caption! as NSString?
+			record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated as NSDate?
 			
 			records.append(record)
 			log("Pushing UPDATE for photo with caption \(photo.caption!)")

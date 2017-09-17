@@ -91,7 +91,7 @@ class EditViewController: UIViewController {
 		if !deleted && caption != initialCaption {
 			
 			photo.caption = caption
-			photo.lastUpdated = NSDate()
+			photo.lastUpdated = Date()
 			photoManager.update(photo: photo, completion: nil)
 		}
 		

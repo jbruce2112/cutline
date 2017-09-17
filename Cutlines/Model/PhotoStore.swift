@@ -149,9 +149,9 @@ class PhotoStore: NSObject {
 			let photo = NSManagedObject(entity: entityDescription!, insertInto: viewContext) as! Photo
 			photo.id = id
 			photo.caption = caption
-			photo.dateTaken = dateTaken as NSDate
-			photo.dateAdded = NSDate()
-			photo.lastUpdated = NSDate()
+			photo.dateTaken = dateTaken
+			photo.dateAdded = Date()
+			photo.lastUpdated = Date()
 			
 			viewContext.insert(photo)
 			

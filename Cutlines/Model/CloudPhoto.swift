@@ -21,10 +21,10 @@ struct CloudPhoto {
 	
 	// MARK: Properties
 	var id: String
-	var lastUpdated: NSDate
-	var dateTaken: NSDate
-	var dateAdded: NSDate
-	var ckRecord: NSData?
+	var lastUpdated: Date
+	var dateTaken: Date
+	var dateAdded: Date
+	var ckRecord: Data?
 	var caption: String
 	
 	var image: Data?
@@ -37,25 +37,46 @@ struct CloudPhoto {
 	static let lastUpdatedKey = "lastUpdated"
 	static let idKey = "id"
 		
-	init(fromPair pair: PhotoPair) {
+	init?(fromPair pair: PhotoPair) {
 		
-		caption = pair.photo.caption!
-		dateAdded = pair.photo.dateAdded!
-		dateTaken = pair.photo.dateTaken!
-		lastUpdated = pair.photo.lastUpdated!
-		id = pair.photo.id!
-		ckRecord = pair.photo.ckRecord
-		imageAsset = CKAsset(fileURL: pair.url)
+		guard
+			let caption = pair.photo.caption,
+			let dateAdded = pair.photo.dateAdded,
+			let dateTaken = pair.photo.dateTaken,
+			let lastUpdated = pair.photo.lastUpdated,
+			let id = pair.photo.id else {
+				return nil
+		}
+		
+		self.caption = caption
+		self.dateAdded = dateAdded
+		self.dateTaken = dateTaken
+		self.lastUpdated = lastUpdated
+		self.id = id
+		
+		if let record = pair.photo.ckRecord {
+			self.ckRecord = record
+		}
+		self.imageAsset = CKAsset(fileURL: pair.url)
 	}
 	
 	init?(fromRecord record: CKRecord) {
 	
-		caption = record[CloudPhoto.captionKey] as! String
-		dateAdded = record[CloudPhoto.dateAddedKey] as! NSDate
-		dateTaken = record[CloudPhoto.dateTakenKey] as! NSDate
-		lastUpdated = record[CloudPhoto.lastUpdatedKey] as! NSDate
-		id = record[CloudPhoto.idKey] as! String
-		ckRecord = CloudPhoto.systemData(fromRecord: record)
+		guard
+			let caption = record[CloudPhoto.captionKey] as? String,
+			let dateAdded = record[CloudPhoto.dateAddedKey] as? Date,
+			let dateTaken = record[CloudPhoto.dateTakenKey] as? Date,
+			let lastUpdated = record[CloudPhoto.lastUpdatedKey] as? Date,
+			let id = record[CloudPhoto.idKey] as? String else {
+				return nil
+		}
+		
+		self.id = id
+		self.caption = caption
+		self.dateAdded = dateAdded
+		self.dateTaken = dateTaken
+		self.lastUpdated = lastUpdated
+		self.ckRecord = CloudPhoto.systemData(fromRecord: record)
 		
 		// sanity check
 		assert(record.recordID.recordName == id)
@@ -76,7 +97,7 @@ struct CloudPhoto {
 	
 	// MARK: Static functions for converting between NSData and CKRecord
 	// (We store only the system fields of the CKRecord)
-	static func systemData(fromRecord record: CKRecord) -> NSData {
+	static func systemData(fromRecord record: CKRecord) -> Data {
 		
 		let archivedData = NSMutableData()
 		let archiver = NSKeyedArchiver(forWritingWith: archivedData)
@@ -85,20 +106,22 @@ struct CloudPhoto {
 		record.encodeSystemFields(with: archiver)
 		archiver.finishEncoding()
 		
-		return archivedData
+		return archivedData as Data
 	}
 	
-	static func systemRecord(fromData archivedData: NSData) -> CKRecord {
+	static func systemRecord(fromData archivedData: Data) -> CKRecord {
 		
-		let unarchiver = NSKeyedUnarchiver(forReadingWith: archivedData as Data)
+		let unarchiver = NSKeyedUnarchiver(forReadingWith: archivedData)
 		unarchiver.requiresSecureCoding = true
 		
 		return CKRecord(coder: unarchiver)!
 	}
 	
-	static func createRecord(fromPair pair: PhotoPair, withZoneID zoneID: CKRecordZoneID) -> CKRecord {
+	static func createRecord(fromPair pair: PhotoPair, withZoneID zoneID: CKRecordZoneID) -> CKRecord? {
 		
-		let photo = CloudPhoto(fromPair: pair)
+		guard let photo = CloudPhoto(fromPair: pair) else {
+			return nil
+		}
 		
 		// We enforce a unique constraint with our photoID in CloudKit
 		// by always creating a record from a CKRecordID with a recordName of photoID
@@ -106,10 +129,10 @@ struct CloudPhoto {
 		let record = CKRecord(recordType: "Photo", recordID: recordID)
 		
 		record[CloudPhoto.captionKey] = photo.caption as NSString
-		record[CloudPhoto.dateAddedKey] = photo.dateAdded
-		record[CloudPhoto.dateTakenKey] = photo.dateTaken
+		record[CloudPhoto.dateAddedKey] = photo.dateAdded as NSDate
+		record[CloudPhoto.dateTakenKey] = photo.dateTaken as NSDate
 		record[CloudPhoto.imageKey] = photo.imageAsset
-		record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated
+		record[CloudPhoto.lastUpdatedKey] = photo.lastUpdated as NSDate
 		record[CloudPhoto.idKey] = photo.id as NSString
 		
 		return record
