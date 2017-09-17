@@ -5,6 +5,7 @@ disabled_rules:
         - force_try
         - vertical_whitespace
         - nesting
+        - object_literal
 opt_in_rules:
         - empty_count
         - explicit_init
