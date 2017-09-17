@@ -77,7 +77,7 @@ class SearchViewController: UITableViewController {
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
 		
-		searchController.searchBar.barStyle = theme.barStyle
+		searchController.searchBar.setTheme()
 		
 		// force the section headers to refresh
 		tableView.reloadSections(IndexSet(integer: 0), with: .none)

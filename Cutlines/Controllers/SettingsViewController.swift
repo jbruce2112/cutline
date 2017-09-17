@@ -26,6 +26,8 @@ class SettingsViewController: UITableViewController {
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		navigationItem.title = "Settings"
+		
 		versionLabel.text = getVersion()
 		
 		let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(iconsLabelTapped))

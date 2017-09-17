@@ -100,6 +100,19 @@ extension UIToolbar {
 	}
 }
 
+extension UISearchBar {
+	
+	override func setTheme(_ theme: Theme) {
+		barStyle = theme.barStyle
+		
+		// Force update of the textColor.
+		// It doesn't reflect the new barStyle if there is already text in it otherwise
+		if let textField = self.value(forKey: "searchField") as? UITextField {
+			textField.textColor = theme.textColor
+		}
+	}
+}
+
 extension UITableViewCell {
 	
 	override func setTheme(_ theme: Theme) {
