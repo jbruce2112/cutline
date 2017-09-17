@@ -50,7 +50,7 @@ class CaptionView: UITextView {
 	
 	// MARK: keyboard display handlers
 	
-	func resizeInsetsForKeyboard(_ notification: NSNotification) {
+	@objc func resizeInsetsForKeyboard(_ notification: NSNotification) {
 		
 		let kbValue = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
 		let keyboard = kbValue.cgRectValue
@@ -71,7 +71,7 @@ class CaptionView: UITextView {
 		scrollIndicatorInsets = contentInsets
 	}
 	
-	func keyboardWillHide(_ notification: NSNotification) {
+	@objc func keyboardWillHide(_ notification: NSNotification) {
 		
 		// Reset the our insets
 		let contentInsets = UIEdgeInsets.zero

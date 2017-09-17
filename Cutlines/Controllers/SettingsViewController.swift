@@ -90,13 +90,13 @@ class SettingsViewController: UITableViewController {
 		}
 	}
 	
-	func openIconsURL() {
+	@objc func openIconsURL() {
 		
 		// Open the icons URL in the browser
 		UIApplication.shared.open(URL(string: "https://icons8.com")!, options: [:], completionHandler: nil)
 	}
 	
-	func iconsLabelTapped(recognizer: UITapGestureRecognizer) {
+	@objc func iconsLabelTapped(recognizer: UITapGestureRecognizer) {
 		
 		if recognizer.state == UIGestureRecognizerState.ended {
 			

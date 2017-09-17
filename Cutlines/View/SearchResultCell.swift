@@ -57,7 +57,7 @@ class SearchResultCell: UITableViewCell {
 		
 		// set a lower priority for this equality so the image grows as large as it can
 		let heightConstraint = resultImageView.heightAnchor.constraint(equalTo: contentView.heightAnchor)
-		heightConstraint.priority = UILayoutPriorityDefaultHigh
+		heightConstraint.priority = UILayoutPriority.defaultHigh
 		constraints.append(heightConstraint)
 		
 		// Center the label vertically and give it some padding between the image
@@ -78,12 +78,11 @@ class SearchResultCell: UITableViewCell {
 		let matchStartIndex = captionLowercased.range(of: result.searchTerm)!.lowerBound
 		
 		var displayStart = captionLowercased.startIndex
-		
-		let displayString = captionNoNewline.substring(from: displayStart)
+		let displayString = String(captionNoNewline[displayStart...])
 		
 		// See if we would end up truncating the string if it was displayed
 		let labelWidth = resultLabel.frame.size.width
-		let displaySize = displayString.size(attributes: [NSFontAttributeName: resultLabel.font])
+		let displaySize = displayString.size(withAttributes: [NSAttributedStringKey.font: resultLabel.font])
 		
 		if displaySize.width < labelWidth || labelWidth == 0 {
 			return displayString
@@ -100,7 +99,7 @@ class SearchResultCell: UITableViewCell {
 			
 			// We need to truncate the beginning
 			displayStart = captionLowercased.index(matchStartIndex, offsetBy: -1 * leadingPaddingChars)
-			return "...\(captionNoNewline.substring(from: displayStart))"
+			return "...\(captionNoNewline[displayStart...])"
 		} else {
 			
 			// The searchTerm is near the beginning, and the label

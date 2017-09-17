@@ -46,7 +46,7 @@ class PhotoContainerView: UIView {
 		
 		// width = self.width + 20 @750
 		let widthConstraint = superview.widthAnchor.constraint(equalTo: widthAnchor, constant: 20)
-		widthConstraint.priority = UILayoutPriorityDefaultHigh
+		widthConstraint.priority = UILayoutPriority.defaultHigh
 		constraints.append(widthConstraint)
 		
 		// superview.width >= self.width + 20
@@ -73,7 +73,7 @@ class PhotoContainerView: UIView {
 		captionView.frame = bounds
 	}
 	
-	func flip() {
+	@objc func flip() {
 		
 		// Set up the views as a tuple in case we want to
 		// flip this view again later on

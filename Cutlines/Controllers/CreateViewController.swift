@@ -45,8 +45,8 @@ class CreateViewController: UIViewController {
 		// bottomLayoutGuide.top = container.bottom + 10
 		let bottomEQ = bottomLayoutGuide.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
 		
-		topEQ.priority = UILayoutPriorityDefaultHigh
-		bottomEQ.priority = UILayoutPriorityDefaultHigh
+		topEQ.priority = UILayoutPriority.defaultHigh
+		bottomEQ.priority = UILayoutPriority.defaultHigh
 		
 		topEQ.isActive = true
 		bottomEQ.isActive = true
@@ -72,7 +72,7 @@ class CreateViewController: UIViewController {
 		}
 	}
 	
-	func cancel() {
+	@objc func cancel() {
 		
 		canceled = true
 		_ = navigationController?.popViewController(animated: true)

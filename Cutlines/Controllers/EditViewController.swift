@@ -57,8 +57,8 @@ class EditViewController: UIViewController {
 		// toolbar.top = container.bottom + 10
 		let bottomEQ = toolbar.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
 		
-		topEQ.priority = UILayoutPriorityDefaultHigh
-		bottomEQ.priority = UILayoutPriorityDefaultHigh
+		topEQ.priority = UILayoutPriority.defaultHigh
+		bottomEQ.priority = UILayoutPriority.defaultHigh
 		
 		topEQ.isActive = true
 		bottomEQ.isActive = true

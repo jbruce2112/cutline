@@ -59,7 +59,7 @@ extension UIViewController {
 		setTheme(Theme())
 	}
 	
-	func setTheme(_ theme: Theme) {
+	@objc func setTheme(_ theme: Theme) {
 		view.setTheme(theme)
 	}
 }
@@ -70,7 +70,7 @@ extension UIView {
 		setTheme(Theme())
 	}
 	
-	func setTheme(_ theme: Theme) {
+	@objc func setTheme(_ theme: Theme) {
 		backgroundColor = theme.backgroundColor
 	}
 }
