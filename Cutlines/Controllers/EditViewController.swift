@@ -43,6 +43,8 @@ class EditViewController: UIViewController {
 		
 		initialCaption = containerView.captionView.getCaption()
 		
+		navigationItem.title = "Edit"
+		
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
 		

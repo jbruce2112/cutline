@@ -86,6 +86,10 @@ extension UINavigationBar {
 	
 	override func setTheme(_ theme: Theme) {
 		barStyle = theme.barStyle
+		
+		if #available(iOS 11, *) {
+			prefersLargeTitles = true
+		}
 	}
 }
 

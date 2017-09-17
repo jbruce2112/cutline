@@ -32,7 +32,7 @@ class CreateViewController: UIViewController {
 		
 		navigationItem.setRightBarButtonItems([cancelButton, flipButton], animated: false)
 		
-		navigationItem.title = "Create"
+		navigationItem.title = "Add"
 		
 		// Don't mess with the captionView insets
 		automaticallyAdjustsScrollViewInsets = false
