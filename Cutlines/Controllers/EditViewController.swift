@@ -103,11 +103,11 @@ class EditViewController: UIViewController {
 		containerView.captionView.endEditing(true)
 	}
 	
-	@IBAction func deleteItem() {
+	@IBAction func deleteItem(_ sender: UIBarButtonItem) {
 		deleteItem(nil)
 	}
 	
-	@IBAction func shareItem() {
+	@IBAction func shareItem(_ sender: UIBarButtonItem) {
 		shareItem(nil)
 	}
 	
@@ -187,5 +187,19 @@ extension EditViewController {
 		}
 		
 		return [shareAction, deleteAction]
+	}
+}
+
+// MARK: UIGestureRecognizerDelegate
+extension EditViewController: UIGestureRecognizerDelegate {
+	
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+		
+		// Ignore touch events on the toolbar
+		if let touchView = touch.view, touchView.isDescendant(of: toolbar) {
+			return false
+		} else {
+			return true
+		}
 	}
 }

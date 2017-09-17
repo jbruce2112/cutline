@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="J1m-E3-gT8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="J1m-E3-gT8">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -378,13 +378,13 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="zTR-Mw-f1i"/>
                                     <barButtonItem systemItem="action" id="riE-5e-ohj">
                                         <connections>
-                                            <action selector="shareItem" destination="s7p-6D-dKC" id="7hc-Dh-Tmy"/>
+                                            <action selector="shareItem:" destination="s7p-6D-dKC" id="2ml-eB-cqG"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="yHq-SI-ahp"/>
                                     <barButtonItem systemItem="trash" id="cSj-Ak-P7k">
                                         <connections>
-                                            <action selector="deleteItem" destination="s7p-6D-dKC" id="4yW-Bm-XgJ"/>
+                                            <action selector="deleteItem:" destination="s7p-6D-dKC" id="r84-3U-9c5"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="KCM-ml-zvS"/>
@@ -398,7 +398,7 @@
                             <constraint firstItem="Yqy-mk-Ih0" firstAttribute="leading" secondItem="gl7-TF-CYj" secondAttribute="leading" id="T9o-VM-fnE"/>
                         </constraints>
                         <connections>
-                            <outletCollection property="gestureRecognizers" destination="l6i-4f-kng" appends="YES" id="Qma-eI-KYq"/>
+                            <outletCollection property="gestureRecognizers" destination="1DV-JA-jNW" appends="YES" id="46g-hU-ABL"/>
                         </connections>
                     </view>
                     <toolbarItems/>
@@ -410,9 +410,10 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Ac-d9-IoI" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer id="l6i-4f-kng">
+                <tapGestureRecognizer id="1DV-JA-jNW">
                     <connections>
-                        <action selector="backgroundTapped:" destination="s7p-6D-dKC" id="ASp-cw-ZPb"/>
+                        <action selector="backgroundTapped:" destination="s7p-6D-dKC" id="331-mn-SZq"/>
+                        <outlet property="delegate" destination="s7p-6D-dKC" id="c8H-6j-34X"/>
                     </connections>
                 </tapGestureRecognizer>
             </objects>
@@ -435,7 +436,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FMD-P7-uQo">
-                                            <rect key="frame" x="15" y="0.0" width="325" height="79.5"/>
+                                            <rect key="frame" x="16" y="0.0" width="324" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="0.0"/>
                                             <nil key="textColor"/>
@@ -469,7 +470,7 @@
                     <tabBarItem key="tabBarItem" title="My Cutlines" image="photoStack" id="Afi-X1-9el"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="Es9-NF-GkL">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -507,7 +508,7 @@
                     <tabBarItem key="tabBarItem" systemItem="search" id="RZQ-FG-BON"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="xBW-0J-pKE">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -525,7 +526,7 @@
         <image name="settingsFilled" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="zGq-Es-g0b"/>
         <segue reference="8L3-xg-qh3"/>
+        <segue reference="zGq-Es-g0b"/>
     </inferredMetricsTieBreakers>
 </document>
