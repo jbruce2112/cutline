@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Photos
 
 class CollectionViewController: UIViewController {
 	
@@ -91,31 +90,6 @@ class CollectionViewController: UIViewController {
 	// MARK: Actions
 	@IBAction func add() {
 		
-		// Ensure we're authorized to access the photo library
-		PHPhotoLibrary.requestAuthorization { status in
-			switch status {
-			case .authorized:
-				self.showImagePicker()
-			default:
-				let alert = UIAlertController(title: "Photo Library Permission",
-				                              message: "Photos permission not available. Please enable it in Settings.",
-				                              preferredStyle: .alert)
-				alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
-				
-					guard let settingsURL = URL(string: UIApplicationOpenSettingsURLString) else {
-						return
-					}
-					
-					UIApplication.shared.open(settingsURL)
-				})
-				self.present(alert, animated: true)
-				break
-			}
-		}
-	}
-	
-	private func showImagePicker() {
-		
 		let imagePicker = UIImagePickerController()
 		
 		imagePicker.sourceType = .photoLibrary
@@ -193,10 +167,20 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
 		
 		// get picked image from the info dictionary
-		guard
-			let image = info[UIImagePickerControllerOriginalImage] as? UIImage,
-			let url = info[UIImagePickerControllerReferenceURL] as? URL else {
-				return
+		guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+			return
+		}
+		
+		var fileURL: URL? = nil
+		var assetURL: URL? = nil
+		
+		// UIImagePickerControllerReferenceURL is deprecated as of iOS 11
+		// the system will also skip the photo library authorization prompt to the user
+		// if we avoid using the ALAsset API and instead use the new ImageURL key
+		if #available(iOS 11.0, *) {
+			fileURL = info[UIImagePickerControllerImageURL] as? URL
+		} else {
+			assetURL = info[UIImagePickerControllerReferenceURL] as? URL
 		}
 		
 		// dismiss the image picker
@@ -206,7 +190,8 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
 			
 			createViewController.photoManager = self.photoManager
-			createViewController.imageURL = url
+			createViewController.assetURL = assetURL
+			createViewController.fileURL = fileURL
 			createViewController.image = image
 			
 			self.navigationController?.pushViewController(createViewController, animated: true)

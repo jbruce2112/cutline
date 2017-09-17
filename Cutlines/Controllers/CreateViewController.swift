@@ -13,7 +13,8 @@ class CreateViewController: UIViewController {
 
 	// MARK: Properties
 	var image: UIImage!
-	var imageURL: URL!
+	var assetURL: URL?
+	var fileURL: URL?
 	var photoManager: PhotoManager!
 	
 	private var containerView = PhotoContainerView()
@@ -75,7 +76,7 @@ class CreateViewController: UIViewController {
 	@objc func cancel() {
 		
 		canceled = true
-		_ = navigationController?.popViewController(animated: true)
+		navigationController?.popViewController(animated: true)
 	}
 	
 	// MARK: Actions
@@ -86,19 +87,31 @@ class CreateViewController: UIViewController {
 	
 	private func save() {
 		
-		let results = PHAsset.fetchAssets(withALAssetURLs: [imageURL], options: nil)
-		
-		defer {
-			navigationController!.popViewController(animated: true)
+		guard let creationDate = getCreationDate() else {
+			return
 		}
 		
-		guard
-			let asset = results.firstObject else  {
-				
-				log("Error fetching asset URL \(imageURL.absoluteString)")
-				return
-			}
+		photoManager.add(image: image, caption: containerView.captionView.getCaption(), dateTaken: creationDate, completion: nil)
+	}
+	
+	private func getCreationDate() -> Date? {
 		
-		photoManager.add(image: image, caption: containerView.captionView.getCaption(), dateTaken: asset.creationDate!, completion: nil)
+		// If we have the fileURL, try and read the ctime from that
+		if
+			let fileURL = fileURL,
+			let attrs = try? FileManager.default.attributesOfItem(atPath: fileURL.relativePath),
+			let ctime = attrs[.creationDate] as? Date {
+			return ctime
+		}
+		
+		// Otherwise use the ALAssets API to fetch the PHAsset
+		guard
+			let url = assetURL,
+			let asset = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil).firstObject else  {
+				log("Error fetching asset URL")
+				return nil
+		}
+		
+		return asset.creationDate
 	}
 }
