@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Photos
 
 class CollectionViewController: UIViewController {
 	
@@ -90,6 +91,31 @@ class CollectionViewController: UIViewController {
 	// MARK: Actions
 	@IBAction func add() {
 		
+		// Ensure we're authorized to access the photo library
+		PHPhotoLibrary.requestAuthorization { status in
+			switch status {
+			case .authorized:
+				self.showImagePicker()
+			default:
+				let alert = UIAlertController(title: "Photo Library Permission",
+				                              message: "Photos permission not available. Please enable it in Settings.",
+				                              preferredStyle: .alert)
+				alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+				
+					guard let settingsURL = URL(string: UIApplicationOpenSettingsURLString) else {
+						return
+					}
+					
+					UIApplication.shared.open(settingsURL)
+				})
+				self.present(alert, animated: true)
+				break
+			}
+		}
+	}
+	
+	private func showImagePicker() {
+		
 		let imagePicker = UIImagePickerController()
 		
 		imagePicker.sourceType = .photoLibrary
@@ -167,11 +193,14 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
 		
 		// get picked image from the info dictionary
-		let image = info[UIImagePickerControllerOriginalImage] as? UIImage
-		let url = info[UIImagePickerControllerReferenceURL] as? URL
+		guard
+			let image = info[UIImagePickerControllerOriginalImage] as? UIImage,
+			let url = info[UIImagePickerControllerReferenceURL] as? URL else {
+				return
+		}
 		
 		// dismiss the image picker
-		dismiss(animated: true) {
+		picker.dismiss(animated: true) {
 		
 			let createViewController =
 				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
@@ -183,18 +212,20 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 			self.navigationController?.pushViewController(createViewController, animated: true)
 		}
 	}
+	
+	func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+		picker.dismiss(animated: true)
+	}
 }
 
 // MARK: PhotoChangeDelegate conformance
 extension CollectionViewController: PhotoChangeDelegate {
 	
 	func didAdd() {
-		
 		refresh()
 	}
 	
 	func didRemove() {
-		
 		refresh()
 	}
 }
