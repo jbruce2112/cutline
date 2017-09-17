@@ -13,7 +13,6 @@ class SearchViewController: UITableViewController {
 	// MARK: Properties
 	var photoManager: PhotoManager!
 	
-	private var searchBar: UISearchBar!
 	private var resultsViewController = SearchResultsViewController()
 	
 	fileprivate var recentSearches = [String]()
@@ -27,15 +26,31 @@ class SearchViewController: UITableViewController {
 		return cacheDir.appendingPathComponent("recentSearches.archive").path
 	}()
 	
+	fileprivate var searchController: UISearchController!
+	
 	// MARK: Functions
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
 		definesPresentationContext = true
 		
+		searchController = UISearchController(searchResultsController: resultsViewController)
+		searchController.searchResultsUpdater = resultsViewController
+		searchController.dimsBackgroundDuringPresentation = false
+		
 		resultsViewController.photoManager = photoManager
-		searchBar = resultsViewController.searchController.searchBar
-		tableView.tableHeaderView = searchBar
+		resultsViewController.searchController = searchController
+		
+		// Integrate the searchController into
+		//the navigationController if we're on iOS 11+
+		if #available(iOS 11.0, *) {
+			navigationItem.searchController = searchController
+			
+			navigationItem.searchController?.hidesNavigationBarDuringPresentation = false
+			navigationItem.hidesSearchBarWhenScrolling = false
+		} else {
+			tableView.tableHeaderView = searchController.searchBar
+		}
 		
 		tableView.cellLayoutMarginsFollowReadableWidth = true
 		
@@ -59,16 +74,10 @@ class SearchViewController: UITableViewController {
 		resultsViewController.setTheme()
 	}
 	
-	override func viewDidAppear(_ animated: Bool) {
-		super.viewDidAppear(animated)
-		
-		searchBar.becomeFirstResponder()
-	}
-	
 	override func setTheme(_ theme: Theme) {
 		super.setTheme(theme)
 		
-		searchBar.barStyle = theme.barStyle
+		searchController.searchBar.barStyle = theme.barStyle
 		
 		// force the section headers to refresh
 		tableView.reloadSections(IndexSet(integer: 0), with: .none)
@@ -108,32 +117,28 @@ class SearchViewController: UITableViewController {
 		return section == 0 ? "Recent Searches" : nil
 	}
 	
-	override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+	override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
 		
-		if section != 0 {
-			return nil
+		guard let view = view as? UITableViewHeaderFooterView else {
+			return
 		}
 		
-		let view = UITableViewHeaderFooterView()
-		view.contentView.setTheme()
+		view.backgroundView?.setTheme()
 		
 		let theme = Theme()
-		view.contentView.backgroundColor = theme.altBackgroundColor
+		view.backgroundView?.backgroundColor = theme.altBackgroundColor
 		
 		if theme.isNight {
 			view.textLabel?.textColor = .white
 		}
-		
-		return view
 	}
 	
 	// MARK: UITableViewDelegate functions
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		
 		// Trigger a search using the selected term
-		searchBar.resignFirstResponder()
-		resultsViewController.searchController.isActive = true
-		resultsViewController.searchController.searchBar.text = recentSearches[indexPath.row]
+		searchController.isActive = true
+		searchController.searchBar.text = recentSearches[indexPath.row]
 	}
 	
 	// MARK: Private functions

@@ -10,8 +10,7 @@ import UIKit
 
 typealias SearchResult = (photo: Photo, searchTerm: String)
 
-protocol SearchTermDelegate: class {
-	
+protocol SearchTermDelegate: class {	
 	func didPerformSearch(withTerm searchTerm: String)
 }
 
@@ -25,24 +24,12 @@ class SearchResultsViewController: UITableViewController {
 	
 	weak var searchTermDelegate: SearchTermDelegate?
 	
-	init() {
-		super.init(style: .plain)
-		
-		searchController = UISearchController(searchResultsController: self)
-		searchController.searchResultsUpdater = self
-		searchController.dimsBackgroundDuringPresentation = false
+	override func viewDidLoad() {
+		super.viewDidLoad()
 		
 		tableView.dataSource = self
 		tableView.delegate = self
 		tableView.register(SearchResultCell.self, forCellReuseIdentifier: "SearchResultCell")
-	}
-	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-	}
-	
-	override func viewDidLoad() {
-		super.viewDidLoad()
 		
 		// Don't show empty cells
 		tableView.tableFooterView = UIView()
@@ -69,7 +56,6 @@ class SearchResultsViewController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-		
 		return 80.0
 	}
 	
