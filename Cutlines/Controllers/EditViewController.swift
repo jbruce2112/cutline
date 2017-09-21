@@ -114,7 +114,7 @@ class EditViewController: UIViewController {
 	}
 	
 	// MARK: Private functions
-	fileprivate func deleteItem(_ previewController: UIViewController?) {
+	private func deleteItem(_ previewController: UIViewController?) {
 		
 		let alertController = UIAlertController(title: nil,
 								message: "This caption will be deleted from Cutlines on all your devices.", preferredStyle: .actionSheet)
@@ -145,7 +145,7 @@ class EditViewController: UIViewController {
 		presentingController.present(alertController, animated: true, completion: nil)
 	}
 	
-	fileprivate func shareItem(_ previewController: UIViewController?) {
+	private func shareItem(_ previewController: UIViewController?) {
 		
 		let shareController = UIActivityViewController(activityItems:
 			[containerView.captionView.getCaption(), containerView.polaroidView.image!], applicationActivities: nil)

@@ -12,9 +12,9 @@ class CollectionViewController: UIViewController {
 	
 	// MARK: Properties
 	var photoManager: PhotoManager!
-	fileprivate var photoStore: PhotoStore!
+	private var photoStore: PhotoStore!
 	
-	@IBOutlet fileprivate var collectionView: UICollectionView!
+	@IBOutlet private var collectionView: UICollectionView!
 	
 	// MARK: Functions
 	override func viewDidLoad() {
