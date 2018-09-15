@@ -48,7 +48,7 @@ class ImageStore {
 			
 			let url = self.imageURL(forKey: key)
 			
-			if let data = UIImageJPEGRepresentation(image, self.imageQuality) {
+			if let data = image.jpegData(compressionQuality: self.imageQuality) {
 				try? data.write(to: url, options: [.atomic])
 			}
 			
@@ -131,7 +131,7 @@ class ImageStore {
 			// Write the thumbnail to disk and add it to our cache
 			self.thumbCache.setObject(thumbnail, forKey: thumbKey as NSString)
 			
-			if let data = UIImageJPEGRepresentation(thumbnail, self.thumbQuality) {
+			if let data = thumbnail.jpegData(compressionQuality: self.thumbQuality) {
 				try? data.write(to: thumbnailURL, options: [.atomic])
 			}
 			
@@ -228,7 +228,7 @@ class ImageStore {
 		}
 	}
 	
-	private func uiOrientation(fromCGOrientation cgOrientation: Int?) -> UIImageOrientation {
+    private func uiOrientation(fromCGOrientation cgOrientation: Int?) -> UIImage.Orientation {
 		
 		guard let cgOrientation = cgOrientation else {
 			return .up

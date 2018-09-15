@@ -117,7 +117,7 @@ struct CloudPhoto {
 		return CKRecord(coder: unarchiver)!
 	}
 	
-	static func createRecord(fromPair pair: PhotoPair, withZoneID zoneID: CKRecordZoneID) -> CKRecord? {
+    static func createRecord(fromPair pair: PhotoPair, withZoneID zoneID: CKRecordZone.ID) -> CKRecord? {
 		
 		guard let photo = CloudPhoto(fromPair: pair) else {
 			return nil
@@ -125,7 +125,7 @@ struct CloudPhoto {
 		
 		// We enforce a unique constraint with our photoID in CloudKit
 		// by always creating a record from a CKRecordID with a recordName of photoID
-		let recordID = CKRecordID(recordName: photo.id, zoneID: zoneID)
+        let recordID = CKRecord.ID(recordName: photo.id, zoneID: zoneID)
 		let record = CKRecord(recordType: "Photo", recordID: recordID)
 		
 		record[CloudPhoto.captionKey] = photo.caption as NSString

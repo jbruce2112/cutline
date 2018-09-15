@@ -25,7 +25,7 @@ class ShareViewController: SLComposeServiceViewController {
 		
 		guard
 			let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
-			let itemProvider = extensionItem.attachments?.first as? NSItemProvider else {
+            let itemProvider = extensionItem.attachments?.first else {
 				return false
 		}
 		

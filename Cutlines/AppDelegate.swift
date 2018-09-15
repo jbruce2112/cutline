@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	private var collectionViewController: CollectionViewController?
 	private var searchViewController: SearchViewController?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 		
         tabBarController = window!.rootViewController as? UITabBarController
         navigationControllers = tabBarController?.viewControllers as? [UINavigationController]

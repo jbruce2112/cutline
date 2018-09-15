@@ -283,7 +283,7 @@ class CloudKitManager {
 			return
 		}
 		
-		var recordIDs = [CKRecordID]()
+        var recordIDs = [CKRecord.ID]()
 		for photo in photos {
 			
 			// If there's no CKRecord on this photo,
@@ -325,7 +325,7 @@ class CloudKitManager {
 	/// Fetches changes from the cloud for all zones
 	func fetchChanges(completion: @escaping () -> Void) {
 		
-		var changedZoneIDs = [CKRecordZoneID]()
+        var changedZoneIDs = [CKRecordZone.ID]()
 		
 		let changeOperation = CKFetchDatabaseChangesOperation(previousServerChangeToken: syncState.dbChangeToken)
 		
@@ -394,7 +394,7 @@ class CloudKitManager {
 	}
 	
 	/// Fetches changes from the cloud for the specified zones
-	private func fetchChanges(fromZones changedZoneIDs: [CKRecordZoneID], completion: @escaping () -> Void) {
+    private func fetchChanges(fromZones changedZoneIDs: [CKRecordZone.ID], completion: @escaping () -> Void) {
 		
 		if changedZoneIDs.isEmpty {
 			completion()
@@ -410,7 +410,7 @@ class CloudKitManager {
 			return
 		}
 		
-		let options = CKFetchRecordZoneChangesOptions()
+        let options = CKFetchRecordZoneChangesOperation.ZoneOptions()
 		options.previousServerChangeToken = self.syncState.zoneChangeToken
 		
 		operation.optionsByRecordZoneID = [zoneID: options]
@@ -481,7 +481,7 @@ class CloudKitManager {
 		
 		let subscription = CKDatabaseSubscription(subscriptionID: subscriptionID)
 		
-		let notification = CKNotificationInfo()
+        let notification = CKSubscription.NotificationInfo()
 		// The user isn't prompted when just this property is set
 		notification.shouldSendContentAvailable = true
 		subscription.notificationInfo = notification

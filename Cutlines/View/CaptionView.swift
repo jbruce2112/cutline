@@ -52,7 +52,7 @@ class CaptionView: UITextView {
 	
 	@objc func resizeInsetsForKeyboard(_ notification: NSNotification) {
 		
-		let kbValue = notification.userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue
+        let kbValue = notification.userInfo![UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
 		let keyboard = kbValue.cgRectValue
 		
 		// Calculate how much the keyboard is overlapping with
@@ -104,11 +104,11 @@ class CaptionView: UITextView {
 		// Register observers for on-screen keyboard display events
 		let notificationCenter = NotificationCenter.default
 		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
-		                               name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+                                       name: UIResponder.keyboardDidShowNotification, object: nil)
 		notificationCenter.addObserver(self, selector: #selector(keyboardWillHide),
-		                               name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+                                       name: UIResponder.keyboardWillHideNotification, object: nil)
 		notificationCenter.addObserver(self, selector: #selector(resizeInsetsForKeyboard),
-		                               name: NSNotification.Name.UIKeyboardWillChangeFrame, object: nil)
+                                       name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
 	}
 }
 

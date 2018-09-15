@@ -100,7 +100,7 @@ class SettingsViewController: UITableViewController {
 	
 	@objc func iconsLabelTapped(recognizer: UITapGestureRecognizer) {
 		
-		if recognizer.state == UIGestureRecognizerState.ended {
+        if recognizer.state == UIGestureRecognizer.State.ended {
 			
 			openIconsURL()
 		}

@@ -164,16 +164,16 @@ extension CollectionViewController: UICollectionViewDelegate {
 // MARK: ImagePickerControllerDelegate conformance
 extension CollectionViewController: UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 	
-	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
+	func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
 		
 		// get picked image from the info dictionary
-		guard let image = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+        guard let image = info[UIImagePickerController.InfoKey.originalImage] as? UIImage else {
 			return
 		}
 		
 		// The system will skip the photo library authorization prompt to the user
 		// if we use the new ImageURL key
-        let fileURL = info[UIImagePickerControllerImageURL] as? URL
+        let fileURL = info[UIImagePickerController.InfoKey.imageURL] as? URL
 		
 		// dismiss the image picker
 		picker.dismiss(animated: true) {
