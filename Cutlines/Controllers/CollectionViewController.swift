@@ -171,8 +171,8 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 			return
 		}
 		
-		var fileURL: URL? = nil
-		var assetURL: URL? = nil
+		var fileURL: URL?
+		var assetURL: URL?
 		
 		// UIImagePickerControllerReferenceURL is deprecated as of iOS 11
 		// the system will also skip the photo library authorization prompt to the user

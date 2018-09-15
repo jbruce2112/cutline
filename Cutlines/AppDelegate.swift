@@ -15,23 +15,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	
 	private let photoManager = PhotoManager()
 		
-	private var tabBarController: UITabBarController!
-	private var navigationControllers: [UINavigationController]!
+	private var tabBarController: UITabBarController?
+	private var navigationControllers: [UINavigationController]?
 	
-	private var collectionViewController: CollectionViewController!
-	private var searchViewController: SearchViewController!
+	private var collectionViewController: CollectionViewController?
+	private var searchViewController: SearchViewController?
 
-	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		
-		tabBarController = window!.rootViewController as! UITabBarController
-		navigationControllers = tabBarController.viewControllers! as! [UINavigationController]
+        tabBarController = window!.rootViewController as? UITabBarController
+        navigationControllers = tabBarController?.viewControllers as? [UINavigationController]
 		
-		collectionViewController = navigationControllers[0].viewControllers.first! as! CollectionViewController
-		searchViewController = navigationControllers[1].viewControllers.first! as! SearchViewController
+        collectionViewController = navigationControllers?.first?.viewControllers.first as? CollectionViewController
+        searchViewController = navigationControllers?[1].viewControllers.first as? SearchViewController
 		
 		// Inject the manager into the initial view controllers
-		collectionViewController.photoManager = photoManager
-		searchViewController.photoManager = photoManager
+        collectionViewController?.photoManager = photoManager
+        searchViewController?.photoManager = photoManager
 		
 		// Handle updating the network indicator in the status bar
 		photoManager.cloudManager.networkStatusDelegate = self
@@ -75,14 +75,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// background execution, this method is called instead of applicationWillTerminate: when the user quits.
 		
 		photoManager.cloudManager.saveSyncState()
-		searchViewController.saveRecent()
+        searchViewController?.saveRecent()
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {
 		// Called as part of the transition from the background to the active state;
 		// here you can undo many of the changes made on entering the background.
 		
-		collectionViewController.refresh()
+        collectionViewController?.refresh()
 	}
 	
 	func setTheme() {
@@ -90,9 +90,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		// We're settings these properties in the AppDelegate since it already knows
 		// about the navigation and tab controllers, and we don't currently have any
 		// custom classes to implement their own viewWillAppear()/setTheme() behavior
-		tabBarController.tabBar.setTheme()
+        tabBarController?.tabBar.setTheme()
 		
-		for controller in navigationControllers {
+		for controller in navigationControllers ?? [] {
 			controller.navigationBar.setTheme()
 		}
 	}
@@ -108,7 +108,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		let name = shortcutItem.type.components(separatedBy: ".").last!
 		if name == "Search" {
 			
-			tabBarController.selectedIndex = 1
+            tabBarController?.selectedIndex = 1
 			return true
 		}
 		

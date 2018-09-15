@@ -172,20 +172,20 @@ extension EditViewController {
 		
 		let shareAction = UIPreviewAction(title: "Share", style: .default) { [weak self] _, _ in
 			
-			guard let _self = self else {
+			guard let strongSelf = self else {
 				return
 			}
 			
-			_self.shareItem(_self.previewer)
+			strongSelf.shareItem(strongSelf.previewer)
 		}
 		
 		let deleteAction = UIPreviewAction(title: "Delete", style: .destructive) { [weak self] _, _ in
 			
-			guard let _self = self else {
+			guard let strongSelf = self else {
 				return
 			}
 			
-			_self.deleteItem(_self.previewer)
+			strongSelf.deleteItem(strongSelf.previewer)
 		}
 		
 		return [shareAction, deleteAction]
