@@ -48,13 +48,10 @@ class EditViewController: UIViewController {
 		navigationItem.rightBarButtonItem =
 			UIBarButtonItem(image: #imageLiteral(resourceName: "refresh"), style: .plain, target: containerView, action: #selector(PhotoContainerView.flip))
 		
-		// Don't mess with the captionView insets
-		automaticallyAdjustsScrollViewInsets = false
-		
 		// Grow the containerView as large as the topLayoutGuide and toolbar permits
 		
 		// containter.top = topLayoutGuide.bottom + 10
-		let topEQ = containerView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: 10)
+		let topEQ = containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
 		
 		// toolbar.top = container.bottom + 10
 		let bottomEQ = toolbar.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
@@ -66,7 +63,7 @@ class EditViewController: UIViewController {
 		bottomEQ.isActive = true
 		
 		// container.top >= topLayoutGuide.bottom + 10
-		containerView.topAnchor.constraint(greaterThanOrEqualTo: topLayoutGuide.bottomAnchor, constant: 10).isActive = true
+		containerView.topAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
 		
 		// toolbar.top >= container.bottom + 10
 		toolbar.topAnchor.constraint(greaterThanOrEqualTo: containerView.bottomAnchor, constant: 10).isActive = true

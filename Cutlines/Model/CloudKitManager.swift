@@ -147,7 +147,7 @@ class CloudKitManager {
 		
 		let operation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
 		
-		operation.isLongLived = longLived
+        operation.configuration.isLongLived = longLived
 		operation.longLivedOperationWasPersistedBlock = { () in
 			
 			log("LongLivedOperationWasPersisted")
@@ -197,8 +197,7 @@ class CloudKitManager {
 		}
 		
 		operation.qualityOfService = .utility
-		operation.allowsCellularAccess =
-			appGroupDefaults.bool(forKey: PrefKey.cellSync)
+		operation.configuration.allowsCellularAccess = appGroupDefaults.bool(forKey: PrefKey.cellSync)
 		
 		setNetworkBusy(true)
 		privateDB.add(operation)
@@ -358,8 +357,7 @@ class CloudKitManager {
 		}
 		
 		changeOperation.qualityOfService = .utility
-		changeOperation.allowsCellularAccess =
-			appGroupDefaults.bool(forKey: PrefKey.cellSync)
+		changeOperation.configuration.allowsCellularAccess = appGroupDefaults.bool(forKey: PrefKey.cellSync)
 		
 		setNetworkBusy(true)
 		privateDB.add(changeOperation)
@@ -465,8 +463,7 @@ class CloudKitManager {
 		}
 		
 		operation.qualityOfService = .utility
-		operation.allowsCellularAccess =
-			appGroupDefaults.bool(forKey: PrefKey.cellSync)
+		operation.configuration.allowsCellularAccess = appGroupDefaults.bool(forKey: PrefKey.cellSync)
 		
 		setNetworkBusy(true)
 		privateDB.add(operation)

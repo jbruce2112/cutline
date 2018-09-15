@@ -95,6 +95,7 @@ class CaptionView: UITextView {
 		font = UIFont.preferredFont(forTextStyle: .body)
 		textContainerInset = UIEdgeInsets(top: 16, left: 8, bottom: 16, right: 8)
 		backgroundColor = .clear
+        contentInsetAdjustmentBehavior = .never
 		
 		setTheme()
 		

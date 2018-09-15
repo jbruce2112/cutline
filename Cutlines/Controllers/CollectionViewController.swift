@@ -171,17 +171,9 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 			return
 		}
 		
-		var fileURL: URL?
-		var assetURL: URL?
-		
-		// UIImagePickerControllerReferenceURL is deprecated as of iOS 11
-		// the system will also skip the photo library authorization prompt to the user
-		// if we avoid using the ALAsset API and instead use the new ImageURL key
-		if #available(iOS 11.0, *) {
-			fileURL = info[UIImagePickerControllerImageURL] as? URL
-		} else {
-			assetURL = info[UIImagePickerControllerReferenceURL] as? URL
-		}
+		// The system will skip the photo library authorization prompt to the user
+		// if we use the new ImageURL key
+        let fileURL = info[UIImagePickerControllerImageURL] as? URL
 		
 		// dismiss the image picker
 		picker.dismiss(animated: true) {
@@ -190,7 +182,6 @@ extension CollectionViewController: UINavigationControllerDelegate, UIImagePicke
 				self.storyboard!.instantiateViewController(withIdentifier: "CreateViewController") as! CreateViewController
 			
 			createViewController.photoManager = self.photoManager
-			createViewController.assetURL = assetURL
 			createViewController.fileURL = fileURL
 			createViewController.image = image
 			

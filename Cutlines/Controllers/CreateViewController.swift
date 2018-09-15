@@ -13,7 +13,6 @@ class CreateViewController: UIViewController {
 
 	// MARK: Properties
 	var image: UIImage!
-	var assetURL: URL?
 	var fileURL: URL?
 	var photoManager: PhotoManager!
 	
@@ -35,16 +34,13 @@ class CreateViewController: UIViewController {
 		
 		navigationItem.title = "Add"
 		
-		// Don't mess with the captionView insets
-		automaticallyAdjustsScrollViewInsets = false
-		
 		// Grow the containerView as large as the top and bottom layout guides permit
 		
 		// containter.top = topLayoutGuide.bottom + 10
-		let topEQ = containerView.topAnchor.constraint(equalTo: topLayoutGuide.bottomAnchor, constant: 10)
+		let topEQ = containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10)
 		
 		// bottomLayoutGuide.top = container.bottom + 10
-		let bottomEQ = bottomLayoutGuide.topAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
+		let bottomEQ = view.safeAreaLayoutGuide.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: 10)
 		
 		topEQ.priority = UILayoutPriority.defaultHigh
 		bottomEQ.priority = UILayoutPriority.defaultHigh
@@ -53,10 +49,10 @@ class CreateViewController: UIViewController {
 		bottomEQ.isActive = true
 		
 		// container.top >= topLayoutGuide.bottom + 10
-		containerView.topAnchor.constraint(greaterThanOrEqualTo: topLayoutGuide.bottomAnchor, constant: 10).isActive = true
+		containerView.topAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
 		
 		// bottomLayoutGuide.top >= container.bottom + 10
-		bottomLayoutGuide.topAnchor.constraint(greaterThanOrEqualTo: containerView.bottomAnchor, constant: 10).isActive = true
+		view.safeAreaLayoutGuide.bottomAnchor.constraint(greaterThanOrEqualTo: containerView.bottomAnchor, constant: 10).isActive = true
 	}
 	
 	override func viewWillAppear(_ animated: Bool) {
@@ -104,14 +100,6 @@ class CreateViewController: UIViewController {
 			return ctime
 		}
 		
-		// Otherwise use the ALAssets API to fetch the PHAsset
-		guard
-			let url = assetURL,
-			let asset = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil).firstObject else  {
-				log("Error fetching asset URL")
-				return nil
-		}
-		
-		return asset.creationDate
+		return nil
 	}
 }
