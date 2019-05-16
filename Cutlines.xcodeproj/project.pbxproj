@@ -339,7 +339,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0820;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Bruce32;
 				TargetAttributes = {
 					525F4CFD1E4AAA34004615FD = {
@@ -390,7 +390,7 @@
 			};
 			buildConfigurationList = 52A03E2B1E4028FE00A275AD /* Build configuration list for PBXProject "Cutlines" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,

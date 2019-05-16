@@ -9,11 +9,8 @@
 import Foundation
 import UIKit
 
-private func delegateClassName() -> String? {
+private var delegateClassName: String? {
 	return NSClassFromString("XCTestCase") == nil ? NSStringFromClass(AppDelegate.self) : nil
 }
 
-let argv = UnsafeMutableRawPointer(CommandLine.unsafeArgv)
-				.bindMemory(to: UnsafeMutablePointer<Int8>.self, capacity: Int(CommandLine.argc))
-
-_ = UIApplicationMain(CommandLine.argc, argv, nil, delegateClassName())
+_ = UIApplicationMain(CommandLine.argc, CommandLine.unsafeArgv, nil, delegateClassName)
