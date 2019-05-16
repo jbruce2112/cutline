@@ -115,6 +115,9 @@ class CloudKitManager {
 	
 	/// Saves the current SyncState to disk
 	func saveSyncState() {
+		guard let syncState = syncState else {
+			return
+		}
 		
 		NSKeyedArchiver.archiveRootObject(syncState, toFile: syncStateArchive.path)
 		log("SyncState saved")

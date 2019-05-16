@@ -49,17 +49,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		return true
 	}
 	
-	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-	                 fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+	func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 		
-		let dict = userInfo as! [String: NSObject]
-		let notification = CKNotification(fromRemoteNotificationDictionary: dict)
-		if notification.subscriptionID == photoManager.cloudManager.subscriptionID {
-			
-			photoManager.cloudManager.fetchChanges {
-				
-				completionHandler(UIBackgroundFetchResult.newData)
-			}
+		guard let dict = userInfo as? [String: NSObject],
+			let notification = CKNotification(fromRemoteNotificationDictionary: dict),
+			notification.subscriptionID == photoManager.cloudManager.subscriptionID else {
+				completionHandler(.noData)
+				return
+		}
+		photoManager.cloudManager.fetchChanges {
+			completionHandler(UIBackgroundFetchResult.newData)
 		}
 	}
 	

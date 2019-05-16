@@ -81,13 +81,14 @@ struct CloudPhoto {
 		// sanity check
 		assert(record.recordID.recordName == id)
 		
-		guard let asset = record[CloudPhoto.imageKey] as? CKAsset else {
-			log("Unable to get CKAsset from record")
-			return nil
+		guard let asset = record[CloudPhoto.imageKey] as? CKAsset,
+			let fileURL = asset.fileURL else {
+				log("Unable to get CKAsset from record")
+				return nil
 		}
 		
 		// The client converted this to a JPEG before uploading.
-		image = try? Data(contentsOf: asset.fileURL)
+		image = try? Data(contentsOf: fileURL)
 		
 		if image == nil {
 			log("Unable to get JPEG from Data")

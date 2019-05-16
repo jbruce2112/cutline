@@ -82,7 +82,7 @@ class SearchResultCell: UITableViewCell {
 		
 		// See if we would end up truncating the string if it was displayed
 		let labelWidth = resultLabel.frame.size.width
-        let displaySize = displayString.size(withAttributes: [NSAttributedString.Key.font: resultLabel.font])
+        let displaySize = displayString.size(withAttributes: [NSAttributedString.Key.font: resultLabel.font!])
 		
 		if displaySize.width < labelWidth || labelWidth == 0 {
 			return displayString
