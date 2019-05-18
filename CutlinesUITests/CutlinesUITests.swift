@@ -17,7 +17,7 @@ class CutlinesUITests: XCTestCase {
 		let milesWatchingBirdVideoPhoto = app.cells.element(boundBy: 7)
 		milesWatchingBirdVideoPhoto.tap()
 		
-		app.toolbars.matching(identifier: "Toolbar").toolbars.matching(identifier: "Toolbar").buttons["Share"].tap()
+		app.buttons["Share"].tap()
 		
 		let shareExtensionButton = app.buttons["Add Caption"]
 		if !shareExtensionButton.waitForExistence(timeout: 5.0) {
