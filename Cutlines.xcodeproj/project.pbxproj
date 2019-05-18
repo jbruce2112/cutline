@@ -44,6 +44,8 @@
 		52B72E581E81EE6200D598A0 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5291E1471E6A01D700A0BBE1 /* CloudKit.framework */; };
 		52CB722F1E74604C00D3C7E5 /* CutlineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52CB722E1E74604C00D3C7E5 /* CutlineTests.swift */; };
 		52D958E41E5FB76C00D7B4EE /* CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */; };
+		52DC074922907EA4008D4B44 /* CutlinesUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DC074822907EA4008D4B44 /* CutlinesUITests.swift */; };
+		52DC075122907EBD008D4B44 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DC075022907EBD008D4B44 /* SnapshotHelper.swift */; };
 		52E34B3C1E57BF4300342EA1 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */; };
 		52F3920B1E68F983001EDC48 /* CloudPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F3920A1E68F983001EDC48 /* CloudPhoto.swift */; };
 		52F3920C1E68FB15001EDC48 /* CloudPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F3920A1E68F983001EDC48 /* CloudPhoto.swift */; };
@@ -61,6 +63,13 @@
 			remoteInfo = ShareExtension;
 		};
 		52CB72311E74604C00D3C7E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 52A03E2F1E4028FE00A275AD;
+			remoteInfo = Cutlines;
+		};
+		52DC074B22907EA4008D4B44 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 52A03E281E4028FE00A275AD /* Project object */;
 			proxyType = 1;
@@ -121,6 +130,10 @@
 		52CB722E1E74604C00D3C7E5 /* CutlineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CutlineTests.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		52CB72301E74604C00D3C7E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52D958E31E5FB76C00D7B4EE /* CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CloudKitManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		52DC074622907EA4008D4B44 /* CutlinesUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CutlinesUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		52DC074822907EA4008D4B44 /* CutlinesUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CutlinesUITests.swift; sourceTree = "<group>"; };
+		52DC074A22907EA4008D4B44 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52DC075022907EBD008D4B44 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		52E34B3B1E57BF4300342EA1 /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SettingsViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		52F3920A1E68F983001EDC48 /* CloudPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = CloudPhoto.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 /* End PBXFileReference section */
@@ -143,6 +156,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		52CB72291E74604C00D3C7E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		52DC074322907EA4008D4B44 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -212,6 +232,7 @@
 				52A03E321E4028FE00A275AD /* Cutlines */,
 				525F4CFF1E4AAA34004615FD /* ShareExtension */,
 				52CB722D1E74604C00D3C7E5 /* CutlinesTests */,
+				52DC074722907EA4008D4B44 /* CutlinesUITests */,
 				52A03E311E4028FE00A275AD /* Products */,
 				52D958E01E5FB73500D7B4EE /* Frameworks */,
 			);
@@ -223,6 +244,7 @@
 				52A03E301E4028FE00A275AD /* Cutlines.app */,
 				525F4CFE1E4AAA34004615FD /* ShareExtension.appex */,
 				52CB722C1E74604C00D3C7E5 /* CutlinesTests.xctest */,
+				52DC074622907EA4008D4B44 /* CutlinesUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -254,6 +276,16 @@
 				5291E1471E6A01D700A0BBE1 /* CloudKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		52DC074722907EA4008D4B44 /* CutlinesUITests */ = {
+			isa = PBXGroup;
+			children = (
+				52DC075022907EBD008D4B44 /* SnapshotHelper.swift */,
+				52DC074822907EA4008D4B44 /* CutlinesUITests.swift */,
+				52DC074A22907EA4008D4B44 /* Info.plist */,
+			);
+			path = CutlinesUITests;
 			sourceTree = "<group>";
 		};
 		52E8921C1E873FF700120BD9 /* Supporting Files */ = {
@@ -332,13 +364,31 @@
 			productReference = 52CB722C1E74604C00D3C7E5 /* CutlinesTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		52DC074522907EA4008D4B44 /* CutlinesUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 52DC074F22907EA4008D4B44 /* Build configuration list for PBXNativeTarget "CutlinesUITests" */;
+			buildPhases = (
+				52DC074222907EA4008D4B44 /* Sources */,
+				52DC074322907EA4008D4B44 /* Frameworks */,
+				52DC074422907EA4008D4B44 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				52DC074C22907EA4008D4B44 /* PBXTargetDependency */,
+			);
+			name = CutlinesUITests;
+			productName = CutlinesUITests;
+			productReference = 52DC074622907EA4008D4B44 /* CutlinesUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		52A03E281E4028FE00A275AD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 0820;
+				LastSwiftUpdateCheck = 1020;
 				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = Bruce32;
 				TargetAttributes = {
@@ -386,6 +436,12 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 52A03E2F1E4028FE00A275AD;
 					};
+					52DC074522907EA4008D4B44 = {
+						CreatedOnToolsVersion = 10.2.1;
+						DevelopmentTeam = UVXX33WP85;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 52A03E2F1E4028FE00A275AD;
+					};
 				};
 			};
 			buildConfigurationList = 52A03E2B1E4028FE00A275AD /* Build configuration list for PBXProject "Cutlines" */;
@@ -404,6 +460,7 @@
 				52A03E2F1E4028FE00A275AD /* Cutlines */,
 				525F4CFD1E4AAA34004615FD /* ShareExtension */,
 				52CB722B1E74604C00D3C7E5 /* CutlinesTests */,
+				52DC074522907EA4008D4B44 /* CutlinesUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -429,6 +486,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		52CB722A1E74604C00D3C7E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		52DC074422907EA4008D4B44 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -523,6 +587,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		52DC074222907EA4008D4B44 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				52DC074922907EA4008D4B44 /* CutlinesUITests.swift in Sources */,
+				52DC075122907EBD008D4B44 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -535,6 +608,11 @@
 			isa = PBXTargetDependency;
 			target = 52A03E2F1E4028FE00A275AD /* Cutlines */;
 			targetProxy = 52CB72311E74604C00D3C7E5 /* PBXContainerItemProxy */;
+		};
+		52DC074C22907EA4008D4B44 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 52A03E2F1E4028FE00A275AD /* Cutlines */;
+			targetProxy = 52DC074B22907EA4008D4B44 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -773,6 +851,53 @@
 			};
 			name = Release;
 		};
+		52DC074D22907EA4008D4B44 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UVXX33WP85;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = CutlinesUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlinesUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Cutlines;
+			};
+			name = Debug;
+		};
+		52DC074E22907EA4008D4B44 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = UVXX33WP85;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				INFOPLIST_FILE = CutlinesUITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bruce32.CutlinesUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Cutlines;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -808,6 +933,15 @@
 			buildConfigurations = (
 				52CB72331E74604C00D3C7E5 /* Debug */,
 				52CB72341E74604C00D3C7E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		52DC074F22907EA4008D4B44 /* Build configuration list for PBXNativeTarget "CutlinesUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				52DC074D22907EA4008D4B44 /* Debug */,
+				52DC074E22907EA4008D4B44 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

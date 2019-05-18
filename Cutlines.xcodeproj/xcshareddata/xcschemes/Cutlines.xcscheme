@@ -48,6 +48,16 @@
                ReferencedContainer = "container:Cutlines.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "52DC074522907EA4008D4B44"
+               BuildableName = "CutlinesUITests.xctest"
+               BlueprintName = "CutlinesUITests"
+               ReferencedContainer = "container:Cutlines.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

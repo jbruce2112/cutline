@@ -70,4 +70,4 @@ fastlane/test_output
 
 # jekyll
 _site/
-Gemfile.lock
+docs/Gemfile.lock
