@@ -39,17 +39,7 @@
             </BuildableReference>
          </TestableReference>
          <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "52F87D0A1E886A120065AA2F"
-               BuildableName = "CutlineUITests.xctest"
-               BlueprintName = "CutlineUITests"
-               ReferencedContainer = "container:Cutlines.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
+            skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "52DC074522907EA4008D4B44"
