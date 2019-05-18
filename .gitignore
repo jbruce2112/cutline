@@ -65,8 +65,10 @@ Carthage/Build
 
 fastlane/report.xml
 fastlane/Preview.html
-fastlane/screenshots
 fastlane/test_output
+screenshots/en-US/
+screenshots/background_framed.png
+screenshots/screenshots.html
 
 # jekyll
 _site/

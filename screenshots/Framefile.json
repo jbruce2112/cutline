@@ -1,0 +1,41 @@
+{
+  "device_frame_version": "latest",
+  "default": {
+    "padding": 50,
+    "show_complete_frame": false,
+    "title_below_image": false,
+    "frame": "BLACK",
+    "background": "./background.png"
+  },
+
+  "data": [
+    {
+      "filter": "1_",
+      "title": {
+        "text": "Easily browse all of your captioned photos.",
+        "color": "#000000"
+      }
+    },
+    {
+      "filter": "2_",
+      "title": {
+        "text": "Add captions from other applications.",
+        "color": "#000000"
+      }
+    },
+    {
+      "filter": "3_",
+      "title": {
+        "text": "Search your captions by keyword.",
+        "color": "#000000"
+      }
+    },
+    {
+      "filter": "4_",
+      "title": {
+        "text": "Share memories with your friends.",
+        "color": "#000000"
+      }
+    }
+  ]
+}
